@@ -196,6 +196,23 @@ body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-heig
 .empty{text-align:center;padding:20px 0;color:var(--lav-muted);font-size:13px}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--lav-600);color:white;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ── 編輯 Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(59,42,110,.35);z-index:8000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--white);border-radius:20px;padding:0;width:92%;max-width:420px;box-shadow:0 20px 60px rgba(59,42,110,.25);transform:translateY(20px);transition:transform .25s;overflow:hidden}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--lav-50),white)}
+.modal-title{font-size:14px;font-weight:600;color:var(--lav-text);display:flex;align-items:center;gap:7px}
+.modal-close{background:none;border:none;font-size:18px;color:var(--lav-muted);cursor:pointer;padding:4px 8px;border-radius:8px;line-height:1;transition:background .15s}
+.modal-close:hover{background:var(--lav-100)}
+.modal-body{padding:20px}
+.modal-field{margin-bottom:14px}
+.modal-label{font-size:11px;font-weight:600;color:var(--lav-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.modal-foot{display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border);background:var(--lav-50)}
+.btn-danger{background:#FEE2E2;color:#C73434;border:1px solid #FECACA;border-radius:10px;padding:9px 16px;font-size:13px;font-family:var(--font);cursor:pointer;transition:background .2s;font-weight:500}
+.btn-danger:hover{background:#FECACA}
+.ev-row{cursor:pointer}
+.ev-row:hover .ev-name{color:var(--lav-500)}
 @media(max-width:900px){.stat-row{grid-template-columns:repeat(3,1fr)}.layout{flex-direction:column;padding:14px 16px}.side-col{width:100%}.side-col-inner{display:flex;flex-wrap:wrap;gap:8px}.side-btn{width:calc(50% - 4px);margin-bottom:0}.day-split{grid-template-columns:1fr}.outfit-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.stat-row{grid-template-columns:repeat(2,1fr)}.top-bar{padding:0 16px}.nav-item{padding:10px 12px 7px}}
 </style>
@@ -458,6 +475,36 @@ body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-heig
       <button class="side-btn" onclick="showPage('month',document.querySelectorAll('.nav-item')[3])"><span class="si">📌</span>本月目標</button>
       <button class="side-btn" onclick="showPage('week',document.querySelectorAll('.nav-item')[2])"><span class="si">🎯</span>本週目標</button>
     </div></div>
+  </div>
+</div>
+
+<!-- ══ 編輯行程 Modal ══ -->
+<div class="modal-overlay" id="evModal" onclick="closeEvModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="evModalTitle">✏️ 編輯行程</span>
+      <button class="modal-close" onclick="closeEvModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <div class="modal-label">時間</div>
+        <input type="time" class="lav-input" id="modalEvTime" style="width:100%">
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">行程名稱</div>
+        <input type="text" class="lav-input" id="modalEvText" placeholder="輸入行程名稱..." style="width:100%">
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">日期</div>
+        <input type="date" class="lav-input" id="modalEvDate" style="width:100%">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-danger" onclick="deleteEvFromModal()">🗑️ 刪除</button>
+      <div style="flex:1"></div>
+      <button class="btn-g" onclick="closeEvModal()">取消</button>
+      <button class="btn-p" onclick="saveEvFromModal()">💾 儲存</button>
+    </div>
   </div>
 </div>
 
@@ -727,6 +774,62 @@ function rStats(){
 }
 
 // ═══════ 行程 ═══════
+// ── Modal 狀態 ──
+let modalEvId=null, modalEvDk=null;
+
+function openEvModal(id, dk){
+  const ev=(D.ev[dk]||[]).find(e=>e.id===id);
+  if(!ev)return;
+  modalEvId=id; modalEvDk=dk;
+  document.getElementById('modalEvTime').value=ev.t||'';
+  document.getElementById('modalEvText').value=ev.tx||'';
+  document.getElementById('modalEvDate').value=dk;
+  const label=dk===TODAY?'✏️ 編輯今日行程':dk===TOMORROW?'✏️ 編輯明日行程':'✏️ 編輯行程';
+  document.getElementById('evModalTitle').textContent=label;
+  document.getElementById('evModal').classList.add('open');
+}
+
+function closeEvModal(e){
+  if(e&&e.target!==document.getElementById('evModal'))return;
+  document.getElementById('evModal').classList.remove('open');
+  modalEvId=null; modalEvDk=null;
+}
+
+function saveEvFromModal(){
+  if(!modalEvId||!modalEvDk)return;
+  const newDk=document.getElementById('modalEvDate').value||modalEvDk;
+  const newT=document.getElementById('modalEvTime').value;
+  const newTx=document.getElementById('modalEvText').value.trim();
+  if(!newTx){toast('⚠️ 請輸入行程名稱');return;}
+
+  // 從原 dateKey 移除
+  D.ev[modalEvDk]=(D.ev[modalEvDk]||[]).filter(e=>e.id!==modalEvId);
+
+  // 加入新 dateKey
+  if(!D.ev[newDk])D.ev[newDk]=[];
+  D.ev[newDk].push({t:newT,tx:newTx,id:modalEvId});
+  D.ev[newDk].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+
+  document.getElementById('evModal').classList.remove('open');
+
+  // 若日期變了，更新 selDay
+  if(selDay===modalEvDk||selDay===newDk){ rDayDetail(selDay||newDk); }
+  modalEvId=null; modalEvDk=null;
+
+  rEv(); rEvM(); rWkView(); rCal(); rStats(); rSchContent(); sv();
+  toast('✅ 行程已更新！');
+}
+
+function deleteEvFromModal(){
+  if(!modalEvId||!modalEvDk)return;
+  D.ev[modalEvDk]=(D.ev[modalEvDk]||[]).filter(e=>e.id!==modalEvId);
+  document.getElementById('evModal').classList.remove('open');
+  if(selDay===modalEvDk) rDayDetail(selDay);
+  modalEvId=null; modalEvDk=null;
+  rEv(); rEvM(); rWkView(); rCal(); rStats(); rSchContent(); sv();
+  toast('🗑️ 行程已刪除');
+}
+
 function addEv(){
   const t=document.getElementById('evTime').value,tx=document.getElementById('evText').value.trim();
   if(!tx)return;
@@ -739,11 +842,19 @@ function addEv(){
 function dEv(id,dk){D.ev[dk]=(D.ev[dk]||[]).filter(e=>e.id!==id);if(dk===TODAY){rEv();rStats();rSchContent();}else rEvM();rWkView();sv();}
 function dEvT(id){dEv(id,TODAY)}
 function dEvM(id){dEv(id,TOMORROW)}
+
 function rEv(){
   const el=document.getElementById('evList'),evs=D.ev[TODAY]||[];
-  if(!evs.length){el.innerHTML='<div class="empty">還沒有行程</div>';return}
-  el.innerHTML=evs.map(e=>`<div class="ev-row"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-bar"></div><span class="ev-name">${e.tx}</span><button class="icon-btn" onclick="dEvT(${e.id})">✕</button></div>`).join('');
+  if(!evs.length){el.innerHTML='<div class="empty">還沒有行程，點右上角新增</div>';return}
+  el.innerHTML=evs.map(e=>`
+    <div class="ev-row" onclick="openEvModal(${e.id},'${TODAY}')">
+      <span class="ev-time">${e.t||'--:--'}</span>
+      <div class="ev-bar"></div>
+      <span class="ev-name">${e.tx}</span>
+      <span style="font-size:10px;color:var(--lav-300);margin-left:4px">✏️</span>
+    </div>`).join('');
 }
+
 function addEvM(){
   const t=document.getElementById('evTimeM').value,tx=document.getElementById('evTextM').value.trim();
   if(!tx)return;
@@ -759,7 +870,13 @@ function rEvM(){
   const wxHint=tmrEl?`<div style="font-size:11px;color:var(--lav-muted);margin-bottom:8px;padding:6px 10px;background:var(--lav-50);border-radius:8px;border:1px solid var(--border)">明日五行：${tmrEl.map(e=>EL[e].em+e).join(' ')}　宜穿${tmrEl.map(e=>EL[e].cols[0]).join('/')}</div>`:'';
   const el=document.getElementById('evListM'),evs=D.ev[TOMORROW]||[];
   if(!evs.length){el.innerHTML=wxHint+'<div class="empty">還沒有明日行程</div>';return}
-  el.innerHTML=wxHint+evs.map(e=>`<div class="ev-row"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-bar" style="background:var(--lav-200)"></div><span class="ev-name">${e.tx}</span><button class="icon-btn" onclick="dEvM(${e.id})">✕</button></div>`).join('');
+  el.innerHTML=wxHint+evs.map(e=>`
+    <div class="ev-row" onclick="openEvModal(${e.id},'${TOMORROW}')">
+      <span class="ev-time">${e.t||'--:--'}</span>
+      <div class="ev-bar" style="background:var(--lav-200)"></div>
+      <span class="ev-name">${e.tx}</span>
+      <span style="font-size:10px;color:var(--lav-300);margin-left:4px">✏️</span>
+    </div>`).join('');
 }
 
 // ═══════ 待辦 ═══════
@@ -842,8 +959,14 @@ function sCalDay(dk,day){
 }
 function rDayDetail(dk){
   const evs=D.ev[dk]||[],el=document.getElementById('dayBody');
-  if(!evs.length){el.innerHTML='<div class="empty">這天還沒有活動</div>';return}
-  el.innerHTML=evs.map(e=>`<div class="ev-row"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-bar"></div><span class="ev-name">${e.tx}</span></div>`).join('');
+  if(!evs.length){el.innerHTML='<div class="empty">這天還沒有活動，點右上角新增</div>';return}
+  el.innerHTML=evs.map(e=>`
+    <div class="ev-row" onclick="openEvModal(${e.id},'${dk}')">
+      <span class="ev-time">${e.t||'--:--'}</span>
+      <div class="ev-bar"></div>
+      <span class="ev-name">${e.tx}</span>
+      <span style="font-size:10px;color:var(--lav-300);margin-left:4px">✏️</span>
+    </div>`).join('');
 }
 function addToDay(){
   if(!selDay){toast('請先點選日期');return}
