@@ -12,385 +12,536 @@
   --lav-50:#F7F5FF;--lav-100:#EDE9FE;--lav-200:#DDD6FE;--lav-300:#C4B5FD;
   --lav-400:#A78BFA;--lav-500:#8B5CF6;--lav-600:#7C3AED;
   --lav-text:#3B2A6E;--lav-muted:#8B7BB5;
-  --white:#FFFFFF;--bg:#F8F7FF;--border:#EDE9FE;
+  --white:#FFFFFF;--bg:#F3F2FF;--border:#EDE9FE;
   --font:'Noto Sans TC',sans-serif;
   --red:#DC2626;--blue:#2563EB;
+  --radius:14px;
 }
 body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-height:100vh;font-size:14px}
-.top-bar{background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:200}
+
+/* ── top bar ── */
+.top-bar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:200;box-shadow:0 1px 8px rgba(139,92,246,.06)}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-icon{width:34px;height:34px;background:var(--lav-100);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--lav-400),var(--lav-600));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
 .logo h1{font-size:15px;font-weight:600;color:var(--lav-text)}
-.logo p{font-size:11px;color:var(--lav-muted)}
-.top-right{display:flex;align-items:center;gap:12px}
-.date-chip{font-size:12px;color:var(--lav-muted);background:var(--lav-50);border:1px solid var(--border);border-radius:20px;padding:5px 14px}
+.logo p{font-size:10px;color:var(--lav-muted)}
 .sync-chip{font-size:11px;color:var(--lav-muted);display:flex;align-items:center;gap:5px}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:#86EFAC}
-.nav-bar{background:var(--white);border-bottom:1px solid var(--border);display:flex;padding:0 20px;overflow-x:auto;scrollbar-width:none;position:sticky;top:58px;z-index:100}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#86EFAC;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── nav ── */
+.nav-bar{background:var(--white);border-bottom:1px solid var(--border);display:flex;padding:0 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:54px;z-index:100}
 .nav-bar::-webkit-scrollbar{display:none}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 18px 8px;cursor:pointer;border-bottom:2px solid transparent;color:var(--lav-muted);font-size:12px;white-space:nowrap;transition:all .2s;background:none;border-left:none;border-right:none;border-top:none;font-family:var(--font)}
-.nav-item .ni{font-size:18px}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 18px 8px;cursor:pointer;border-bottom:2px solid transparent;color:var(--lav-muted);font-size:11px;white-space:nowrap;transition:all .2s;background:none;border-left:none;border-right:none;border-top:none;font-family:var(--font)}
+.nav-item .ni{font-size:17px}
 .nav-item:hover{color:var(--lav-500);background:var(--lav-50)}
 .nav-item.active{color:var(--lav-600);border-bottom-color:var(--lav-500);font-weight:500}
-.layout{display:flex;gap:20px;padding:22px 28px;max-width:1300px;margin:0 auto}
-.main-col{flex:1;min-width:0}
-.side-col{width:200px;flex-shrink:0}
-.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
-.stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
-.stat-icon{font-size:18px;margin-bottom:4px}
-.stat-label{font-size:11px;color:var(--lav-muted);margin-bottom:4px}
-.stat-value{font-size:16px;font-weight:600;color:var(--lav-text)}
-.card{background:var(--white);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;overflow:hidden}
-.card-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)}
-.card-title{font-size:13px;font-weight:600;color:var(--lav-text);display:flex;align-items:center;gap:7px}
-.ci{font-size:15px}
-.card-body{padding:16px 18px}
+
+/* ── page ── */
 .page{display:none}
 .page.active{display:block}
-.side-btn{display:flex;align-items:center;gap:9px;width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--border);background:var(--white);color:var(--lav-text);font-size:13px;font-family:var(--font);font-weight:500;cursor:pointer;margin-bottom:10px;transition:all .2s;text-align:left}
+
+/* ── 首頁三欄 ── */
+.home-grid{display:grid;grid-template-columns:1fr 260px 260px;gap:16px;padding:18px 22px;max-width:1400px;margin:0 auto;align-items:start}
+.col-main{min-width:0}
+.col-week{min-width:0}
+.col-goals{min-width:0}
+
+/* ── 其他頁 ── */
+.layout{display:flex;gap:16px;padding:18px 22px;max-width:1200px;margin:0 auto}
+.main-col{flex:1;min-width:0}
+.side-col{width:190px;flex-shrink:0}
+.side-btn{display:flex;align-items:center;gap:8px;width:100%;padding:10px 13px;border-radius:11px;border:1px solid var(--border);background:var(--white);color:var(--lav-text);font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;margin-bottom:8px;transition:all .2s;text-align:left}
 .side-btn:hover{background:var(--lav-50);border-color:var(--lav-300)}
-.side-btn .si{font-size:15px}
 .side-btn.primary{background:var(--lav-100);border-color:var(--lav-200);color:var(--lav-600)}
 .side-btn.primary:hover{background:var(--lav-200)}
-/* 五行 */
-.wx-hero{background:var(--white);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;overflow:hidden}
-.wx-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.wx-body{padding:16px 18px}
-.wx-banner{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,var(--lav-50),#F0EEFF);border:1px solid var(--lav-200);border-radius:12px;padding:14px 18px;margin-bottom:16px;flex-wrap:wrap}
-.wx-elems{display:flex;gap:8px;flex-wrap:wrap}
-.elem-pill{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid}
-.wx-tip-txt{font-size:12px;color:var(--lav-muted);line-height:1.6;flex:1;min-width:140px}
-.swatches{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.sw-item{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
-.sw-circ{width:38px;height:38px;border-radius:50%;border:2px solid rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;position:relative}
-.sw-circ:hover{transform:scale(1.08)}
-.sw-circ.on{box-shadow:0 0 0 3px var(--lav-400);transform:scale(1.08)}
-.sw-circ.on::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-size:13px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.3)}
-.sw-lbl{font-size:10px;color:var(--lav-muted);text-align:center;line-height:1.3}
-.outfit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.oc{background:var(--lav-50);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center}
-.oc-icon{font-size:16px;margin-bottom:4px}
-.oc-lbl{font-size:10px;color:var(--lav-muted);margin-bottom:2px}
-.oc-val{font-size:12px;font-weight:600;color:var(--lav-text)}
-.wx-rec{margin-top:12px;padding:10px 14px;background:#F0FFF4;border:1px solid #BBF7D0;border-radius:10px;font-size:12px;color:#166534;display:none}
-.wx-rec.on{display:block}
-/* 今日明日 */
-.day-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.dp{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-.dp-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.dp-title{font-size:13px;font-weight:600;color:var(--lav-text);display:flex;align-items:center;gap:6px}
-.lbl-t{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--lav-500);color:white;margin-left:4px}
-.lbl-m{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--lav-100);color:var(--lav-600);margin-left:4px}
-.dp-body{padding:12px 16px;min-height:80px}
-.ev-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
-.ev-row:last-child{border-bottom:none}
-.ev-time{font-size:11px;color:var(--lav-muted);min-width:38px;flex-shrink:0}
-.ev-bar{width:3px;height:26px;border-radius:2px;background:var(--lav-300);flex-shrink:0}
-.ev-name{flex:1;font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.icon-btn{background:none;border:none;color:var(--lav-300);cursor:pointer;font-size:13px;padding:3px;border-radius:5px;line-height:1;transition:all .15s}
-.icon-btn:hover{color:var(--lav-500);background:var(--lav-50)}
-/* 待辦 */
-.td-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
-.td-row:last-child{border-bottom:none}
-.chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--lav-300);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:11px;color:transparent}
-.chk.done{background:var(--lav-400);border-color:var(--lav-400);color:white}
-.td-name{flex:1;font-size:13px}
-.td-name.done{text-decoration:line-through;color:var(--lav-muted)}
-.bdg{font-size:10px;padding:2px 8px;border-radius:20px;flex-shrink:0}
-.bdg-high{background:#FFE4E4;color:#C73434}
-.bdg-mid{background:#FFF3DC;color:#A06000}
-.bdg-low{background:#E7F5E8;color:#2D7A35}
-/* ── 週課表 ── */
-.sch-day-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.sch-tab{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--lav-muted);font-size:12px;font-family:var(--font);cursor:pointer;transition:all .2s;font-weight:500}
-.sch-tab:hover{background:var(--lav-50)}
+
+/* ── card ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
+.card-title{font-size:12px;font-weight:600;color:var(--lav-text);display:flex;align-items:center;gap:6px}
+.ci{font-size:14px}
+.card-body{padding:14px 16px}
+.empty{text-align:center;padding:18px 0;color:var(--lav-muted);font-size:12px}
+
+/* ── 五行卡片 ── */
+.wx-banner{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--lav-50),#F0EEFF);border:1px solid var(--lav-200);border-radius:12px;padding:12px 16px;margin-bottom:12px;flex-wrap:wrap}
+.wx-elems{display:flex;gap:7px;flex-wrap:wrap}
+.elem-pill{display:flex;align-items:center;gap:4px;padding:4px 11px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid}
+.wx-tip-txt{font-size:11px;color:var(--lav-muted);line-height:1.6;flex:1;min-width:120px}
+.outfit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.oc{background:var(--lav-50);border:1px solid var(--border);border-radius:9px;padding:9px 10px;text-align:center}
+.oc-icon{font-size:15px;margin-bottom:3px}
+.oc-lbl{font-size:9px;color:var(--lav-muted);margin-bottom:2px}
+.oc-val{font-size:11px;font-weight:600;color:var(--lav-text)}
+
+/* ── 成功法則 ── */
+.tip-toggle-head{cursor:pointer;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.tip-body{padding:14px 16px;display:none;flex-direction:column;gap:10px}
+.tip-body.open{display:flex}
+.tip-card{border-radius:11px;padding:12px 14px}
+
+/* ── 月曆 ── */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-nav-btn{background:var(--lav-50);border:1px solid var(--border);border-radius:8px;padding:4px 11px;font-size:14px;cursor:pointer;color:var(--lav-500);transition:background .15s}
+.cal-nav-btn:hover{background:var(--lav-100)}
+.cal-month-lbl{font-size:13px;font-weight:600;color:var(--lav-text)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-dh{text-align:center;font-size:9px;padding:3px 0;font-weight:600}
+.cal-dh-wd{color:var(--lav-muted)}.cal-dh-sat{color:var(--blue)}.cal-dh-sun{color:var(--red)}
+.cal-day{border-radius:7px;font-size:11px;cursor:pointer;transition:all .15s;min-height:56px;display:flex;flex-direction:column;align-items:center;padding:4px 2px 3px;gap:1px;position:relative}
+.cal-day:hover{background:var(--lav-100)}
+.day-num{font-size:11px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:50%;line-height:1}
+.cal-day.today .day-num{background:var(--lav-500);color:white!important;font-weight:600}
+.cal-day.selected .day-num{background:var(--lav-200)}
+.cal-day.other-month{opacity:.28}
+.cal-day.sat-day .day-num{color:var(--blue)}
+.cal-day.sun-day .day-num,.cal-day.hol-day .day-num{color:var(--red)}
+.cal-day.today .day-num{color:white!important}
+.hol-lbl{font-size:7px;color:var(--red);text-align:center;line-height:1.2;max-width:36px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.fest-lbl{font-size:7px;color:var(--lav-500);text-align:center;line-height:1.2;max-width:36px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+/* 五行顏色條 in 月曆 */
+.wx-color-bar{display:flex;gap:1px;justify-content:center;flex-wrap:wrap}
+.wx-color-swatch{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ev-dot{width:5px;height:5px;border-radius:50%;background:var(--lav-400);margin:0 auto}
+.cal-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--lav-muted)}
+.leg-dot{width:9px;height:9px;border-radius:50%}
+
+/* ── 月曆彈出 detail ── */
+.day-detail-panel{margin-top:12px;background:var(--lav-50);border:1px solid var(--border);border-radius:11px;padding:12px 14px;display:none}
+.day-detail-panel.open{display:block}
+
+/* ── 週曆欄 ── */
+.week-role-row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.week-role-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;font-size:12px;font-weight:500}
+
+/* ── 週課表 (compact) ── */
+.sch-day-tabs{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.sch-tab{padding:5px 11px;border-radius:16px;border:1px solid var(--border);background:var(--white);color:var(--lav-muted);font-size:11px;font-family:var(--font);cursor:pointer;transition:all .2s;font-weight:500}
 .sch-tab.active{background:var(--lav-500);border-color:var(--lav-500);color:white}
 .sch-tab.today-tab{border-color:var(--lav-400);color:var(--lav-600)}
-.day-role-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;margin-bottom:16px}
-.sch-section{margin-bottom:4px}
-.sch-section-title{font-size:11px;font-weight:600;color:var(--lav-muted);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
-/* 課表項目 - 打勾清單樣式 */
-.sch-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;margin-bottom:6px;border:1px solid var(--border);background:var(--white);transition:all .2s;cursor:pointer;user-select:none}
+.prog-strip{background:var(--lav-100);border-radius:5px;height:6px;overflow:hidden;margin-bottom:10px}
+.prog-strip-fill{height:100%;background:linear-gradient(90deg,var(--lav-300),var(--lav-500));border-radius:5px;transition:width .4s}
+.prog-lbl{font-size:10px;color:var(--lav-muted);margin-bottom:5px;display:flex;justify-content:space-between}
+.sch-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;margin-bottom:5px;border:1px solid var(--border);background:var(--white);cursor:pointer;user-select:none;transition:all .2s}
 .sch-item:hover{background:var(--lav-50);border-color:var(--lav-300)}
 .sch-item.checked{background:#F0FFF4;border-color:#BBF7D0}
-.sch-item.checked:hover{background:#DCFCE7}
-.sch-chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--lav-300);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:12px;color:transparent}
+.sch-chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--lav-300);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:11px;color:transparent}
 .sch-chk.done{background:#22C55E;border-color:#22C55E;color:white}
 .sch-item-body{flex:1;min-width:0}
-.sch-time{font-size:11px;color:var(--lav-muted);margin-bottom:2px}
-.sch-name{font-size:13px;font-weight:500;color:var(--lav-text);transition:all .2s}
-.sch-name.done{text-decoration:line-through;color:var(--lav-muted)}
-.sch-tag{font-size:10px;padding:2px 8px;border-radius:10px;flex-shrink:0}
+.sch-time-lbl{font-size:10px;color:var(--lav-muted);margin-bottom:1px}
+.sch-name-lbl{font-size:12px;font-weight:500;color:var(--lav-text)}
+.sch-name-lbl.done{text-decoration:line-through;color:var(--lav-muted)}
+.sch-tag{font-size:9px;padding:2px 7px;border-radius:9px;flex-shrink:0}
 .tag-routine{background:var(--lav-100);color:var(--lav-600)}
 .tag-kid{background:#FEF3C7;color:#92400E}
 .tag-work{background:#DBEAFE;color:#1E40AF}
 .tag-self{background:#FCE7F3;color:#9D174D}
 .tag-custom{background:#F3F4F6;color:#374151}
-/* 串連行程 */
-.linked-ev-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;margin-bottom:6px;border:1px solid var(--lav-200);background:linear-gradient(135deg,var(--lav-50),white);cursor:pointer;user-select:none;transition:all .2s}
-.linked-ev-item:hover{background:var(--lav-100);border-color:var(--lav-300)}
-.linked-ev-item.checked{background:#F0FFF4;border-color:#BBF7D0}
-/* 進度條 */
-.progress-strip-wrap{margin-bottom:16px}
-.progress-label{font-size:12px;color:var(--lav-muted);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-.progress-strip{background:var(--lav-100);border-radius:6px;height:8px;overflow:hidden}
-.progress-strip-fill{height:100%;background:linear-gradient(90deg,var(--lav-300),var(--lav-500));border-radius:6px;transition:width .4s}
-.reset-btn{font-size:11px;color:var(--lav-muted);background:none;border:1px solid var(--border);border-radius:8px;padding:3px 10px;cursor:pointer;font-family:var(--font)}
-.reset-btn:hover{background:var(--lav-50);color:var(--lav-600)}
-/* 本週 */
+.reset-btn-sm{font-size:10px;color:var(--lav-muted);background:none;border:1px solid var(--border);border-radius:7px;padding:2px 8px;cursor:pointer;font-family:var(--font)}
+
+/* ── 目標欄 ── */
+.motivation-card{background:linear-gradient(135deg,var(--lav-500),var(--lav-600));border-radius:var(--radius);padding:16px 18px;margin-bottom:14px;color:white}
+.motivation-quote{font-size:11px;line-height:1.8;margin-bottom:10px;opacity:.95}
+.motivation-tag{font-size:12px;font-weight:600;text-align:center;padding:8px;background:rgba(255,255,255,.15);border-radius:8px;letter-spacing:.5px}
+.goal-item{padding:10px 0;border-bottom:1px solid var(--border)}
+.goal-item:last-child{border-bottom:none}
+.goal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.goal-name{font-size:12px;font-weight:500}
+.goal-cat{font-size:9px;padding:2px 8px;background:var(--lav-100);color:var(--lav-600);border-radius:16px}
+.prog-bar{width:100%;height:5px;background:var(--lav-100);border-radius:3px;overflow:hidden;margin-bottom:3px}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--lav-300),var(--lav-500));border-radius:3px;transition:width .4s}
+.prog-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.prog-pct{font-size:10px;font-weight:600;color:var(--lav-500);min-width:30px;text-align:right}
+
+/* ── 本月目標 ── */
+.month-goal-item{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.month-goal-item:last-child{border-bottom:none}
+.mg-chk{width:18px;height:18px;border-radius:50%;border:2px solid var(--lav-300);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:10px;color:transparent;margin-top:1px}
+.mg-chk.done{background:var(--lav-400);border-color:var(--lav-400);color:white}
+.mg-body{flex:1}
+.mg-name{font-size:12px;font-weight:500}
+.mg-name.done{text-decoration:line-through;color:var(--lav-muted)}
+.mg-note{font-size:10px;color:var(--lav-muted);margin-top:2px}
+
+/* ── 行程 ── */
+.ev-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.ev-row:last-child{border-bottom:none}
+.ev-row:hover .ev-name{color:var(--lav-500)}
+.ev-time{font-size:10px;color:var(--lav-muted);min-width:34px;flex-shrink:0}
+.ev-bar{width:3px;height:24px;border-radius:2px;background:var(--lav-300);flex-shrink:0}
+.ev-name{flex:1;font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-edit-icon{font-size:9px;color:var(--lav-300)}
+.icon-btn{background:none;border:none;color:var(--lav-300);cursor:pointer;font-size:12px;padding:2px;border-radius:4px;line-height:1;transition:all .15s}
+.icon-btn:hover{color:var(--lav-500)}
+
+/* ── 表單 ── */
+.form-row{display:flex;gap:7px;margin-top:9px}
+.lav-input{flex:1;border:1px solid var(--border);border-radius:9px;padding:8px 11px;font-size:12px;font-family:var(--font);color:var(--lav-text);background:var(--lav-50);outline:none;transition:border-color .2s}
+.lav-input:focus{border-color:var(--lav-300);background:white}
+.lav-sel{border:1px solid var(--border);border-radius:9px;padding:8px 9px;font-size:11px;font-family:var(--font);color:var(--lav-text);background:var(--lav-50);outline:none;cursor:pointer}
+.btn-p{background:var(--lav-500);color:white;border:none;border-radius:9px;padding:8px 16px;font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+.btn-p:hover{opacity:.88}
+.btn-g{background:var(--lav-50);color:var(--lav-500);border:1px solid var(--border);border-radius:9px;padding:7px 13px;font-size:11px;font-family:var(--font);cursor:pointer;transition:background .2s;white-space:nowrap}
+.btn-g:hover{background:var(--lav-100)}
+.add-form{background:var(--lav-50);border-radius:9px;padding:10px 12px;margin-bottom:12px;border:1px solid var(--border);display:none}
+
+/* ── 本週行事曆 (full page) ── */
 .wk-wrap{overflow-x:auto}
 .wk-table{width:100%;border-collapse:collapse;font-size:11px;min-width:520px}
-.wk-table th{text-align:center;padding:7px 4px;font-weight:500;font-size:11px;border-bottom:1px solid var(--border)}
+.wk-table th{text-align:center;padding:5px 3px;font-weight:500;font-size:10px;border-bottom:1px solid var(--border)}
 .th-wd{color:var(--lav-muted)}.th-today{color:var(--lav-600);font-weight:700}.th-sat{color:var(--blue)}.th-sun{color:var(--red)}
-.wk-table td{border:1px solid var(--border);vertical-align:top;padding:3px 4px;cursor:pointer;transition:background .15s;font-size:10px;height:32px}
-.wk-table td:first-child{border:none;text-align:right;padding-right:8px;color:var(--lav-muted);font-size:10px;width:38px;vertical-align:middle;white-space:nowrap}
+.wk-table td{border:1px solid var(--border);vertical-align:top;padding:2px 3px;cursor:pointer;transition:background .15s;font-size:9px;height:28px}
+.wk-table td:first-child{border:none;text-align:right;padding-right:7px;color:var(--lav-muted);font-size:9px;width:36px;vertical-align:middle;white-space:nowrap}
 .wk-table td:hover:not(:first-child){background:var(--lav-50)}
 .td-today{background:rgba(139,92,246,.05)!important}.td-sat{background:rgba(37,99,235,.025)}.td-sun{background:rgba(220,38,38,.025)}.td-hol{background:rgba(220,38,38,.04)}
-.ev-chip{background:var(--lav-400);color:white;border-radius:3px;padding:1px 5px;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;margin-bottom:1px;line-height:1.6}
-/* 月曆 */
-.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.cal-nav-btn{background:var(--lav-50);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:15px;cursor:pointer;color:var(--lav-500)}
-.cal-nav-btn:hover{background:var(--lav-100)}
-.cal-month-lbl{font-size:14px;font-weight:600;color:var(--lav-text)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cal-dh{text-align:center;font-size:10px;padding:4px 0;font-weight:600}
-.cal-dh-wd{color:var(--lav-muted)}.cal-dh-sat{color:var(--blue)}.cal-dh-sun{color:var(--red)}
-.cal-day{border-radius:8px;font-size:12px;cursor:pointer;transition:all .15s;min-height:52px;display:flex;flex-direction:column;align-items:center;padding:5px 2px 4px;gap:2px}
-.cal-day:hover{background:var(--lav-100)}
-.day-num{line-height:1.5;font-size:12px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%}
-.cal-day.today .day-num{background:var(--lav-500);color:white!important;font-weight:600}
-.cal-day.selected .day-num{background:var(--lav-200)}
-.cal-day.other-month{opacity:.3}
-.cal-day.sat-day .day-num{color:var(--blue)}
-.cal-day.sun-day .day-num,.cal-day.hol-day .day-num{color:var(--red)}
-.cal-day.today .day-num{color:white!important}
-.hol-lbl{font-size:8px;color:var(--red);text-align:center;line-height:1.2;max-width:38px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.fest-lbl{font-size:8px;color:var(--lav-500);text-align:center;line-height:1.2;max-width:38px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.dot-row{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;margin-top:1px}
-.dot{width:5px;height:5px;border-radius:50%}.dot-ev{background:var(--lav-400)}
-.wx-dot-row{display:flex;gap:1px;justify-content:center}
-.wxd{width:4px;height:4px;border-radius:50%}
-.cal-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--lav-muted)}
-.leg-dot{width:10px;height:10px;border-radius:50%}
-/* 目標 */
-.goal-item{padding:12px 0;border-bottom:1px solid var(--border)}
-.goal-item:last-child{border-bottom:none}
-.goal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.goal-name{font-size:13px;font-weight:500}
-.goal-cat{font-size:10px;padding:2px 9px;background:var(--lav-100);color:var(--lav-600);border-radius:20px}
-.prog-bar{width:100%;height:5px;background:var(--lav-100);border-radius:3px;overflow:hidden;margin-bottom:4px}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--lav-300),var(--lav-500));border-radius:3px;transition:width .4s}
-.prog-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.prog-pct{font-size:11px;font-weight:600;color:var(--lav-500);min-width:34px;text-align:right}
-/* 表單 */
-.form-row{display:flex;gap:8px;margin-top:10px}
-.lav-input{flex:1;border:1px solid var(--border);border-radius:10px;padding:9px 13px;font-size:13px;font-family:var(--font);color:var(--lav-text);background:var(--lav-50);outline:none;transition:border-color .2s}
-.lav-input:focus{border-color:var(--lav-300);background:white}
-.lav-sel{border:1px solid var(--border);border-radius:10px;padding:9px 10px;font-size:12px;font-family:var(--font);color:var(--lav-text);background:var(--lav-50);outline:none;cursor:pointer}
-.btn-p{background:var(--lav-500);color:white;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-family:var(--font);font-weight:500;cursor:pointer;transition:opacity .2s;white-space:nowrap}
-.btn-p:hover{opacity:.88}
-.btn-g{background:var(--lav-50);color:var(--lav-500);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:12px;font-family:var(--font);cursor:pointer;transition:background .2s;white-space:nowrap}
-.btn-g:hover{background:var(--lav-100)}
-.add-form{background:var(--lav-50);border-radius:10px;padding:12px 14px;margin-bottom:14px;border:1px solid var(--border);display:none}
-.empty{text-align:center;padding:20px 0;color:var(--lav-muted);font-size:13px}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--lav-600);color:white;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-/* ── 編輯 Modal ── */
+.ev-chip{background:var(--lav-400);color:white;border-radius:3px;padding:1px 4px;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;margin-bottom:1px;line-height:1.5}
+
+/* ── Modal ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(59,42,110,.35);z-index:8000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}
-.modal-box{background:var(--white);border-radius:20px;padding:0;width:92%;max-width:420px;box-shadow:0 20px 60px rgba(59,42,110,.25);transform:translateY(20px);transition:transform .25s;overflow:hidden}
+.modal-box{background:var(--white);border-radius:18px;padding:0;width:92%;max-width:400px;box-shadow:0 20px 60px rgba(59,42,110,.25);transform:translateY(16px);transition:transform .25s;overflow:hidden}
 .modal-overlay.open .modal-box{transform:translateY(0)}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--lav-50),white)}
-.modal-title{font-size:14px;font-weight:600;color:var(--lav-text);display:flex;align-items:center;gap:7px}
-.modal-close{background:none;border:none;font-size:18px;color:var(--lav-muted);cursor:pointer;padding:4px 8px;border-radius:8px;line-height:1;transition:background .15s}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--lav-50),white)}
+.modal-title{font-size:13px;font-weight:600;color:var(--lav-text)}
+.modal-close{background:none;border:none;font-size:17px;color:var(--lav-muted);cursor:pointer;padding:3px 7px;border-radius:7px;line-height:1;transition:background .15s}
 .modal-close:hover{background:var(--lav-100)}
-.modal-body{padding:20px}
-.modal-field{margin-bottom:14px}
-.modal-label{font-size:11px;font-weight:600;color:var(--lav-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.modal-foot{display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border);background:var(--lav-50)}
-.btn-danger{background:#FEE2E2;color:#C73434;border:1px solid #FECACA;border-radius:10px;padding:9px 16px;font-size:13px;font-family:var(--font);cursor:pointer;transition:background .2s;font-weight:500}
+.modal-body{padding:18px}
+.modal-field{margin-bottom:12px}
+.modal-label{font-size:10px;font-weight:600;color:var(--lav-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.modal-foot{display:flex;gap:7px;padding:12px 18px;border-top:1px solid var(--border);background:var(--lav-50)}
+.btn-danger{background:#FEE2E2;color:#C73434;border:1px solid #FECACA;border-radius:9px;padding:8px 14px;font-size:12px;font-family:var(--font);cursor:pointer;transition:background .2s;font-weight:500}
 .btn-danger:hover{background:#FECACA}
-.ev-row{cursor:pointer}
-.ev-row:hover .ev-name{color:var(--lav-500)}
-@media(max-width:900px){.stat-row{grid-template-columns:repeat(3,1fr)}.layout{flex-direction:column;padding:14px 16px}.side-col{width:100%}.side-col-inner{display:flex;flex-wrap:wrap;gap:8px}.side-btn{width:calc(50% - 4px);margin-bottom:0}.day-split{grid-template-columns:1fr}.outfit-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.stat-row{grid-template-columns:repeat(2,1fr)}.top-bar{padding:0 16px}.nav-item{padding:10px 12px 7px}}
+
+/* ── toast ── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--lav-600);color:white;padding:9px 18px;border-radius:18px;font-size:12px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:1100px){
+  .home-grid{grid-template-columns:1fr 230px}
+  .col-goals{display:none}
+}
+@media(max-width:800px){
+  .home-grid{grid-template-columns:1fr;padding:12px 14px}
+  .col-week{display:none}
+  .layout{flex-direction:column;padding:12px 14px}
+  .side-col{width:100%}
+}
+@media(max-width:600px){
+  .top-bar{padding:0 14px}
+  .nav-item{padding:9px 12px 7px}
+}
 </style>
 </head>
 <body>
+
+<!-- ── Top bar ── -->
 <div class="top-bar">
   <div class="logo">
     <div class="logo-icon">🌿</div>
-    <div><h1>時間目標管理</h1><p>珞熙 · 時間目標管理系統</p></div>
+    <div><h1>時間目標管理</h1><p>珞熙 · 每日系統</p></div>
   </div>
-  <div class="top-right">
-    <span class="date-chip" id="headerDate"></span>
+  <div style="display:flex;align-items:center;gap:14px">
+    <span style="font-size:12px;color:var(--lav-muted)" id="headerDate"></span>
     <span class="sync-chip"><span class="sync-dot"></span><span id="syncTxt">已儲存</span></span>
+    <button class="btn-g" onclick="saveAll()" style="padding:5px 12px;font-size:11px">💾</button>
   </div>
 </div>
 
+<!-- ── Nav ── -->
 <div class="nav-bar">
-  <button class="nav-item active" onclick="showPage('today',this)"><span class="ni">🏠</span>首頁</button>
+  <button class="nav-item active" onclick="showPage('home',this)"><span class="ni">🏠</span>首頁</button>
   <button class="nav-item" onclick="showPage('schedule',this)"><span class="ni">📋</span>週課表</button>
   <button class="nav-item" onclick="showPage('week',this)"><span class="ni">📅</span>本週</button>
   <button class="nav-item" onclick="showPage('month',this)"><span class="ni">🗓️</span>月曆</button>
   <button class="nav-item" onclick="showPage('goals',this)"><span class="ni">🎯</span>目標</button>
 </div>
 
-<!-- 首頁 -->
-<div class="page active" id="page-today">
-  <div class="layout">
-    <div class="main-col">
-      <div class="stat-row">
-        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">今日待辦</div><div class="stat-value" id="s-todo">0 件</div></div>
-        <div class="stat-card"><div class="stat-icon">☑️</div><div class="stat-label">已完成</div><div class="stat-value" id="s-done">0 件</div></div>
-        <div class="stat-card"><div class="stat-icon">📌</div><div class="stat-label">今日行程</div><div class="stat-value" id="s-ev">0 項</div></div>
-        <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-label">週目標</div><div class="stat-value" id="s-wg">0 個</div></div>
-        <div class="stat-card"><div class="stat-icon">🌟</div><div class="stat-label">年度目標</div><div class="stat-value" id="s-yg">0 個</div></div>
-      </div>
-      <!-- 成功法則提醒 -->
+<!-- ════════════════════════════════════
+     首頁 — 三欄
+════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="home-grid">
+
+    <!-- ① 左欄：五行 + 成功法則 + 月曆 -->
+    <div class="col-main">
+
+      <!-- 五行穿衣 -->
       <div class="card">
-        <div class="card-head" style="cursor:pointer" onclick="toggleTips()">
-          <span class="card-title"><span class="ci">💡</span>成功人士時間法則</span>
-          <span id="tipIcon" style="font-size:12px;color:var(--lav-muted)">▼ 展開</span>
+        <div class="card-head">
+          <span class="card-title"><span class="ci">✨</span>今日五行穿衣建議</span>
+          <span style="font-size:11px;color:var(--lav-muted)" id="wxDate"></span>
         </div>
-        <div id="tipBody" style="display:none;padding:14px 18px;display:none;flex-direction:column;gap:12px">
-          <div style="background:linear-gradient(135deg,var(--lav-50),#F0EEFF);border:1px solid var(--lav-200);border-radius:12px;padding:13px 15px"><div style="font-size:13px;font-weight:600;color:var(--lav-600);margin-bottom:5px">① 時間區塊法</div><div style="font-size:13px;color:var(--lav-text);line-height:1.7">把一天切成幾個大塊，每塊只做一類事。例如：上午深度工作、下午接客人、傍晚學習。<strong>不讓雜事入侵黃金時段。</strong></div></div>
-          <div style="background:linear-gradient(135deg,#FFF7ED,#FEF3C7);border:1px solid #FDE68A;border-radius:12px;padding:13px 15px"><div style="font-size:13px;font-weight:600;color:#92400E;margin-bottom:5px">② 先吃掉那隻青蛙 🐸</div><div style="font-size:13px;color:var(--lav-text);line-height:1.7">每天早上醒來的第一件事，先處理「最難、最重要、最想逃避」的那件事。<br><span style="color:var(--lav-muted);font-size:12px">▸ 如果妳決定早起跑步，晨跑就是妳的第一隻青蛙。運動完產生的多巴胺，會讓妳接下來一整天的決策變得很輕鬆。</span></div></div>
-          <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1px solid #86EFAC;border-radius:12px;padding:13px 15px"><div style="font-size:13px;font-weight:600;color:#166534;margin-bottom:5px">③ 2/8 法則與「拒絕清單」</div><div style="font-size:13px;color:var(--lav-text);line-height:1.7"><strong>80% 的收入來自 20% 的關鍵行動。</strong><br><span style="color:var(--lav-muted);font-size:12px">▸ 妳的核心是「技術研發」與「教學傳承」。其他雜事能用 AI 做就用 AI，能拒絕就拒絕。</span></div></div>
-        </div>
-      </div>
-      <!-- 待辦（最上面） -->
-      <div class="card">
-        <div class="card-head"><span class="card-title"><span class="ci">📋</span>待辦事項</span><button class="btn-g" onclick="tf('fTd')">+ 新增</button></div>
         <div class="card-body">
-          <div class="add-form" id="fTd"><div class="form-row" style="margin-top:0"><input type="text" class="lav-input" id="tdTxt" placeholder="待辦內容..."><select class="lav-sel" id="tdPri"><option value="high">🔴 高</option><option value="mid" selected>🟡 中</option><option value="low">🟢 低</option></select></div><div class="form-row"><button class="btn-p" onclick="addTd()">新增</button><button class="btn-g" onclick="tf('fTd')">取消</button></div></div>
-          <div id="tdList"></div>
-        </div>
-      </div>
-      <!-- 今日 & 明日行程 -->
-      <div class="day-split">
-        <div class="dp">
-          <div class="dp-head"><span class="dp-title"><span class="ci">🕐</span>今日行程<span class="lbl-t">今天</span></span><button class="btn-g" onclick="tf('fEv')" style="padding:5px 10px;font-size:11px">+ 新增</button></div>
-          <div class="dp-body">
-            <div class="add-form" id="fEv" style="margin-bottom:10px">
-              <div class="form-row" style="margin-top:0"><input type="time" class="lav-input" id="evTime" style="flex:0 0 105px"><input type="text" class="lav-input" id="evText" placeholder="行程名稱..."></div>
-              <div class="form-row"><button class="btn-p" style="padding:7px 14px;font-size:12px" onclick="addEv()">新增</button><button class="btn-g" onclick="tf('fEv')">取消</button></div>
-            </div>
-            <div id="evList"></div>
-          </div>
-        </div>
-        <div class="dp">
-          <div class="dp-head"><span class="dp-title"><span class="ci">🌙</span>明日行程<span class="lbl-m">明天</span></span><button class="btn-g" onclick="tf('fEvM')" style="padding:5px 10px;font-size:11px">+ 新增</button></div>
-          <div class="dp-body">
-            <div class="add-form" id="fEvM" style="margin-bottom:10px">
-              <div class="form-row" style="margin-top:0"><input type="time" class="lav-input" id="evTimeM" style="flex:0 0 105px"><input type="text" class="lav-input" id="evTextM" placeholder="明日行程..."></div>
-              <div class="form-row"><button class="btn-p" style="padding:7px 14px;font-size:12px" onclick="addEvM()">新增</button><button class="btn-g" onclick="tf('fEvM')">取消</button></div>
-            </div>
-            <div id="evListM"></div>
-          </div>
-        </div>
-      </div>
-      <!-- 五行（簡化版，不顯示色票） -->
-      <div class="wx-hero">
-        <div class="wx-head"><span class="card-title"><span class="ci">✨</span>今日五行穿衣建議</span><span style="font-size:11px;color:var(--lav-muted)" id="wxDate"></span></div>
-        <div class="wx-body">
           <div class="wx-banner"><div class="wx-elems" id="wxElems"></div><div class="wx-tip-txt" id="wxTip"></div></div>
           <div class="outfit-grid" id="wxOutfit"></div>
         </div>
       </div>
+
+      <!-- 成功法則（可收折） -->
+      <div class="card">
+        <div class="tip-toggle-head" onclick="toggleTips()">
+          <span class="card-title"><span class="ci">💡</span>成功人士時間法則</span>
+          <span id="tipIcon" style="font-size:11px;color:var(--lav-muted)">▼ 展開</span>
+        </div>
+        <div class="tip-body" id="tipBody">
+          <div class="tip-card" style="background:linear-gradient(135deg,var(--lav-50),#F0EEFF);border:1px solid var(--lav-200)"><div style="font-size:12px;font-weight:600;color:var(--lav-600);margin-bottom:5px">① 時間區塊法</div><div style="font-size:12px;color:var(--lav-text);line-height:1.7">把一天切成幾個大塊，每塊只做一類事。上午深度工作、下午接客人、傍晚學習。<strong>不讓雜事入侵黃金時段。</strong></div></div>
+          <div class="tip-card" style="background:linear-gradient(135deg,#FFF7ED,#FEF3C7);border:1px solid #FDE68A"><div style="font-size:12px;font-weight:600;color:#92400E;margin-bottom:5px">② 先吃掉那隻青蛙 🐸</div><div style="font-size:12px;color:var(--lav-text);line-height:1.7">每天第一件事，先處理「最難、最重要、最想逃避」的那件事。晨跑就是妳的第一隻青蛙，運動完的多巴胺讓整天決策更輕鬆。</div></div>
+          <div class="tip-card" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1px solid #86EFAC"><div style="font-size:12px;font-weight:600;color:#166534;margin-bottom:5px">③ 2/8 法則與「拒絕清單」</div><div style="font-size:12px;color:var(--lav-text);line-height:1.7"><strong>80% 的收入來自 20% 的關鍵行動。</strong>核心是技術研發與教學傳承，其他雜事能用 AI 做就用 AI，能拒絕就拒絕。</div></div>
+        </div>
+      </div>
+
+      <!-- 月曆（含五行顏色） -->
+      <div class="card">
+        <div class="card-head"><span class="card-title"><span class="ci">🗓️</span>月曆</span></div>
+        <div class="card-body">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="chM(-1)">‹</button>
+            <span class="cal-month-lbl" id="calLbl"></span>
+            <button class="cal-nav-btn" onclick="chM(1)">›</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-legend">
+            <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>假日</div>
+            <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>週六</div>
+            <div class="leg-item"><div class="leg-dot" style="background:var(--lav-400)"></div>有行程</div>
+          </div>
+        </div>
+        <!-- 選日詳情 -->
+        <div id="dayDetailPanel" class="day-detail-panel" style="margin:0 14px 14px;display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <span style="font-size:12px;font-weight:600;color:var(--lav-text)" id="dayDetailTitle"></span>
+            <button class="btn-g" onclick="tf('fDayAdd')" style="font-size:11px;padding:4px 10px">+ 新增</button>
+          </div>
+          <div class="add-form" id="fDayAdd" style="margin-bottom:8px">
+            <div class="form-row" style="margin-top:0">
+              <input type="time" class="lav-input" id="dayEvTime" style="flex:0 0 100px">
+              <input type="text" class="lav-input" id="dayEvText" placeholder="活動名稱...">
+            </div>
+            <div class="form-row">
+              <button class="btn-p" onclick="addToDay()" style="padding:6px 14px;font-size:11px">新增</button>
+              <button class="btn-g" onclick="tf('fDayAdd')">取消</button>
+            </div>
+          </div>
+          <div id="dayBody"></div>
+        </div>
+      </div>
+
     </div>
-    <div class="side-col"><div class="side-col-inner">
-      <button class="side-btn primary" onclick="tf('fEv')"><span class="si">➕</span>新增行程</button>
-      <button class="side-btn primary" onclick="tf('fTd')"><span class="si">✅</span>新增待辦</button>
-      <button class="side-btn" onclick="showPage('schedule',document.querySelectorAll('.nav-item')[1])"><span class="si">📋</span>今日課表</button>
-      <button class="side-btn" onclick="showPage('goals',document.querySelectorAll('.nav-item')[4])"><span class="si">🎯</span>目標管理</button>
-      <button class="side-btn" onclick="showPage('month',document.querySelectorAll('.nav-item')[3])"><span class="si">🗓️</span>月曆</button>
-      <button class="side-btn" onclick="saveAll()"><span class="si">💾</span>儲存資料</button>
-    </div></div>
+
+    <!-- ② 中欄：週角色 + 行程 + 週課表 -->
+    <div class="col-week">
+
+      <!-- 週角色列 -->
+      <div class="card">
+        <div class="card-head"><span class="card-title"><span class="ci">📅</span>本週行程</span></div>
+        <div class="card-body" style="padding-bottom:8px">
+          <div class="week-role-row" id="weekRoleRow"></div>
+        </div>
+      </div>
+
+      <!-- 今日行程 -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title"><span class="ci">🕐</span>今日行程</span>
+          <button class="btn-g" onclick="tf('fEv')" style="font-size:11px;padding:4px 9px">+ 新增</button>
+        </div>
+        <div class="card-body">
+          <div class="add-form" id="fEv">
+            <div class="form-row" style="margin-top:0">
+              <input type="time" class="lav-input" id="evTime" style="flex:0 0 100px">
+              <input type="text" class="lav-input" id="evText" placeholder="行程名稱...">
+            </div>
+            <div class="form-row">
+              <button class="btn-p" onclick="addEv()" style="padding:6px 14px;font-size:11px">新增</button>
+              <button class="btn-g" onclick="tf('fEv')">取消</button>
+            </div>
+          </div>
+          <div id="evList"></div>
+        </div>
+      </div>
+
+      <!-- 明日行程 -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title"><span class="ci">🌙</span>明日行程</span>
+          <button class="btn-g" onclick="tf('fEvM')" style="font-size:11px;padding:4px 9px">+ 新增</button>
+        </div>
+        <div class="card-body">
+          <div class="add-form" id="fEvM">
+            <div class="form-row" style="margin-top:0">
+              <input type="time" class="lav-input" id="evTimeM" style="flex:0 0 100px">
+              <input type="text" class="lav-input" id="evTextM" placeholder="明日行程...">
+            </div>
+            <div class="form-row">
+              <button class="btn-p" onclick="addEvM()" style="padding:6px 14px;font-size:11px">新增</button>
+              <button class="btn-g" onclick="tf('fEvM')">取消</button>
+            </div>
+          </div>
+          <div id="evListM"></div>
+        </div>
+      </div>
+
+      <!-- 週課表（精簡） -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title"><span class="ci">📋</span>今日課表</span>
+          <button class="reset-btn-sm" onclick="resetSchHome()">重置</button>
+        </div>
+        <div class="card-body">
+          <div class="sch-day-tabs" id="schTabsHome"></div>
+          <div class="prog-lbl"><span id="schProgTxtHome"></span></div>
+          <div class="prog-strip"><div class="prog-strip-fill" id="schProgBarHome" style="width:0%"></div></div>
+          <div id="schContentHome"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ③ 右欄：目標 -->
+    <div class="col-goals">
+
+      <!-- 激勵語 -->
+      <div class="motivation-card">
+        <div class="motivation-quote">模仿是最快的學習方式，找到你當下目光所及認為最優秀的那個，把它作為你的標竿，以他為標準，他做什麼你做什麼，缺什麼補什麼。接下來的五年，你的人生目標是（？）為了能夠成為她，你可以付出生命以外的任何東西，每個細節我要超越她。</div>
+        <div class="motivation-tag">✨ 唯有復盤，人生才能翻盤 ✨</div>
+      </div>
+
+      <!-- 本月目標 -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title"><span class="ci">🎯</span>本月目標</span>
+          <button class="btn-g" onclick="tf('fMGHome')" style="font-size:11px;padding:4px 9px">+ 新增</button>
+        </div>
+        <div class="card-body">
+          <div class="add-form" id="fMGHome">
+            <div class="form-row" style="margin-top:0">
+              <input type="text" class="lav-input" id="mgTxtHome" placeholder="本月目標...">
+            </div>
+            <div class="form-row">
+              <input type="text" class="lav-input" id="mgNoteHome" placeholder="備註（可選）">
+            </div>
+            <div class="form-row">
+              <button class="btn-p" onclick="addMGHome()" style="padding:6px 14px;font-size:11px">新增</button>
+              <button class="btn-g" onclick="tf('fMGHome')">取消</button>
+            </div>
+          </div>
+          <!-- 進度摘要 -->
+          <div id="mgSumHome" style="margin-bottom:10px"></div>
+          <div id="mgListHome"></div>
+        </div>
+      </div>
+
+      <!-- 年度大目標（精簡） -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title"><span class="ci">🌟</span>年度目標</span>
+          <button class="btn-g" onclick="showPage('goals',document.querySelectorAll('.nav-item')[4])" style="font-size:11px;padding:4px 9px">全部</button>
+        </div>
+        <div class="card-body" id="ygSummaryHome"></div>
+      </div>
+
+    </div>
   </div>
 </div>
 
-<!-- 週課表 -->
+<!-- ════════════════════════════════════
+     週課表頁
+════════════════════════════════════ -->
 <div class="page" id="page-schedule">
   <div class="layout">
     <div class="main-col">
       <div class="card">
         <div class="card-head">
           <span class="card-title"><span class="ci">📋</span>每週例行課表</span>
-          <button class="btn-g" onclick="resetTodaySch()" style="font-size:11px;padding:5px 10px">重置今日打勾</button>
+          <button class="btn-g" onclick="resetTodaySch()" style="font-size:11px;padding:4px 9px">重置今日</button>
         </div>
         <div class="card-body">
           <div class="sch-day-tabs" id="schTabs"></div>
-          <div class="progress-strip-wrap">
-            <div class="progress-label"><span id="schProgressTxt">今日進度</span><button class="reset-btn" onclick="resetTodaySch()">重置</button></div>
-            <div class="progress-strip"><div class="progress-strip-fill" id="schProgressBar" style="width:0%"></div></div>
-          </div>
+          <div class="prog-lbl"><span id="schProgTxt"></span><button class="reset-btn-sm" onclick="resetTodaySch()">重置</button></div>
+          <div class="prog-strip"><div class="prog-strip-fill" id="schProgBar" style="width:0%"></div></div>
           <div id="schContent"></div>
         </div>
       </div>
     </div>
-    <div class="side-col"><div class="side-col-inner">
-      <button class="side-btn primary" onclick="resetTodaySch()"><span class="si">🔄</span>重置今日</button>
-      <button class="side-btn" onclick="showPage('today',document.querySelector('.nav-item'))"><span class="si">🏠</span>回首頁</button>
+    <div class="side-col"><div>
+      <button class="side-btn primary" onclick="resetTodaySch()">🔄 重置今日</button>
+      <button class="side-btn" onclick="showPage('home',document.querySelector('.nav-item'))">🏠 回首頁</button>
     </div></div>
   </div>
 </div>
 
-<!-- 本週 -->
+<!-- ════════════════════════════════════
+     本週頁
+════════════════════════════════════ -->
 <div class="page" id="page-week">
   <div class="layout">
     <div class="main-col">
       <div class="card">
-        <div class="card-head"><span class="card-title"><span class="ci">📅</span>本週行事曆</span><span style="font-size:11px;color:var(--lav-muted)" id="wkRange"></span></div>
+        <div class="card-head">
+          <span class="card-title"><span class="ci">📅</span>本週行事曆</span>
+          <span style="font-size:11px;color:var(--lav-muted)" id="wkRange"></span>
+        </div>
         <div class="card-body wk-wrap"><div id="wkView"></div></div>
       </div>
       <div class="card">
-        <div class="card-head"><span class="card-title"><span class="ci">🎯</span>本週目標</span><button class="btn-g" onclick="tf('fWG')">+ 新增</button></div>
+        <div class="card-head">
+          <span class="card-title"><span class="ci">🎯</span>本週目標</span>
+          <button class="btn-g" onclick="tf('fWG')">+ 新增</button>
+        </div>
         <div class="card-body">
           <div class="add-form" id="fWG"><div class="form-row" style="margin-top:0"><input type="text" class="lav-input" id="wgTxt" placeholder="本週想達成..."><button class="btn-p" onclick="addWG()">新增</button></div></div>
           <div id="wgList"></div>
         </div>
       </div>
     </div>
-    <div class="side-col"><div class="side-col-inner">
-      <button class="side-btn primary" onclick="tf('fWG')"><span class="si">➕</span>新增週目標</button>
-      <button class="side-btn" onclick="showPage('today',document.querySelector('.nav-item'))"><span class="si">🏠</span>回首頁</button>
+    <div class="side-col"><div>
+      <button class="side-btn primary" onclick="tf('fWG')">➕ 新增週目標</button>
+      <button class="side-btn" onclick="showPage('home',document.querySelector('.nav-item'))">🏠 回首頁</button>
     </div></div>
   </div>
 </div>
 
-<!-- 月曆 -->
+<!-- ════════════════════════════════════
+     月曆頁（完整版）
+════════════════════════════════════ -->
 <div class="page" id="page-month">
   <div class="layout">
     <div class="main-col">
       <div class="card">
         <div class="card-head"><span class="card-title"><span class="ci">🗓️</span>月曆</span></div>
         <div class="card-body">
-          <div class="cal-nav"><button class="cal-nav-btn" onclick="chM(-1)">‹</button><span class="cal-month-lbl" id="calLbl"></span><button class="cal-nav-btn" onclick="chM(1)">›</button></div>
-          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="chMFull(-1)">‹</button>
+            <span class="cal-month-lbl" id="calLblFull"></span>
+            <button class="cal-nav-btn" onclick="chMFull(1)">›</button>
+          </div>
+          <div class="cal-grid" id="calGridFull"></div>
           <div class="cal-legend">
-            <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>假日／週日</div>
+            <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>假日</div>
             <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>週六</div>
             <div class="leg-item"><div class="leg-dot" style="background:var(--lav-400)"></div>有行程</div>
-            <div class="leg-item"><div class="leg-dot" style="background:var(--lav-500)"></div>今天</div>
           </div>
         </div>
-      </div>
-      <div class="card" id="dayCard" style="display:none">
-        <div class="card-head"><span class="card-title" id="dayTitle"></span><button class="btn-g" onclick="tf('fDayAdd')" id="dayAddBtn">+ 新增活動</button></div>
-        <div class="card-body">
-          <div class="add-form" id="fDayAdd">
-            <div class="form-row" style="margin-top:0">
-              <input type="time" class="lav-input" id="dayEvTime" style="flex:0 0 110px">
-              <input type="text" class="lav-input" id="dayEvText" placeholder="活動名稱...">
+        <div id="dayDetailPanelFull" style="display:none;margin:0 14px 14px">
+          <div style="background:var(--lav-50);border:1px solid var(--border);border-radius:11px;padding:12px 14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <span style="font-size:12px;font-weight:600;color:var(--lav-text)" id="dayDetailTitleFull"></span>
+              <button class="btn-g" onclick="tf('fDayAddFull')" style="font-size:11px;padding:4px 10px">+ 新增</button>
             </div>
-            <div class="form-row">
-              <button class="btn-p" onclick="addToDay()">新增</button>
-              <button class="btn-g" onclick="tf('fDayAdd')">取消</button>
+            <div class="add-form" id="fDayAddFull" style="margin-bottom:8px">
+              <div class="form-row" style="margin-top:0">
+                <input type="time" class="lav-input" id="dayEvTimeFull" style="flex:0 0 100px">
+                <input type="text" class="lav-input" id="dayEvTextFull" placeholder="活動名稱...">
+              </div>
+              <div class="form-row">
+                <button class="btn-p" onclick="addToDayFull()" style="padding:6px 14px;font-size:11px">新增</button>
+                <button class="btn-g" onclick="tf('fDayAddFull')">取消</button>
+              </div>
             </div>
+            <div id="dayBodyFull"></div>
           </div>
-          <div id="dayBody"></div>
         </div>
       </div>
       <div class="card">
@@ -401,63 +552,44 @@ body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-heig
         </div>
       </div>
     </div>
-    <div class="side-col"><div class="side-col-inner">
-      <button class="side-btn primary" onclick="tf('fDayAdd')"><span class="si">➕</span>新增活動</button>
-      <button class="side-btn" onclick="tf('fMG')"><span class="si">📌</span>新增月目標</button>
+    <div class="side-col"><div>
+      <button class="side-btn primary" onclick="tf('fDayAddFull')">➕ 新增活動</button>
+      <button class="side-btn" onclick="tf('fMG')">📌 新增月目標</button>
     </div></div>
   </div>
 </div>
 
-<!-- 目標 -->
+<!-- ════════════════════════════════════
+     目標頁
+════════════════════════════════════ -->
 <div class="page" id="page-goals">
   <div class="layout">
     <div class="main-col">
-      <!-- 激勵語 -->
-      <div style="background:linear-gradient(135deg,var(--lav-500),var(--lav-600));border-radius:14px;padding:20px 22px;margin-bottom:16px;color:white">
-        <div style="font-size:13px;line-height:1.8;margin-bottom:12px;opacity:.95">模仿是最快的學習方式，找到你當下目光所及認為最優秀的那個，把它作為你的標竿，以他為標準，他做什麼你做什麼，缺什麼補什麼。接下來的五年，你的人生目標是（？）為了能夠成為她，你可以付出生命以外的任何東西，每個細節我要超越她。</div>
-        <div style="font-size:15px;font-weight:600;text-align:center;padding:10px;background:rgba(255,255,255,.15);border-radius:10px;letter-spacing:1px">✨ 唯有復盤，人生才能翻盤 ✨</div>
+      <div class="motivation-card">
+        <div class="motivation-quote">模仿是最快的學習方式，找到你當下目光所及認為最優秀的那個，把它作為你的標竿，以他為標準，他做什麼你做什麼，缺什麼補什麼。接下來的五年，你的人生目標是（？）為了能夠成為她，你可以付出生命以外的任何東西，每個細節我要超越她。</div>
+        <div class="motivation-tag">✨ 唯有復盤，人生才能翻盤 ✨</div>
       </div>
-
-      <!-- 週目標進度（最上面） -->
       <div class="card">
-        <div class="card-head">
-          <span class="card-title"><span class="ci">📋</span>本週目標進度</span>
-          <button class="btn-g" onclick="tf('fWGGoal')">+ 新增週目標</button>
-        </div>
+        <div class="card-head"><span class="card-title"><span class="ci">📋</span>本週目標進度</span><button class="btn-g" onclick="tf('fWGG')">+ 新增</button></div>
         <div class="card-body">
-          <div class="add-form" id="fWGGoal"><div class="form-row" style="margin-top:0"><input type="text" class="lav-input" id="wgTxtG" placeholder="本週想達成..."><button class="btn-p" onclick="addWGFromGoal()">新增</button></div></div>
-          <div id="wgSum"></div>
-          <div id="wgListGoal" style="margin-top:10px"></div>
+          <div class="add-form" id="fWGG"><div class="form-row" style="margin-top:0"><input type="text" class="lav-input" id="wgTxtG" placeholder="本週想達成..."><button class="btn-p" onclick="addWGG()">新增</button></div></div>
+          <div id="wgSum"></div><div id="wgListG" style="margin-top:8px"></div>
         </div>
       </div>
-
-      <!-- 月目標進度 -->
       <div class="card">
-        <div class="card-head">
-          <span class="card-title"><span class="ci">📅</span>本月目標進度</span>
-          <button class="btn-g" onclick="tf('fMGGoal')">+ 新增月目標</button>
-        </div>
+        <div class="card-head"><span class="card-title"><span class="ci">📅</span>本月目標進度</span><button class="btn-g" onclick="tf('fMGG')">+ 新增</button></div>
         <div class="card-body">
-          <div class="add-form" id="fMGGoal"><div class="form-row" style="margin-top:0"><input type="text" class="lav-input" id="mgTxtG" placeholder="本月想達成..."><button class="btn-p" onclick="addMGFromGoal()">新增</button></div></div>
-          <div id="mgSum"></div>
-          <div id="mgListGoal" style="margin-top:10px"></div>
+          <div class="add-form" id="fMGG"><div class="form-row" style="margin-top:0"><input type="text" class="lav-input" id="mgTxtG" placeholder="本月想達成..."><button class="btn-p" onclick="addMGG()">新增</button></div></div>
+          <div id="mgSum"></div><div id="mgListG" style="margin-top:8px"></div>
         </div>
       </div>
-
-      <!-- 季目標進度 -->
       <div class="card">
-        <div class="card-head">
-          <span class="card-title"><span class="ci">🌿</span>本季目標進度</span>
-          <button class="btn-g" onclick="tf('fQG')">+ 新增</button>
-        </div>
+        <div class="card-head"><span class="card-title"><span class="ci">🌿</span>本季目標進度</span><button class="btn-g" onclick="tf('fQGG')">+ 新增</button></div>
         <div class="card-body">
-          <div class="add-form" id="fQG"><div class="form-row" style="margin-top:0"><input type="text" class="lav-input" id="qgTxt" placeholder="本季想達成..."><button class="btn-p" onclick="addQG()">新增</button></div></div>
-          <div id="qgSum"></div>
-          <div id="qgList" style="margin-top:10px"></div>
+          <div class="add-form" id="fQGG"><div class="form-row" style="margin-top:0"><input type="text" class="lav-input" id="qgTxtG" placeholder="本季想達成..."><button class="btn-p" onclick="addQGG()">新增</button></div></div>
+          <div id="qgSum"></div><div id="qgListG" style="margin-top:8px"></div>
         </div>
       </div>
-
-      <!-- 年度大目標 -->
       <div class="card">
         <div class="card-head"><span class="card-title"><span class="ci">🌟</span>年度大目標</span><button class="btn-g" onclick="tf('fYG')">+ 新增</button></div>
         <div class="card-body">
@@ -469,16 +601,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-heig
         </div>
       </div>
     </div>
-    <div class="side-col"><div class="side-col-inner">
-      <button class="side-btn primary" onclick="tf('fYG')"><span class="si">🌟</span>新增年度目標</button>
-      <button class="side-btn" onclick="tf('fQG')"><span class="si">🌿</span>新增季目標</button>
-      <button class="side-btn" onclick="showPage('month',document.querySelectorAll('.nav-item')[3])"><span class="si">📌</span>本月目標</button>
-      <button class="side-btn" onclick="showPage('week',document.querySelectorAll('.nav-item')[2])"><span class="si">🎯</span>本週目標</button>
+    <div class="side-col"><div>
+      <button class="side-btn primary" onclick="tf('fYG')">🌟 新增年度目標</button>
+      <button class="side-btn" onclick="tf('fQGG')">🌿 新增季目標</button>
+      <button class="side-btn" onclick="tf('fMGG')">📌 新增月目標</button>
+      <button class="side-btn" onclick="tf('fWGG')">🎯 新增週目標</button>
     </div></div>
   </div>
 </div>
 
-<!-- ══ 編輯行程 Modal ══ -->
+<!-- Modal -->
 <div class="modal-overlay" id="evModal" onclick="closeEvModal(event)">
   <div class="modal-box">
     <div class="modal-header">
@@ -486,18 +618,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-heig
       <button class="modal-close" onclick="closeEvModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="modal-field">
-        <div class="modal-label">時間</div>
-        <input type="time" class="lav-input" id="modalEvTime" style="width:100%">
-      </div>
-      <div class="modal-field">
-        <div class="modal-label">行程名稱</div>
-        <input type="text" class="lav-input" id="modalEvText" placeholder="輸入行程名稱..." style="width:100%">
-      </div>
-      <div class="modal-field">
-        <div class="modal-label">日期</div>
-        <input type="date" class="lav-input" id="modalEvDate" style="width:100%">
-      </div>
+      <div class="modal-field"><div class="modal-label">時間</div><input type="time" class="lav-input" id="modalEvTime" style="width:100%"></div>
+      <div class="modal-field"><div class="modal-label">行程名稱</div><input type="text" class="lav-input" id="modalEvText" placeholder="輸入行程名稱..." style="width:100%"></div>
+      <div class="modal-field"><div class="modal-label">日期</div><input type="date" class="lav-input" id="modalEvDate" style="width:100%"></div>
     </div>
     <div class="modal-foot">
       <button class="btn-danger" onclick="deleteEvFromModal()">🗑️ 刪除</button>
@@ -511,325 +634,173 @@ body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-heig
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════
-// 週課表：純按時間排序，不分組標籤
-// 只用 section 區分「固定課表」與「今日自訂行程」
-// ═══════════════════════════
-// 時間格式統一用 "HH:MM" 方便排序，特殊用 "99:99"(全天)
-const WEEKLY_SCH = {
-  1: {
-    role:{ icon:'💕', label:'約會日 ＋ 休假日', color:'#FDF2F8', tc:'#9D174D', bc:'#F9A8D4' },
-    items:[
-      { id:'1-1', time:'05:30', timeLabel:'05:30–06:10', name:'晨跑 / 運動', tag:'routine', emoji:'🏃‍♀️' },
-      { id:'1-2', time:'06:10', timeLabel:'06:10–07:00', name:'做早餐 ＋ 簡單拉伸', tag:'routine', emoji:'🥣' },
-      { id:'1-3', time:'07:00', timeLabel:'07:00–08:00', name:'載女兒上學', tag:'kid', emoji:'🚗' },
-      { id:'1-4', time:'17:30', timeLabel:'17:30', name:'接女兒放學', tag:'kid', emoji:'🏫' },
-      { id:'1-5', time:'20:00', timeLabel:'20:00', name:'女兒吉他課', tag:'kid', emoji:'🎸' },
-      { id:'1-6', time:'21:30', timeLabel:'21:30', name:'洗澡保養 ＋ 放下手機', tag:'self', emoji:'🛁' },
-      { id:'1-7', time:'22:30', timeLabel:'22:30', name:'躺平睡覺', tag:'self', emoji:'😴' },
-    ]
-  },
-  2: {
-    role:{ icon:'📝', label:'企劃日', color:'#EFF6FF', tc:'#1E40AF', bc:'#BFDBFE' },
-    items:[
-      { id:'2-1', time:'05:30', timeLabel:'05:30–06:10', name:'晨跑 / 運動', tag:'routine', emoji:'🏃‍♀️' },
-      { id:'2-2', time:'06:10', timeLabel:'06:10–07:00', name:'做早餐 ＋ 簡單拉伸', tag:'routine', emoji:'🥣' },
-      { id:'2-3', time:'07:00', timeLabel:'07:00–08:00', name:'載女兒上學', tag:'kid', emoji:'🚗' },
-      { id:'2-4', time:'09:00', timeLabel:'全天', name:'企劃工作日', tag:'work', emoji:'💼' },
-      { id:'2-5', time:'17:30', timeLabel:'17:30', name:'接女兒放學', tag:'kid', emoji:'🏫' },
-      { id:'2-6', time:'19:30', timeLabel:'19:30', name:'女兒家教', tag:'kid', emoji:'📚' },
-      { id:'2-7', time:'21:30', timeLabel:'21:30', name:'洗澡保養 ＋ 放下手機', tag:'self', emoji:'🛁' },
-      { id:'2-8', time:'22:30', timeLabel:'22:30', name:'躺平睡覺', tag:'self', emoji:'😴' },
-    ]
-  },
-  3: {
-    role:{ icon:'💆‍♀️', label:'客人日', color:'#F0FDF4', tc:'#166534', bc:'#86EFAC' },
-    items:[
-      { id:'3-1', time:'05:30', timeLabel:'05:30–06:10', name:'晨跑 / 運動', tag:'routine', emoji:'🏃‍♀️' },
-      { id:'3-2', time:'06:10', timeLabel:'06:10–07:00', name:'做早餐 ＋ 簡單拉伸', tag:'routine', emoji:'🥣' },
-      { id:'3-3', time:'07:00', timeLabel:'07:00–08:00', name:'載女兒上學', tag:'kid', emoji:'🚗' },
-      { id:'3-4', time:'09:00', timeLabel:'全天', name:'接待客人', tag:'work', emoji:'💆‍♀️' },
-      { id:'3-5', time:'17:30', timeLabel:'17:30', name:'接女兒放學', tag:'kid', emoji:'🏫' },
-      { id:'3-6', time:'21:30', timeLabel:'21:30', name:'洗澡保養 ＋ 放下手機', tag:'self', emoji:'🛁' },
-      { id:'3-7', time:'22:30', timeLabel:'22:30', name:'躺平睡覺', tag:'self', emoji:'😴' },
-    ]
-  },
-  4: {
-    role:{ icon:'💆‍♀️', label:'客人日', color:'#F0FDF4', tc:'#166534', bc:'#86EFAC' },
-    items:[
-      { id:'4-1', time:'05:30', timeLabel:'05:30–06:10', name:'晨跑 / 運動', tag:'routine', emoji:'🏃‍♀️' },
-      { id:'4-2', time:'06:10', timeLabel:'06:10–07:00', name:'做早餐 ＋ 簡單拉伸', tag:'routine', emoji:'🥣' },
-      { id:'4-3', time:'07:00', timeLabel:'07:00–08:00', name:'載女兒上學', tag:'kid', emoji:'🚗' },
-      { id:'4-4', time:'09:00', timeLabel:'全天', name:'接待客人', tag:'work', emoji:'💆‍♀️' },
-      { id:'4-5', time:'17:30', timeLabel:'17:30', name:'接女兒放學', tag:'kid', emoji:'🏫' },
-      { id:'4-6', time:'19:00', timeLabel:'19:00', name:'女兒自主訓練', tag:'kid', emoji:'🏋️' },
-      { id:'4-7', time:'21:30', timeLabel:'21:30', name:'洗澡保養 ＋ 放下手機', tag:'self', emoji:'🛁' },
-      { id:'4-8', time:'22:30', timeLabel:'22:30', name:'躺平睡覺', tag:'self', emoji:'😴' },
-    ]
-  },
-  5: {
-    role:{ icon:'💆‍♀️', label:'客人日', color:'#F0FDF4', tc:'#166534', bc:'#86EFAC' },
-    items:[
-      { id:'5-1', time:'05:30', timeLabel:'05:30–06:10', name:'晨跑 / 運動', tag:'routine', emoji:'🏃‍♀️' },
-      { id:'5-2', time:'06:10', timeLabel:'06:10–07:00', name:'做早餐 ＋ 簡單拉伸', tag:'routine', emoji:'🥣' },
-      { id:'5-3', time:'07:00', timeLabel:'07:00–08:00', name:'載女兒上學', tag:'kid', emoji:'🚗' },
-      { id:'5-4', time:'09:00', timeLabel:'全天', name:'接待客人', tag:'work', emoji:'💆‍♀️' },
-      { id:'5-5', time:'17:30', timeLabel:'17:30', name:'接女兒放學', tag:'kid', emoji:'🏫' },
-      { id:'5-6', time:'20:00', timeLabel:'20:00', name:'女兒羽球個教', tag:'kid', emoji:'🏸' },
-      { id:'5-7', time:'21:30', timeLabel:'21:30', name:'洗澡保養 ＋ 放下手機', tag:'self', emoji:'🛁' },
-      { id:'5-8', time:'22:30', timeLabel:'22:30', name:'躺平睡覺', tag:'self', emoji:'😴' },
-    ]
-  },
-  6: {
-    role:{ icon:'👧', label:'陪女兒日', color:'#FFFBEB', tc:'#92400E', bc:'#FDE68A' },
-    items:[
-      { id:'6-1', time:'05:30', timeLabel:'05:30–06:10', name:'晨跑 / 運動', tag:'routine', emoji:'🏃‍♀️' },
-      { id:'6-2', time:'06:10', timeLabel:'06:10–07:00', name:'做早餐 ＋ 簡單拉伸', tag:'routine', emoji:'🥣' },
-      { id:'6-3', time:'09:00', timeLabel:'全天', name:'陪女兒 ／ 親子活動', tag:'kid', emoji:'👧' },
-      { id:'6-4', time:'21:30', timeLabel:'21:30', name:'洗澡保養 ＋ 放下手機', tag:'self', emoji:'🛁' },
-      { id:'6-5', time:'22:30', timeLabel:'22:30', name:'躺平睡覺', tag:'self', emoji:'😴' },
-    ]
-  },
-  0: {
-    role:{ icon:'💆‍♀️', label:'客人日', color:'#F0FDF4', tc:'#166534', bc:'#86EFAC' },
-    items:[
-      { id:'0-1', time:'05:30', timeLabel:'05:30–06:10', name:'晨跑 / 運動', tag:'routine', emoji:'🏃‍♀️' },
-      { id:'0-2', time:'06:10', timeLabel:'06:10–07:00', name:'做早餐 ＋ 簡單拉伸', tag:'routine', emoji:'🥣' },
-      { id:'0-3', time:'09:00', timeLabel:'全天', name:'接待客人', tag:'work', emoji:'💆‍♀️' },
-      { id:'0-4', time:'21:30', timeLabel:'21:30', name:'洗澡保養 ＋ 放下手機', tag:'self', emoji:'🛁' },
-      { id:'0-5', time:'22:30', timeLabel:'22:30', name:'躺平睡覺', tag:'self', emoji:'😴' },
-    ]
-  }
+// ══════════════════════════════════
+// 週課表資料
+// ══════════════════════════════════
+const WEEKLY_SCH={
+  1:{role:{icon:'💕',label:'約會日',color:'#FDF2F8',tc:'#9D174D',bc:'#F9A8D4'},items:[
+    {id:'1-1',time:'05:30',tl:'05:30–06:10',name:'晨跑 / 運動',tag:'routine',em:'🏃‍♀️'},
+    {id:'1-2',time:'06:10',tl:'06:10–07:00',name:'做早餐 ＋ 簡單拉伸',tag:'routine',em:'🥣'},
+    {id:'1-3',time:'07:00',tl:'07:00–08:00',name:'載女兒上學',tag:'kid',em:'🚗'},
+    {id:'1-4',time:'17:30',tl:'17:30',name:'接女兒放學',tag:'kid',em:'🏫'},
+    {id:'1-5',time:'20:00',tl:'20:00',name:'女兒吉他課',tag:'kid',em:'🎸'},
+    {id:'1-6',time:'21:30',tl:'21:30',name:'洗澡保養 ＋ 放下手機',tag:'self',em:'🛁'},
+    {id:'1-7',time:'22:30',tl:'22:30',name:'躺平睡覺',tag:'self',em:'😴'},
+  ]},
+  2:{role:{icon:'📝',label:'產出日',color:'#EFF6FF',tc:'#1E40AF',bc:'#BFDBFE'},items:[
+    {id:'2-1',time:'05:30',tl:'05:30–06:10',name:'晨跑 / 運動',tag:'routine',em:'🏃‍♀️'},
+    {id:'2-2',time:'06:10',tl:'06:10–07:00',name:'做早餐 ＋ 簡單拉伸',tag:'routine',em:'🥣'},
+    {id:'2-3',time:'07:00',tl:'07:00–08:00',name:'載女兒上學',tag:'kid',em:'🚗'},
+    {id:'2-4',time:'09:00',tl:'全天',name:'企劃拍攝日',tag:'work',em:'📝'},
+    {id:'2-5',time:'17:30',tl:'17:30',name:'接女兒放學',tag:'kid',em:'🏫'},
+    {id:'2-6',time:'19:30',tl:'19:30',name:'女兒家教',tag:'kid',em:'📚'},
+    {id:'2-7',time:'21:30',tl:'21:30',name:'洗澡保養 ＋ 放下手機',tag:'self',em:'🛁'},
+    {id:'2-8',time:'22:30',tl:'22:30',name:'躺平睡覺',tag:'self',em:'😴'},
+  ]},
+  3:{role:{icon:'💆‍♀️',label:'客人日',color:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},items:[
+    {id:'3-1',time:'05:30',tl:'05:30–06:10',name:'晨跑 / 運動',tag:'routine',em:'🏃‍♀️'},
+    {id:'3-2',time:'06:10',tl:'06:10–07:00',name:'做早餐 ＋ 簡單拉伸',tag:'routine',em:'🥣'},
+    {id:'3-3',time:'07:00',tl:'07:00–08:00',name:'載女兒上學',tag:'kid',em:'🚗'},
+    {id:'3-4',time:'09:00',tl:'全天',name:'接待客人',tag:'work',em:'💆‍♀️'},
+    {id:'3-5',time:'17:30',tl:'17:30',name:'接女兒放學',tag:'kid',em:'🏫'},
+    {id:'3-6',time:'21:30',tl:'21:30',name:'洗澡保養 ＋ 放下手機',tag:'self',em:'🛁'},
+    {id:'3-7',time:'22:30',tl:'22:30',name:'躺平睡覺',tag:'self',em:'😴'},
+  ]},
+  4:{role:{icon:'💆‍♀️',label:'客人日',color:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},items:[
+    {id:'4-1',time:'05:30',tl:'05:30–06:10',name:'晨跑 / 運動',tag:'routine',em:'🏃‍♀️'},
+    {id:'4-2',time:'06:10',tl:'06:10–07:00',name:'做早餐 ＋ 簡單拉伸',tag:'routine',em:'🥣'},
+    {id:'4-3',time:'07:00',tl:'07:00–08:00',name:'載女兒上學',tag:'kid',em:'🚗'},
+    {id:'4-4',time:'09:00',tl:'全天',name:'接待客人',tag:'work',em:'💆‍♀️'},
+    {id:'4-5',time:'17:30',tl:'17:30',name:'接女兒放學',tag:'kid',em:'🏫'},
+    {id:'4-6',time:'19:00',tl:'19:00',name:'女兒自主訓練',tag:'kid',em:'🏋️'},
+    {id:'4-7',time:'21:30',tl:'21:30',name:'洗澡保養 ＋ 放下手機',tag:'self',em:'🛁'},
+    {id:'4-8',time:'22:30',tl:'22:30',name:'躺平睡覺',tag:'self',em:'😴'},
+  ]},
+  5:{role:{icon:'💆‍♀️',label:'客人日',color:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},items:[
+    {id:'5-1',time:'05:30',tl:'05:30–06:10',name:'晨跑 / 運動',tag:'routine',em:'🏃‍♀️'},
+    {id:'5-2',time:'06:10',tl:'06:10–07:00',name:'做早餐 ＋ 簡單拉伸',tag:'routine',em:'🥣'},
+    {id:'5-3',time:'07:00',tl:'07:00–08:00',name:'載女兒上學',tag:'kid',em:'🚗'},
+    {id:'5-4',time:'09:00',tl:'全天',name:'接待客人',tag:'work',em:'💆‍♀️'},
+    {id:'5-5',time:'17:30',tl:'17:30',name:'接女兒放學',tag:'kid',em:'🏫'},
+    {id:'5-6',time:'20:00',tl:'20:00',name:'女兒羽球個教',tag:'kid',em:'🏸'},
+    {id:'5-7',time:'21:30',tl:'21:30',name:'洗澡保養 ＋ 放下手機',tag:'self',em:'🛁'},
+    {id:'5-8',time:'22:30',tl:'22:30',name:'躺平睡覺',tag:'self',em:'😴'},
+  ]},
+  6:{role:{icon:'💆‍♀️',label:'客人日',color:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},items:[
+    {id:'6-1',time:'05:30',tl:'05:30–06:10',name:'晨跑 / 運動',tag:'routine',em:'🏃‍♀️'},
+    {id:'6-2',time:'06:10',tl:'06:10–07:00',name:'做早餐 ＋ 簡單拉伸',tag:'routine',em:'🥣'},
+    {id:'6-3',time:'09:00',tl:'全天',name:'接待客人',tag:'work',em:'💆‍♀️'},
+    {id:'6-4',time:'21:30',tl:'21:30',name:'洗澡保養 ＋ 放下手機',tag:'self',em:'🛁'},
+    {id:'6-5',time:'22:30',tl:'22:30',name:'躺平睡覺',tag:'self',em:'😴'},
+  ]},
+  0:{role:{icon:'👧',label:'女兒日',color:'#FFFBEB',tc:'#92400E',bc:'#FDE68A'},items:[
+    {id:'0-1',time:'05:30',tl:'05:30–06:10',name:'晨跑 / 運動',tag:'routine',em:'🏃‍♀️'},
+    {id:'0-2',time:'06:10',tl:'06:10–07:00',name:'做早餐 ＋ 簡單拉伸',tag:'routine',em:'🥣'},
+    {id:'0-3',time:'09:00',tl:'全天',name:'陪女兒 ／ 親子活動',tag:'kid',em:'👧'},
+    {id:'0-4',time:'21:30',tl:'21:30',name:'洗澡保養 ＋ 放下手機',tag:'self',em:'🛁'},
+    {id:'0-5',time:'22:30',tl:'22:30',name:'躺平睡覺',tag:'self',em:'😴'},
+  ]},
 };
+const TAG_CLS={routine:'tag-routine',kid:'tag-kid',work:'tag-work',self:'tag-self'};
+const TAG_LBL={routine:'日常',kid:'女兒',work:'工作',self:'自我'};
 
-const TAG_CLASS={ routine:'tag-routine', kid:'tag-kid', work:'tag-work', self:'tag-self' };
-const TAG_LABEL={ routine:'日常', kid:'女兒', work:'工作', self:'自我' };
-
-// 五行
+// ── 五行資料 ──
 const WX_CAL={'04-06':['水','火','木'],'04-07':['火','金'],'04-08':['火','金'],'04-09':['水','火','木'],'04-10':['水','金'],'04-11':['水','金'],'04-12':['水','火','木'],'04-13':['水','木','金'],'04-14':['水','木','金'],'04-15':['水','火','木'],'04-16':['火','木'],'04-17':['火','木'],'04-18':['水','火','木'],'04-19':['火','金'],'04-20':['火','金'],'04-21':['水','火','木'],'04-22':['水','金'],'04-23':['水','金'],'04-24':['水','火','木'],'04-25':['水','木','金'],'04-26':['水','木','金'],'04-27':['水','火','木'],'04-28':['火','木'],'04-29':['火','木'],'04-30':['水','火','木']};
 const EL={'木':{em:'🌿',cols:['綠色','青色','翠綠','草綠'],hx:['#4CAF50','#26A69A','#66BB6A','#81C784'],tip:'生機盎然，宜穿自然綠系',bd:'#C8E6C9',bg:'#F1F8E9',tc:'#2E7D32'},'火':{em:'🔥',cols:['紅色','紫色','桃紅','磚紅'],hx:['#EF5350','#AB47BC','#EC407A','#E57373'],tip:'熱情活力，宜穿紅紫暖系',bd:'#FFCDD2',bg:'#FFF3E0',tc:'#C62828'},'土':{em:'🌾',cols:['黃色','棕色','米色','土黃'],hx:['#FFC107','#8D6E63','#FFD54F','#BCAAA4'],tip:'穩重踏實',bd:'#FFE0B2',bg:'#FFF8E1',tc:'#E65100'},'金':{em:'✨',cols:['白色','金色','米白','象牙'],hx:['#EEEEEE','#FFC107','#FFFDE7','#FFE082'],tip:'清爽俐落，宜穿白金明亮色',bd:'#FFF9C4',bg:'#FFFFF0',tc:'#F57F17'},'水':{em:'💧',cols:['黑色','藍色','深藍','海軍'],hx:['#37474F','#1565C0','#263238','#0D47A1'],tip:'沉靜智慧，宜穿黑藍深色系',bd:'#BBDEFB',bg:'#E3F2FD',tc:'#0D47A1'}};
-const OT_TIPS={'水火木':'深藍或黑色為底，點綴紅色或綠色配件，活力又沉穩。','火金':'白色或米色搭配紅色單品，清爽有亮點。','水金':'深色打底搭配白色或金色，簡約高雅。','水木金':'深色基底加入綠色，再以白色提亮。','火木':'大地綠系搭配紅或磚紅，自然熱情。'};
-function getOTip(e){const k=e.join('');for(const[key,v] of Object.entries(OT_TIPS)){if(key.length===k.length&&e.every(x=>key.includes(x)))return v;}return e.map(x=>EL[x].tip).join('；');}
+const OT={'水火木':'深藍或黑色為底，點綴紅色或綠色配件，活力又沉穩。','火金':'白色或米色搭配紅色單品，清爽有亮點。','水金':'深色打底搭配白色或金色，簡約高雅。','水木金':'深色基底加入綠色，再以白色提亮，層次豐富。','火木':'大地綠系搭配紅或磚紅，自然熱情。'};
+const WX_C={'木':'#4CAF50','火':'#EF5350','土':'#FF9800','金':'#FFC107','水':'#1565C0'};
+function getOT(e){const k=e.join('');for(const[key,v] of Object.entries(OT)){if(key.length===k.length&&e.every(x=>key.includes(x)))return v;}return e.map(x=>EL[x].tip).join('；');}
 
-// 國定假日
-const HOL={'2026-01-01':'元旦','2026-01-28':'除夕','2026-01-29':'春節','2026-01-30':'春節','2026-01-31':'春節','2026-02-01':'春節','2026-02-02':'春節','2026-02-28':'和平紀念日','2026-04-03':'兒童節補假','2026-04-04':'兒童節/清明','2026-05-01':'勞動節','2026-06-19':'端午節','2026-09-26':'中秋節','2026-10-10':'國慶日','2025-01-01':'元旦','2025-01-27':'除夕','2025-01-28':'春節','2025-01-29':'春節','2025-01-30':'春節','2025-01-31':'春節','2025-02-28':'和平紀念日','2025-04-04':'兒童節/清明','2025-05-01':'勞動節','2025-05-31':'端午節','2025-10-06':'中秋節','2025-10-10':'國慶日'};
-const FEST={'01-01':'元旦 🎊','02-14':'情人節 💝','03-08':'婦女節','03-29':'青年節','04-04':'兒童節','05-01':'勞動節','05-08':'母親節','08-08':'父親節','09-28':'教師節','10-10':'國慶 🎉','10-31':'萬聖節 🎃','12-25':'聖誕節 🎄'};
-const WX_COLORS={'木':'#4CAF50','火':'#EF5350','土':'#FF9800','金':'#FFC107','水':'#1565C0'};
+// ── 假日 & 節日 ──
+const HOL={'2026-01-01':'元旦','2026-01-28':'除夕','2026-01-29':'春節','2026-01-30':'春節','2026-01-31':'春節','2026-02-01':'春節','2026-02-02':'春節','2026-02-28':'和平紀念日','2026-04-03':'兒童節補假','2026-04-04':'兒童節/清明','2026-05-01':'勞動節','2026-06-19':'端午節','2026-09-26':'中秋節','2026-10-10':'國慶日','2025-04-04':'兒童節/清明','2025-05-01':'勞動節','2025-10-10':'國慶日'};
+const FEST={'01-01':'元旦🎊','02-14':'情人節💝','03-08':'婦女節','04-04':'兒童節','05-01':'勞動節','05-08':'母親節','08-08':'父親節','09-28':'教師節','10-10':'國慶🎉','10-31':'萬聖節🎃','12-25':'聖誕節🎄'};
 
-// 資料
-const SK='lav_planner_v7';
+// ── 資料 ──
+const SK='lav_v8';
 function ld(){try{return JSON.parse(localStorage.getItem(SK))||df()}catch(e){return df()}}
-function df(){return{ev:{},td:[],wg:[],mg:[],yg:[],wxPick:{},schChecked:{}}}
+function df(){return{ev:{},wg:[],mg:[],qg:[],yg:[],schChk:{},wxPick:{}}}
 function sv(){try{localStorage.setItem(SK,JSON.stringify(D));document.getElementById('syncTxt').textContent='已儲存'}catch(e){}}
 let D=ld();
-if(!D.schChecked)D.schChecked={};
+['ev','wg','mg','qg','yg','schChk','wxPick'].forEach(k=>{if(!D[k])D[k]=k==='ev'||k==='wxPick'||k==='schChk'?{}:[]});
+
 const NOW=new Date(),TODAY=NOW.toISOString().slice(0,10);
-const TMR_D=new Date(NOW);TMR_D.setDate(NOW.getDate()+1);
-const TOMORROW=TMR_D.toISOString().slice(0,10);
-let calY=NOW.getFullYear(),calM=NOW.getMonth(),selDay=null;
-let schViewDow=NOW.getDay();
+const TMR=new Date(NOW);TMR.setDate(NOW.getDate()+1);
+const TOMORROW=TMR.toISOString().slice(0,10);
+let calY=NOW.getFullYear(),calM=NOW.getMonth();
+let calYF=calY,calMF=calM;
+let selDay=null,selDayFull=null,schDow=NOW.getDay();
+let modalEvId=null,modalEvDk=null;
 
 function init(){
   document.getElementById('headerDate').textContent=NOW.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
   rAll();
 }
-function rAll(){rStats();rWX();rEv();rEvM();rTd();rSchTabs();rSchContent();rWkView();rCal();rWG();rMG();rQG();rYG();rGoalSum();}
+function rAll(){
+  rWX();rWeekRoles();rEv();rEvM();
+  rSchTabs('schTabs',false);rSchContent('schContent','schProgBar','schProgTxt',false);
+  rSchTabs('schTabsHome',true);rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);
+  rWkView();rCal();rCalFull();rWG();rMG();rQG();rYG();rGoalSync();rMGHome();rYGSummaryHome();
+}
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(btn)btn.classList.add('active');
 }
-function tf(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block'}
+function tf(id){const el=document.getElementById(id);if(!el)return;el.style.display=el.style.display==='block'?'none':'block'}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
+function saveAll(){sv();toast('💾 全部已儲存！')}
 
-// ═══════ 週課表 ═══════
-function getMon(date){
-  const d=new Date(date),dow=d.getDay(),diff=dow===0?-6:1-dow;
-  d.setDate(d.getDate()+diff);return d;
+// ── 成功法則收折 ──
+function toggleTips(){
+  const b=document.getElementById('tipBody'),i=document.getElementById('tipIcon');
+  if(b.classList.contains('open')){b.classList.remove('open');i.textContent='▼ 展開';}
+  else{b.classList.add('open');i.textContent='▲ 收起';}
 }
 
-// 取得某 dow 對應本週的日期 key
-function getDateKeyForDow(dow){
-  const mon=getMon(NOW);
-  const offset=dow===0?6:dow-1;
-  const d=new Date(mon);d.setDate(mon.getDate()+offset);
-  return d.toISOString().slice(0,10);
-}
-
-function rSchTabs(){
-  const names=['日','一','二','三','四','五','六'];
-  const order=[1,2,3,4,5,6,0];
-  let h='';
-  order.forEach(dow=>{
-    const isToday=dow===NOW.getDay(),isActive=dow===schViewDow;
-    h+=`<button class="sch-tab ${isActive?'active':''} ${isToday&&!isActive?'today-tab':''}" onclick="setSchDow(${dow})">週${names[dow]}${isToday?' ●':''}</button>`;
-  });
-  document.getElementById('schTabs').innerHTML=h;
-}
-
-function setSchDow(dow){schViewDow=dow;rSchTabs();rSchContent();}
-
-function rSchContent(){
-  const dow=schViewDow;
-  const schDay=WEEKLY_SCH[dow];
-  const dateKey=getDateKeyForDow(dow);
-  const checked=D.schChecked[dateKey]||{};
-
-  // ── 固定課表項目（依 time 排序）
-  const fixedItems=schDay?[...schDay.items].sort((a,b)=>a.time.localeCompare(b.time)):[];
-
-  // ── 串連：當天的自訂行程（從 D.ev[dateKey]）
-  const customEvs=(D.ev[dateKey]||[]).slice().sort((a,b)=>(a.t||'').localeCompare(b.t||''));
-
-  // 總項目數 = 固定 + 自訂
-  const totalCount=fixedItems.length+customEvs.length;
-  const doneFixed=fixedItems.filter(it=>checked[it.id]).length;
-  const doneCustom=customEvs.filter(e=>checked['ev_'+e.id]).length;
-  const doneCount=doneFixed+doneCustom;
-  const pct=totalCount>0?Math.round(doneCount/totalCount*100):0;
-
-  document.getElementById('schProgressBar').style.width=pct+'%';
-  document.getElementById('schProgressTxt').textContent=`已完成 ${doneCount} / ${totalCount} 項（${pct}%）`;
-
-  const names=['日','一','二','三','四','五','六'];
-  const role=schDay?schDay.role:{icon:'📅',label:'',color:'var(--lav-50)',tc:'var(--lav-600)',bc:'var(--border)'};
-
-  let h=`<div class="day-role-badge" style="background:${role.color};border:1px solid ${role.bc};color:${role.tc}">${role.icon} 週${names[dow]}｜${role.label}</div>`;
-
-  // ── Section 1：固定例行課表（按時間順序）
-  if(fixedItems.length){
-    h+=`<div class="sch-section-title">📌 例行課表</div>`;
-    fixedItems.forEach(it=>{
-      const isDone=!!checked[it.id];
-      h+=`<div class="sch-item ${isDone?'checked':''}" onclick="toggleSch('${dateKey}','${it.id}')">
-        <div class="sch-chk ${isDone?'done':''}">${isDone?'✓':''}</div>
-        <div class="sch-item-body">
-          <div class="sch-time">${it.timeLabel}</div>
-          <div class="sch-name ${isDone?'done':''}">${it.emoji} ${it.name}</div>
-        </div>
-        <span class="sch-tag ${TAG_CLASS[it.tag]}">${TAG_LABEL[it.tag]}</span>
-      </div>`;
-    });
-  }
-
-  // ── Section 2：今日自訂行程（從行事曆串連）
-  h+=`<div class="sch-section-title">🗓️ 今日行程 <span style="font-size:10px;font-weight:400;color:var(--lav-muted);text-transform:none;letter-spacing:0">（與行事曆同步）</span></div>`;
-  if(customEvs.length){
-    customEvs.forEach(e=>{
-      const ck='ev_'+e.id;
-      const isDone=!!checked[ck];
-      h+=`<div class="linked-ev-item ${isDone?'checked':''}" onclick="toggleSch('${dateKey}','${ck}')">
-        <div class="sch-chk ${isDone?'done':''}">${isDone?'✓':''}</div>
-        <div class="sch-item-body">
-          <div class="sch-time">${e.t||'--:--'}</div>
-          <div class="sch-name ${isDone?'done':''}">${e.tx}</div>
-        </div>
-        <span class="sch-tag tag-custom">行程</span>
-      </div>`;
-    });
-  } else {
-    h+=`<div style="font-size:12px;color:var(--lav-muted);padding:10px 14px;background:var(--lav-50);border-radius:10px;border:1px dashed var(--border)">今日無額外行程。可在「首頁」或「月曆」新增後自動出現在這裡。</div>`;
-  }
-
-  document.getElementById('schContent').innerHTML=h;
-}
-
-function toggleSch(dateKey,itemId){
-  if(!D.schChecked[dateKey])D.schChecked[dateKey]={};
-  D.schChecked[dateKey][itemId]=!D.schChecked[dateKey][itemId];
-  sv();rSchContent();
-}
-
-function resetTodaySch(){
-  const dateKey=getDateKeyForDow(schViewDow);
-  D.schChecked[dateKey]={};sv();rSchContent();toast('🔄 已重置');
-}
-
-// ═══════ 五行 ═══════
+// ── 五行 ──
 function rWX(){
   const mk=String(NOW.getMonth()+1).padStart(2,'0')+'-'+String(NOW.getDate()).padStart(2,'0');
   const elems=WX_CAL[mk]||null;
   document.getElementById('wxDate').textContent=NOW.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});
-  if(!elems){document.getElementById('wxElems').innerHTML='<span style="color:var(--lav-muted);font-size:13px">今日暫無五行資料</span>';['wxTip','wxSwatches','wxOutfit'].forEach(i=>document.getElementById(i).innerHTML='');return;}
+  if(!elems){document.getElementById('wxElems').innerHTML='<span style="color:var(--lav-muted);font-size:12px">今日暫無五行資料</span>';['wxTip','wxOutfit'].forEach(i=>document.getElementById(i).innerHTML='');return;}
   document.getElementById('wxElems').innerHTML=elems.map(e=>`<span class="elem-pill" style="background:${EL[e].bg};border-color:${EL[e].bd};color:${EL[e].tc}">${EL[e].em} ${e}</span>`).join('');
-  document.getElementById('wxTip').textContent=getOTip(elems);
-  const sw=[];elems.forEach(e=>EL[e].cols.forEach((n,i)=>sw.push({e,n,hx:EL[e].hx[i]||EL[e].hx[0]})));
-  const pk=D.wxPick[TODAY];
-  document.getElementById('wxSwatches').innerHTML=sw.map((s,i)=>`<div class="sw-item" onclick="pickC(${i})"><div class="sw-circ ${pk===i?'on':''}" style="background:${s.hx}"></div><div class="sw-lbl">${s.n}<br><span style="color:${EL[s.e].tc}">${s.e}</span></div></div>`).join('');
-  document.getElementById('wxOutfit').innerHTML=[{icon:'👗',lbl:'主色',val:elems.map(e=>EL[e].cols[0]).join(' / ')},{icon:'💼',lbl:'配件',val:elems.map(e=>EL[e].cols[1]||EL[e].cols[0]).join(' / ')},{icon:'🌈',lbl:'今日元素',val:elems.map(e=>EL[e].em+e).join(' ')}].map(t=>`<div class="oc"><div class="oc-icon">${t.icon}</div><div class="oc-lbl">${t.lbl}</div><div class="oc-val">${t.val}</div></div>`).join('');
-  const rec=document.getElementById('wxRec');
-  if(pk!==undefined&&sw[pk]){rec.className='wx-rec on';rec.innerHTML=`✅ 今日已選：<strong>${sw[pk].n}</strong>（${sw[pk].e}元素）`}else rec.className='wx-rec';
-}
-function pickC(i){D.wxPick[TODAY]=i;sv();rWX();toast('✨ 穿衣色已記錄！')}
-
-// ═══════ 統計 ═══════
-function rStats(){
-  const td=D.td||[],ev=D.ev[TODAY]||[];
-  document.getElementById('s-todo').textContent=td.length+' 件';
-  document.getElementById('s-done').textContent=td.filter(t=>t.done).length+' 件';
-  document.getElementById('s-ev').textContent=ev.length+' 項';
-  document.getElementById('s-wg').textContent=(D.wg||[]).length+' 個';
-  document.getElementById('s-yg').textContent=(D.yg||[]).length+' 個';
+  document.getElementById('wxTip').textContent=getOT(elems);
+  document.getElementById('wxOutfit').innerHTML=[
+    {icon:'👗',lbl:'主色',val:elems.map(e=>EL[e].cols[0]).join(' / ')},
+    {icon:'💼',lbl:'配件',val:elems.map(e=>EL[e].cols[1]||EL[e].cols[0]).join(' / ')},
+    {icon:'🌈',lbl:'今日元素',val:elems.map(e=>EL[e].em+e).join(' ')},
+  ].map(t=>`<div class="oc"><div class="oc-icon">${t.icon}</div><div class="oc-lbl">${t.lbl}</div><div class="oc-val">${t.val}</div></div>`).join('');
 }
 
-// ═══════ 行程 ═══════
-// ── Modal 狀態 ──
-let modalEvId=null, modalEvDk=null;
-
-function openEvModal(id, dk){
-  const ev=(D.ev[dk]||[]).find(e=>e.id===id);
-  if(!ev)return;
-  modalEvId=id; modalEvDk=dk;
-  document.getElementById('modalEvTime').value=ev.t||'';
-  document.getElementById('modalEvText').value=ev.tx||'';
-  document.getElementById('modalEvDate').value=dk;
-  const label=dk===TODAY?'✏️ 編輯今日行程':dk===TOMORROW?'✏️ 編輯明日行程':'✏️ 編輯行程';
-  document.getElementById('evModalTitle').textContent=label;
-  document.getElementById('evModal').classList.add('open');
+// ── 週角色列 ──
+function rWeekRoles(){
+  const dayNames=['日','一','二','三','四','五','六'];
+  const mon=getMon(NOW);
+  const dates=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d});
+  // 週一到週日顯示
+  const order=[1,2,3,4,5,6,0];
+  let h='';
+  order.forEach(dow=>{
+    const d=dates[dow===0?6:dow-1];
+    const dk=d.toISOString().slice(0,10);
+    const isT=dk===TODAY;
+    const sch=WEEKLY_SCH[dow];
+    const role=sch?sch.role:{icon:'📅',label:'',color:'var(--lav-50)',tc:'var(--lav-muted)',bc:'var(--border)'};
+    const evs=D.ev[dk]||[];
+    const evTxt=evs.length?evs.slice(0,2).map(e=>`${e.t?e.t.slice(0,5)+' ':''}${e.tx}`).join('・'):'';
+    h+=`<div class="week-role-item" style="background:${isT?role.color:'var(--lav-50)'};border:1px solid ${isT?role.bc:'var(--border)'};${isT?'box-shadow:0 1px 8px rgba(139,92,246,.1)':''}">
+      <span style="font-size:14px">${role.icon}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:600;color:${isT?role.tc:'var(--lav-muted)'};display:flex;align-items:center;gap:5px">週${dayNames[dow]} ${d.getDate()}日 <span style="font-weight:400">${role.label}</span>${isT?'<span style="font-size:9px;padding:1px 6px;background:var(--lav-500);color:white;border-radius:8px">今天</span>':''}</div>
+        ${evTxt?`<div style="font-size:10px;color:var(--lav-muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${evTxt}</div>`:''}
+      </div>
+    </div>`;
+  });
+  document.getElementById('weekRoleRow').innerHTML=h;
 }
 
-function closeEvModal(e){
-  if(e&&e.target!==document.getElementById('evModal'))return;
-  document.getElementById('evModal').classList.remove('open');
-  modalEvId=null; modalEvDk=null;
-}
-
-function saveEvFromModal(){
-  if(!modalEvId||!modalEvDk)return;
-  const newDk=document.getElementById('modalEvDate').value||modalEvDk;
-  const newT=document.getElementById('modalEvTime').value;
-  const newTx=document.getElementById('modalEvText').value.trim();
-  if(!newTx){toast('⚠️ 請輸入行程名稱');return;}
-
-  // 從原 dateKey 移除
-  D.ev[modalEvDk]=(D.ev[modalEvDk]||[]).filter(e=>e.id!==modalEvId);
-
-  // 加入新 dateKey
-  if(!D.ev[newDk])D.ev[newDk]=[];
-  D.ev[newDk].push({t:newT,tx:newTx,id:modalEvId});
-  D.ev[newDk].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
-
-  document.getElementById('evModal').classList.remove('open');
-
-  // 若日期變了，更新 selDay
-  if(selDay===modalEvDk||selDay===newDk){ rDayDetail(selDay||newDk); }
-  modalEvId=null; modalEvDk=null;
-
-  rEv(); rEvM(); rWkView(); rCal(); rStats(); rSchContent(); sv();
-  toast('✅ 行程已更新！');
-}
-
-function deleteEvFromModal(){
-  if(!modalEvId||!modalEvDk)return;
-  D.ev[modalEvDk]=(D.ev[modalEvDk]||[]).filter(e=>e.id!==modalEvId);
-  document.getElementById('evModal').classList.remove('open');
-  if(selDay===modalEvDk) rDayDetail(selDay);
-  modalEvId=null; modalEvDk=null;
-  rEv(); rEvM(); rWkView(); rCal(); rStats(); rSchContent(); sv();
-  toast('🗑️ 行程已刪除');
-}
-
+// ── 行程 ──
 function addEv(){
   const t=document.getElementById('evTime').value,tx=document.getElementById('evText').value.trim();
   if(!tx)return;
@@ -837,24 +808,8 @@ function addEv(){
   D.ev[TODAY].push({t,tx,id:Date.now()});
   D.ev[TODAY].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
   document.getElementById('evText').value='';document.getElementById('evTime').value='';
-  tf('fEv');rEv();rWkView();rStats();rSchContent();sv();toast('🌿 行程已新增');
+  tf('fEv');rEv();rWkView();rWeekRoles();rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);sv();toast('🌿 行程已新增');
 }
-function dEv(id,dk){D.ev[dk]=(D.ev[dk]||[]).filter(e=>e.id!==id);if(dk===TODAY){rEv();rStats();rSchContent();}else rEvM();rWkView();sv();}
-function dEvT(id){dEv(id,TODAY)}
-function dEvM(id){dEv(id,TOMORROW)}
-
-function rEv(){
-  const el=document.getElementById('evList'),evs=D.ev[TODAY]||[];
-  if(!evs.length){el.innerHTML='<div class="empty">還沒有行程，點右上角新增</div>';return}
-  el.innerHTML=evs.map(e=>`
-    <div class="ev-row" onclick="openEvModal(${e.id},'${TODAY}')">
-      <span class="ev-time">${e.t||'--:--'}</span>
-      <div class="ev-bar"></div>
-      <span class="ev-name">${e.tx}</span>
-      <span style="font-size:10px;color:var(--lav-300);margin-left:4px">✏️</span>
-    </div>`).join('');
-}
-
 function addEvM(){
   const t=document.getElementById('evTimeM').value,tx=document.getElementById('evTextM').value.trim();
   if(!tx)return;
@@ -862,56 +817,160 @@ function addEvM(){
   D.ev[TOMORROW].push({t,tx,id:Date.now()});
   D.ev[TOMORROW].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
   document.getElementById('evTextM').value='';document.getElementById('evTimeM').value='';
-  tf('fEvM');rEvM();rWkView();sv();toast('🌙 明日行程已新增');
+  tf('fEvM');rEvM();rWkView();rWeekRoles();sv();toast('🌙 明日行程已新增');
 }
+function dEv(id,dk){D.ev[dk]=(D.ev[dk]||[]).filter(e=>e.id!==id);if(dk===TODAY)rEv();else if(dk===TOMORROW)rEvM();rWkView();rWeekRoles();rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);sv();}
+
+function openEvModal(id,dk){
+  const ev=(D.ev[dk]||[]).find(e=>e.id===id);if(!ev)return;
+  modalEvId=id;modalEvDk=dk;
+  document.getElementById('modalEvTime').value=ev.t||'';
+  document.getElementById('modalEvText').value=ev.tx||'';
+  document.getElementById('modalEvDate').value=dk;
+  document.getElementById('evModalTitle').textContent='✏️ 編輯行程';
+  document.getElementById('evModal').classList.add('open');
+}
+function closeEvModal(e){if(e&&e.target!==document.getElementById('evModal'))return;document.getElementById('evModal').classList.remove('open');modalEvId=null;modalEvDk=null;}
+function saveEvFromModal(){
+  if(!modalEvId||!modalEvDk)return;
+  const newDk=document.getElementById('modalEvDate').value||modalEvDk;
+  const newT=document.getElementById('modalEvTime').value;
+  const newTx=document.getElementById('modalEvText').value.trim();
+  if(!newTx){toast('⚠️ 請輸入行程名稱');return;}
+  D.ev[modalEvDk]=(D.ev[modalEvDk]||[]).filter(e=>e.id!==modalEvId);
+  if(!D.ev[newDk])D.ev[newDk]=[];
+  D.ev[newDk].push({t:newT,tx:newTx,id:modalEvId});
+  D.ev[newDk].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+  document.getElementById('evModal').classList.remove('open');
+  if(selDay&&(selDay===modalEvDk||selDay===newDk))rDayDetail(selDay);
+  if(selDayFull&&(selDayFull===modalEvDk||selDayFull===newDk))rDayDetailFull(selDayFull);
+  modalEvId=null;modalEvDk=null;
+  rEv();rEvM();rWkView();rCal();rCalFull();rWeekRoles();rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);sv();toast('✅ 行程已更新！');
+}
+function deleteEvFromModal(){
+  if(!modalEvId||!modalEvDk)return;
+  D.ev[modalEvDk]=(D.ev[modalEvDk]||[]).filter(e=>e.id!==modalEvId);
+  document.getElementById('evModal').classList.remove('open');
+  if(selDay===modalEvDk)rDayDetail(selDay);
+  if(selDayFull===modalEvDk)rDayDetailFull(selDayFull);
+  modalEvId=null;modalEvDk=null;
+  rEv();rEvM();rWkView();rCal();rCalFull();rWeekRoles();rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);sv();toast('🗑️ 行程已刪除');
+}
+
+function renderEvList(evs,listId,dk){
+  const el=document.getElementById(listId);if(!el)return;
+  if(!evs||!evs.length){el.innerHTML='<div class="empty">還沒有行程</div>';return;}
+  el.innerHTML=evs.map(e=>`<div class="ev-row" onclick="openEvModal(${e.id},'${dk}')"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-bar"></div><span class="ev-name">${e.tx}</span><span class="ev-edit-icon">✏️</span></div>`).join('');
+}
+function rEv(){renderEvList(D.ev[TODAY],'evList',TODAY)}
 function rEvM(){
-  const mk=String(TMR_D.getMonth()+1).padStart(2,'0')+'-'+String(TMR_D.getDate()).padStart(2,'0');
+  const mk=String(TMR.getMonth()+1).padStart(2,'0')+'-'+String(TMR.getDate()).padStart(2,'0');
   const tmrEl=WX_CAL[mk];
-  const wxHint=tmrEl?`<div style="font-size:11px;color:var(--lav-muted);margin-bottom:8px;padding:6px 10px;background:var(--lav-50);border-radius:8px;border:1px solid var(--border)">明日五行：${tmrEl.map(e=>EL[e].em+e).join(' ')}　宜穿${tmrEl.map(e=>EL[e].cols[0]).join('/')}</div>`:'';
-  const el=document.getElementById('evListM'),evs=D.ev[TOMORROW]||[];
-  if(!evs.length){el.innerHTML=wxHint+'<div class="empty">還沒有明日行程</div>';return}
-  el.innerHTML=wxHint+evs.map(e=>`
-    <div class="ev-row" onclick="openEvModal(${e.id},'${TOMORROW}')">
-      <span class="ev-time">${e.t||'--:--'}</span>
-      <div class="ev-bar" style="background:var(--lav-200)"></div>
-      <span class="ev-name">${e.tx}</span>
-      <span style="font-size:10px;color:var(--lav-300);margin-left:4px">✏️</span>
-    </div>`).join('');
+  const el=document.getElementById('evListM');if(!el)return;
+  const evs=D.ev[TOMORROW]||[];
+  const hint=tmrEl?`<div style="font-size:10px;color:var(--lav-muted);padding:6px 10px;background:var(--lav-50);border-radius:8px;border:1px solid var(--border);margin-bottom:8px">明日五行：${tmrEl.map(e=>EL[e].em+e).join(' ')}　宜穿${tmrEl.map(e=>EL[e].cols[0]).join('/')}</div>`:'';
+  if(!evs.length){el.innerHTML=hint+'<div class="empty">還沒有明日行程</div>';return;}
+  el.innerHTML=hint+evs.map(e=>`<div class="ev-row" onclick="openEvModal(${e.id},'${TOMORROW}')"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-bar" style="background:var(--lav-200)"></div><span class="ev-name">${e.tx}</span><span class="ev-edit-icon">✏️</span></div>`).join('');
 }
 
-// ═══════ 待辦 ═══════
-function addTd(){const tx=document.getElementById('tdTxt').value.trim(),pri=document.getElementById('tdPri').value;if(!tx)return;if(!D.td)D.td=[];D.td.push({tx,pri,done:false,id:Date.now()});document.getElementById('tdTxt').value='';tf('fTd');rTd();rStats();sv();toast('✅ 待辦已新增')}
-function tTd(id){const t=(D.td||[]).find(t=>t.id===id);if(t)t.done=!t.done;rTd();rStats();sv()}
-function dTd(id){D.td=(D.td||[]).filter(t=>t.id!==id);rTd();rStats();sv()}
-function rTd(){
-  const el=document.getElementById('tdList'),td=D.td||[];
-  if(!td.length){el.innerHTML='<div class="empty">今日待辦空空的</div>';return}
-  const pl={high:'高',mid:'中',low:'低'};
-  el.innerHTML=td.map(t=>`<div class="td-row"><div class="chk ${t.done?'done':''}" onclick="tTd(${t.id})">${t.done?'✓':''}</div><span class="td-name ${t.done?'done':''}">${t.tx}</span><span class="bdg bdg-${t.pri}">${pl[t.pri]}</span><button class="icon-btn" onclick="dTd(${t.id})">✕</button></div>`).join('');
+// ── 月曆 ──
+function getMon(date){const d=new Date(date),dow=d.getDay(),diff=dow===0?-6:1-dow;d.setDate(d.getDate()+diff);return d;}
+function buildCal(year,month,gridId,lblId,sdKey,detailPanelId,detailTitleId,detailBodyId){
+  const mn=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  document.getElementById(lblId).textContent=year+'年 '+mn[month];
+  const firstDow=new Date(year,month,1).getDay(),firstOff=(firstDow+6)%7;
+  const total=new Date(year,month+1,0).getDate(),prevTotal=new Date(year,month,0).getDate();
+  const dhN=['一','二','三','四','五','六','日'];
+  let h=dhN.map((d,i)=>`<div class="cal-dh ${i===6?'cal-dh-sun':i===5?'cal-dh-sat':'cal-dh-wd'}">${d}</div>`).join('');
+  for(let i=0;i<firstOff;i++)h+=`<div class="cal-day other-month"><span class="day-num">${prevTotal-firstOff+1+i}</span></div>`;
+  for(let d=1;d<=total;d++){
+    const dk=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isT=dk===TODAY,isSel=dk===sdKey,dow=new Date(year,month,d).getDay();
+    const isSat=dow===6,isSun=dow===0,isHol=!!HOL[dk];
+    const holName=HOL[dk]||'',mk=String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),fest=FEST[mk]||'';
+    const hasEv=(D.ev[dk]||[]).length>0;
+    // 五行顏色條
+    const wEl=WX_CAL[mk];
+    const wxBar=wEl?`<div class="wx-color-bar">${wEl.map(e=>`<div class="wx-color-swatch" style="background:${WX_C[e]}" title="${e}"></div>`).join('')}</div>`:'';
+    const holLbl=holName?`<div class="hol-lbl">${holName}</div>`:fest?`<div class="fest-lbl">${fest}</div>`:'';
+    const evDot=hasEv?'<div class="ev-dot"></div>':'';
+    let cls='cal-day';if(isT)cls+=' today';else if(isSel)cls+=' selected';if(isSat)cls+=' sat-day';if(isSun||isHol)cls+=' sun-day hol-day';
+    h+=`<div class="${cls}" onclick="selCalDay('${dk}',${d},'${sdKey}','${detailPanelId}','${detailTitleId}','${detailBodyId}',${year},${month})">
+      <span class="day-num">${d}</span>${holLbl}${wxBar}${evDot}
+    </div>`;
+  }
+  const used=firstOff+total,rem=Math.ceil(used/7)*7-used;
+  for(let i=1;i<=rem;i++)h+=`<div class="cal-day other-month"><span class="day-num">${i}</span></div>`;
+  document.getElementById(gridId).innerHTML=h;
+}
+function rCal(){buildCal(calY,calM,'calGrid','calLbl',selDay,'dayDetailPanel','dayDetailTitle','dayBody')}
+function rCalFull(){buildCal(calYF,calMF,'calGridFull','calLblFull',selDayFull,'dayDetailPanelFull','dayDetailTitleFull','dayBodyFull')}
+function chM(d){calM+=d;if(calM<0){calM=11;calY--}if(calM>11){calM=0;calY++}rCal()}
+function chMFull(d){calMF+=d;if(calMF<0){calMF=11;calYF--}if(calMF>11){calMF=0;calYF++}rCalFull()}
+
+function selCalDay(dk,day,sdKey,panelId,titleId,bodyId,y,m){
+  // 判斷是首頁月曆還是月曆頁
+  const isHome=panelId==='dayDetailPanel';
+  if(isHome)selDay=dk;else selDayFull=dk;
+  if(isHome)rCal();else rCalFull();
+  const panel=document.getElementById(panelId);panel.style.display='block';
+  const dow=new Date(y,m,day).getDay(),dn=['日','一','二','三','四','五','六'];
+  const holName=HOL[dk]?` 【${HOL[dk]}】`:'',mk=String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0'),fest=FEST[mk]?` ${FEST[mk]}`:'';
+  const wEl=WX_CAL[mk];const wxL=wEl?` ｜五行：${wEl.join('·')}`:'';
+  document.getElementById(titleId).innerHTML=`${y}/${m+1}/${day}（週${dn[dow]}）${holName}${fest}<span style="font-size:10px;color:var(--lav-muted)">${wxL}</span>`;
+  if(isHome)rDayDetail(dk);else rDayDetailFull(dk);
+}
+function rDayDetail(dk){
+  const evs=D.ev[dk]||[],el=document.getElementById('dayBody');if(!el)return;
+  if(!evs.length){el.innerHTML='<div class="empty">這天還沒有活動</div>';return;}
+  el.innerHTML=evs.map(e=>`<div class="ev-row" onclick="openEvModal(${e.id},'${dk}')"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-bar"></div><span class="ev-name">${e.tx}</span><span class="ev-edit-icon">✏️</span></div>`).join('');
+}
+function rDayDetailFull(dk){
+  const evs=D.ev[dk]||[],el=document.getElementById('dayBodyFull');if(!el)return;
+  if(!evs.length){el.innerHTML='<div class="empty">這天還沒有活動</div>';return;}
+  el.innerHTML=evs.map(e=>`<div class="ev-row" onclick="openEvModal(${e.id},'${dk}')"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-bar"></div><span class="ev-name">${e.tx}</span><span class="ev-edit-icon">✏️</span></div>`).join('');
+}
+function addToDay(){
+  if(!selDay){toast('請先點選日期');return;}
+  const tx=document.getElementById('dayEvText').value.trim(),t=document.getElementById('dayEvTime').value;
+  if(!tx)return;
+  if(!D.ev[selDay])D.ev[selDay]=[];
+  D.ev[selDay].push({t,tx,id:Date.now()});
+  D.ev[selDay].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+  document.getElementById('dayEvText').value='';document.getElementById('dayEvTime').value='';
+  const f=document.getElementById('fDayAdd');if(f)f.style.display='none';
+  rDayDetail(selDay);rCal();rWkView();rWeekRoles();
+  if(selDay===TODAY){rEv();rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);}
+  sv();toast('🌿 活動已新增');
+}
+function addToDayFull(){
+  if(!selDayFull){toast('請先點選日期');return;}
+  const tx=document.getElementById('dayEvTextFull').value.trim(),t=document.getElementById('dayEvTimeFull').value;
+  if(!tx)return;
+  if(!D.ev[selDayFull])D.ev[selDayFull]=[];
+  D.ev[selDayFull].push({t,tx,id:Date.now()});
+  D.ev[selDayFull].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+  document.getElementById('dayEvTextFull').value='';document.getElementById('dayEvTimeFull').value='';
+  const f=document.getElementById('fDayAddFull');if(f)f.style.display='none';
+  rDayDetailFull(selDayFull);rCalFull();rWkView();rWeekRoles();
+  if(selDayFull===TODAY){rEv();rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);}
+  sv();toast('🌿 活動已新增');
 }
 
-// ═══════ 週視圖 ═══════
+// ── 週視圖 ──
 function rWkView(){
   const dayNames=['一','二','三','四','五','六','日'];
-  const dayRoles=['約會休假日 💕','企劃拍攝日 📝','客人日 💆‍♀️','客人日 💆‍♀️','客人日 💆‍♀️','陪女兒日 👧','客人日 💆‍♀️'];
-  // dayRoles index 0=Mon,1=Tue,...,6=Sun
+  const dayRoles=['約會日💕','產出日📝','客人日💆‍♀️','客人日💆‍♀️','客人日💆‍♀️','客人日💆‍♀️','女兒日👧'];
   const mon=getMon(NOW);
   const dates=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d});
   document.getElementById('wkRange').textContent=dates[0].toLocaleDateString('zh-TW',{month:'short',day:'numeric'})+' – '+dates[6].toLocaleDateString('zh-TW',{month:'short',day:'numeric'});
   const hrs=[7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22];
+  const roleColors=['#FDF2F8','#EFF6FF','#F0FDF4','#F0FDF4','#F0FDF4','#F0FDF4','#FFFBEB'];
+  const roleTcs=['#9D174D','#1E40AF','#166534','#166534','#166534','#166534','#92400E'];
   let h='<table class="wk-table"><thead>';
-  // 角色列
   h+='<tr><th style="border:none"></th>';
-  dates.forEach((d,i)=>{
-    const dk=d.toISOString().slice(0,10),isT=dk===TODAY,dow=d.getDay(),isSat=dow===6,isSun=dow===0,isHol=!!HOL[dk];
-    const roleIdx=dow===0?6:dow-1; // Mon=0 in array
-    const roleColors=['#FDF2F8','#EFF6FF','#F0FDF4','#F0FDF4','#F0FDF4','#FFFBEB','#F0FDF4'];
-    const roleTxt=['#9D174D','#1E40AF','#166534','#166534','#166534','#92400E','#166534'];
-    h+=`<th style="font-size:9px;font-weight:500;padding:4px 2px;background:${roleColors[roleIdx]};color:${roleTxt[roleIdx]};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">${dayRoles[roleIdx]}</th>`;
-  });
-  h+='</tr>';
-  // 日期列
-  h+='<tr><th></th>';
+  dates.forEach((d,i)=>{h+=`<th style="font-size:9px;font-weight:500;padding:3px 2px;background:${roleColors[i]};color:${roleTcs[i]};white-space:nowrap">${dayRoles[i]}</th>`;});
+  h+='</tr><tr><th></th>';
   dates.forEach((d,i)=>{const dk=d.toISOString().slice(0,10),isT=dk===TODAY,dow=d.getDay(),isSat=dow===6,isSun=dow===0,isHol=!!HOL[dk];let cls=isT?'th-today':isSun||isHol?'th-sun':isSat?'th-sat':'th-wd';h+=`<th class="${cls}">${dayNames[i]}<br>${d.getDate()}</th>`;});
   h+='</tr></thead><tbody>';
   hrs.forEach(hr=>{
@@ -923,121 +982,147 @@ function rWkView(){
   document.getElementById('wkView').innerHTML=h;
 }
 
-// ═══════ 月曆 ═══════
-function rCal(){
-  const mn=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-  document.getElementById('calLbl').textContent=calY+'年 '+mn[calM];
-  const firstDow=new Date(calY,calM,1).getDay(),firstOff=(firstDow+6)%7;
-  const total=new Date(calY,calM+1,0).getDate(),prevTotal=new Date(calY,calM,0).getDate();
-  const dhN=['一','二','三','四','五','六','日'];
-  let h=dhN.map((d,i)=>`<div class="cal-dh ${i===6?'cal-dh-sun':i===5?'cal-dh-sat':'cal-dh-wd'}">${d}</div>`).join('');
-  for(let i=0;i<firstOff;i++)h+=`<div class="cal-day other-month"><span class="day-num">${prevTotal-firstOff+1+i}</span></div>`;
-  for(let d=1;d<=total;d++){
-    const dk=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const isT=dk===TODAY,isSel=dk===selDay,dow=new Date(calY,calM,d).getDay(),isSat=dow===6,isSun=dow===0,isHol=!!HOL[dk];
-    const holName=HOL[dk]||'',mk=String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),fest=FEST[mk]||'',hasEv=(D.ev[dk]||[]).length>0;
-    const wEl=WX_CAL[mk];
-    const wxDots=wEl?'<div class="wx-dot-row">'+wEl.map(e=>`<div class="wxd" style="background:${WX_COLORS[e]}"></div>`).join('')+'</div>':'';
-    const evDot=hasEv?'<div class="dot-row"><div class="dot dot-ev"></div></div>':'';
-    const holLbl=holName?`<div class="hol-lbl">${holName}</div>`:fest?`<div class="fest-lbl">${fest}</div>`:'';
-    let cls='cal-day';if(isT)cls+=' today';else if(isSel)cls+=' selected';if(isSat)cls+=' sat-day';if(isSun||isHol)cls+=' sun-day hol-day';
-    h+=`<div class="${cls}" onclick="sCalDay('${dk}',${d})"><span class="day-num">${d}</span>${holLbl}${wxDots}${evDot}</div>`;
+// ── 週課表 ──
+function getDateKeyForDow(dow){const mon=getMon(NOW);const offset=dow===0?6:dow-1;const d=new Date(mon);d.setDate(mon.getDate()+offset);return d.toISOString().slice(0,10);}
+
+function rSchTabs(tabsId,isHome){
+  const names=['日','一','二','三','四','五','六'],order=[1,2,3,4,5,6,0];
+  let h='';
+  order.forEach(dow=>{
+    const isToday=dow===NOW.getDay(),isActive=dow===schDow;
+    h+=`<button class="sch-tab ${isActive?'active':''} ${isToday&&!isActive?'today-tab':''}" onclick="setSchDow(${dow})">${names[dow]}${isToday?' ●':''}</button>`;
+  });
+  const el=document.getElementById(tabsId);if(el)el.innerHTML=h;
+}
+function setSchDow(dow){
+  schDow=dow;
+  rSchTabs('schTabs',false);rSchTabs('schTabsHome',true);
+  rSchContent('schContent','schProgBar','schProgTxt',false);
+  rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);
+}
+function rSchContent(contentId,barId,txtId,isCompact){
+  const dow=schDow,schDay=WEEKLY_SCH[dow];
+  const dateKey=getDateKeyForDow(dow);
+  const checked=D.schChk[dateKey]||{};
+  const fixedItems=schDay?[...schDay.items].sort((a,b)=>a.time.localeCompare(b.time)):[];
+  const customEvs=(D.ev[dateKey]||[]).slice().sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+  const totalCount=fixedItems.length+customEvs.length;
+  const doneFixed=fixedItems.filter(it=>checked[it.id]).length;
+  const doneCustom=customEvs.filter(e=>checked['ev_'+e.id]).length;
+  const doneCount=doneFixed+doneCustom;
+  const pct=totalCount>0?Math.round(doneCount/totalCount*100):0;
+  const barEl=document.getElementById(barId),txtEl=document.getElementById(txtId);
+  if(barEl)barEl.style.width=pct+'%';
+  if(txtEl)txtEl.textContent=`已完成 ${doneCount} / ${totalCount} 項（${pct}%）`;
+  const names=['日','一','二','三','四','五','六'];
+  const role=schDay?schDay.role:{icon:'📅',label:'',color:'var(--lav-50)',tc:'var(--lav-muted)',bc:'var(--border)'};
+  let h=`<div style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:16px;font-size:11px;font-weight:500;margin-bottom:10px;background:${role.color};border:1px solid ${role.bc};color:${role.tc}">${role.icon} 週${names[dow]}｜${role.label}</div>`;
+  const maxShow=isCompact?5:999;
+  fixedItems.slice(0,maxShow).forEach(it=>{
+    const isDone=!!checked[it.id];
+    h+=`<div class="sch-item ${isDone?'checked':''}" onclick="toggleSch('${dateKey}','${it.id}','${contentId}','${barId}','${txtId}',${isCompact})">
+      <div class="sch-chk ${isDone?'done':''}">${isDone?'✓':''}</div>
+      <div class="sch-item-body"><div class="sch-time-lbl">${it.tl}</div><div class="sch-name-lbl ${isDone?'done':''}">${it.em} ${it.name}</div></div>
+      <span class="sch-tag ${TAG_CLS[it.tag]}">${TAG_LBL[it.tag]}</span>
+    </div>`;
+  });
+  if(isCompact&&fixedItems.length>maxShow){h+=`<div style="font-size:10px;color:var(--lav-muted);text-align:center;padding:4px 0">還有 ${fixedItems.length-maxShow} 項，<button onclick="showPage('schedule',document.querySelectorAll('.nav-item')[1])" style="background:none;border:none;color:var(--lav-500);cursor:pointer;font-family:var(--font);font-size:10px">查看全部</button></div>`;}
+  if(customEvs.length){
+    h+=`<div style="font-size:10px;font-weight:600;color:var(--lav-muted);margin:10px 0 6px;text-transform:uppercase;letter-spacing:.5px">🗓️ 今日行程</div>`;
+    customEvs.forEach(e=>{const ck='ev_'+e.id;const isDone=!!checked[ck];h+=`<div class="sch-item ${isDone?'checked':''}" onclick="toggleSch('${dateKey}','${ck}','${contentId}','${barId}','${txtId}',${isCompact})"><div class="sch-chk ${isDone?'done':''}">${isDone?'✓':''}</div><div class="sch-item-body"><div class="sch-time-lbl">${e.t||'--:--'}</div><div class="sch-name-lbl ${isDone?'done':''}">${e.tx}</div></div><span class="sch-tag tag-custom">行程</span></div>`;});
   }
-  const used=firstOff+total,rem=Math.ceil(used/7)*7-used;
-  for(let i=1;i<=rem;i++)h+=`<div class="cal-day other-month"><span class="day-num">${i}</span></div>`;
-  document.getElementById('calGrid').innerHTML=h;
+  const el=document.getElementById(contentId);if(el)el.innerHTML=h;
 }
-function chM(d){calM+=d;if(calM<0){calM=11;calY--}if(calM>11){calM=0;calY++}rCal()}
-function sCalDay(dk,day){
-  selDay=dk;rCal();
-  const card=document.getElementById('dayCard');card.style.display='block';
-  const dow=new Date(calY,calM,day).getDay(),dn=['日','一','二','三','四','五','六'];
-  const hol=HOL[dk]?` 【${HOL[dk]}】`:'',mk=String(calM+1).padStart(2,'0')+'-'+String(day).padStart(2,'0'),fest=FEST[mk]?` ${FEST[mk]}`:'',wEl=WX_CAL[mk];
-  const wxL=wEl?`<span style="font-size:11px;color:var(--lav-muted);font-weight:400"> ｜五行：${wEl.join('·')}</span>`:'';
-  document.getElementById('dayTitle').innerHTML=`<span class="ci">📌</span>${calY}/${calM+1}/${day}（週${dn[dow]}）${hol}${fest}${wxL}`;
-  rDayDetail(dk);
+function toggleSch(dateKey,itemId,contentId,barId,txtId,isCompact){
+  if(!D.schChk[dateKey])D.schChk[dateKey]={};
+  D.schChk[dateKey][itemId]=!D.schChk[dateKey][itemId];
+  sv();rSchContent(contentId,barId,txtId,isCompact);
+  if(isCompact)rSchContent('schContent','schProgBar','schProgTxt',false);
+  else rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);
 }
-function rDayDetail(dk){
-  const evs=D.ev[dk]||[],el=document.getElementById('dayBody');
-  if(!evs.length){el.innerHTML='<div class="empty">這天還沒有活動，點右上角新增</div>';return}
-  el.innerHTML=evs.map(e=>`
-    <div class="ev-row" onclick="openEvModal(${e.id},'${dk}')">
-      <span class="ev-time">${e.t||'--:--'}</span>
-      <div class="ev-bar"></div>
-      <span class="ev-name">${e.tx}</span>
-      <span style="font-size:10px;color:var(--lav-300);margin-left:4px">✏️</span>
-    </div>`).join('');
-}
-function addToDay(){
-  if(!selDay){toast('請先點選日期');return}
-  const tx=document.getElementById('dayEvText').value.trim();
-  const t=document.getElementById('dayEvTime').value;
-  if(!tx)return;
-  if(!D.ev[selDay])D.ev[selDay]=[];
-  D.ev[selDay].push({t,tx,id:Date.now()});
-  D.ev[selDay].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
-  document.getElementById('dayEvText').value='';
-  document.getElementById('dayEvTime').value='';
-  const fEl=document.getElementById('fDayAdd');
-  if(fEl)fEl.style.display='none';
-  rDayDetail(selDay);rCal();rWkView();
-  if(selDay===TODAY||selDay===getDateKeyForDow(schViewDow))rSchContent();
-  sv();toast('🌿 活動已新增');
+function resetTodaySch(){const dk=getDateKeyForDow(schDow);D.schChk[dk]={};sv();rSchContent('schContent','schProgBar','schProgTxt',false);rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);toast('🔄 已重置');}
+function resetSchHome(){const dk=getDateKeyForDow(schDow);D.schChk[dk]={};sv();rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);rSchContent('schContent','schProgBar','schProgTxt',false);toast('🔄 已重置');}
+
+// ── 週目標 ──
+function addWG(){const tx=document.getElementById('wgTxt').value.trim();if(!tx)return;if(!D.wg)D.wg=[];D.wg.push({tx,done:false,id:Date.now()});document.getElementById('wgTxt').value='';tf('fWG');rWG();rGoalSync();sv();toast('🎯 週目標已新增')}
+function addWGG(){const tx=document.getElementById('wgTxtG').value.trim();if(!tx)return;if(!D.wg)D.wg=[];D.wg.push({tx,done:false,id:Date.now()});document.getElementById('wgTxtG').value='';tf('fWGG');rWG();rGoalSync();sv();toast('🎯 週目標已新增')}
+function tWG(id){const g=(D.wg||[]).find(g=>g.id===id);if(g)g.done=!g.done;rWG();rGoalSync();sv()}
+function dWG(id){D.wg=(D.wg||[]).filter(g=>g.id!==id);rWG();rGoalSync();sv()}
+function rWG(){
+  const el=document.getElementById('wgList');if(!el)return;
+  if(!(D.wg||[]).length){el.innerHTML='<div class="empty">設定本週目標吧！</div>';return;}
+  el.innerHTML=D.wg.map(g=>`<div class="month-goal-item"><div class="mg-chk ${g.done?'done':''}" onclick="tWG(${g.id})">${g.done?'✓':''}</div><div class="mg-body"><div class="mg-name ${g.done?'done':''}">${g.tx}</div></div><button class="icon-btn" onclick="dWG(${g.id})">✕</button></div>`).join('');
 }
 
-// ═══════ 目標 ═══════
-function addWG(){const tx=document.getElementById('wgTxt').value.trim();if(!tx)return;if(!D.wg)D.wg=[];D.wg.push({tx,done:false,id:Date.now()});document.getElementById('wgTxt').value='';tf('fWG');rWG();rGoalSum();rStats();sv();toast('🎯 週目標已新增')}
-function tWG(id){const g=(D.wg||[]).find(g=>g.id===id);if(g)g.done=!g.done;rWG();rGoalSum();sv()}
-function dWG(id){D.wg=(D.wg||[]).filter(g=>g.id!==id);rWG();rGoalSum();rStats();sv()}
-function rWG(){const el=document.getElementById('wgList');if(!(D.wg||[]).length){el.innerHTML='<div class="empty">設定本週目標吧！</div>';return}el.innerHTML=D.wg.map(g=>`<div class="td-row"><div class="chk ${g.done?'done':''}" onclick="tWG(${g.id})">${g.done?'✓':''}</div><span class="td-name ${g.done?'done':''}">${g.tx}</span><button class="icon-btn" onclick="dWG(${g.id})">✕</button></div>`).join('');}
-function addMG(){const tx=document.getElementById('mgTxt').value.trim();if(!tx)return;if(!D.mg)D.mg=[];D.mg.push({tx,done:false,id:Date.now()});document.getElementById('mgTxt').value='';tf('fMG');rMG();rGoalSum();sv();toast('📌 月目標已新增')}
-function tMG(id){const g=(D.mg||[]).find(g=>g.id===id);if(g)g.done=!g.done;rMG();rGoalSum();sv()}
-function dMG(id){D.mg=(D.mg||[]).filter(g=>g.id!==id);rMG();rGoalSum();sv()}
-function rMG(){const el=document.getElementById('mgList');if(!(D.mg||[]).length){el.innerHTML='<div class="empty">這個月想達成什麼？</div>';return}el.innerHTML=D.mg.map(g=>`<div class="td-row"><div class="chk ${g.done?'done':''}" onclick="tMG(${g.id})">${g.done?'✓':''}</div><span class="td-name ${g.done?'done':''}">${g.tx}</span><button class="icon-btn" onclick="dMG(${g.id})">✕</button></div>`).join('');}
-function addYG(){const tx=document.getElementById('ygTxt').value.trim(),cat=document.getElementById('ygCat').value.trim()||'其他';if(!tx)return;if(!D.yg)D.yg=[];D.yg.push({tx,cat,p:0,id:Date.now()});document.getElementById('ygTxt').value='';document.getElementById('ygCat').value='';tf('fYG');rYG();rStats();sv();toast('🌟 年度目標已新增')}
-function uYG(id,val){const g=(D.yg||[]).find(g=>g.id===id);if(g)g.p=parseInt(val);const p=document.getElementById('yp'+id),f=document.getElementById('yf'+id);if(p)p.textContent=val+'%';if(f)f.style.width=val+'%';sv()}
-function dYG(id){D.yg=(D.yg||[]).filter(g=>g.id!==id);rYG();rStats();sv()}
-function rYG(){const el=document.getElementById('ygList');if(!(D.yg||[]).length){el.innerHTML='<div class="empty">設定你的年度大目標吧！</div>';return}el.innerHTML=D.yg.map(g=>`<div class="goal-item"><div class="goal-head"><span class="goal-name">${g.tx}</span><div style="display:flex;align-items:center;gap:8px"><span class="goal-cat">${g.cat}</span><button class="icon-btn" onclick="dYG(${g.id})">✕</button></div></div><div class="prog-row"><input type="range" min="0" max="100" value="${g.p}" step="1" style="flex:1;accent-color:var(--lav-500)" oninput="uYG(${g.id},this.value)"><span class="prog-pct" id="yp${g.id}">${g.p}%</span></div><div class="prog-bar"><div class="prog-fill" id="yf${g.id}" style="width:${g.p}%"></div></div></div>`).join('');}
-function rGoalSum(){
-  const ms=document.getElementById('mgSum'),ws=document.getElementById('wgSum'),mg=D.mg||[],wg=D.wg||[];
-  // 週目標 summary
-  if(!wg.length){if(ws)ws.innerHTML='<div class="empty">尚未設定週目標</div>';}
-  else{const dn=wg.filter(g=>g.done).length,p=Math.round(dn/wg.length*100);if(ws)ws.innerHTML=`<div style="font-size:13px;margin-bottom:8px">已完成 ${dn} / ${wg.length} 個</div><div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div><div style="font-size:11px;color:var(--lav-muted);margin-top:5px">${p}% 完成</div>`;}
-  // 月目標 summary
-  if(!mg.length){if(ms)ms.innerHTML='<div class="empty">尚未設定月目標</div>';}
-  else{const dn=mg.filter(g=>g.done).length,p=Math.round(dn/mg.length*100);if(ms)ms.innerHTML=`<div style="font-size:13px;margin-bottom:8px">已完成 ${dn} / ${mg.length} 個</div><div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div><div style="font-size:11px;color:var(--lav-muted);margin-top:5px">${p}% 完成</div>`;}
-  // 同步目標頁清單
-  const wgl=document.getElementById('wgListGoal'),mgl=document.getElementById('mgListGoal');
-  if(wgl)wgl.innerHTML=wg.map(g=>`<div class="td-row"><div class="chk ${g.done?'done':''}" onclick="tWG(${g.id})">${g.done?'✓':''}</div><span class="td-name ${g.done?'done':''}">${g.tx}</span><button class="icon-btn" onclick="dWG(${g.id})">✕</button></div>`).join('');
-  if(mgl)mgl.innerHTML=mg.map(g=>`<div class="td-row"><div class="chk ${g.done?'done':''}" onclick="tMG(${g.id})">${g.done?'✓':''}</div><span class="td-name ${g.done?'done':''}">${g.tx}</span><button class="icon-btn" onclick="dMG(${g.id})">✕</button></div>`).join('');
+// ── 月目標 ──
+function addMG(){const tx=document.getElementById('mgTxt').value.trim();if(!tx)return;if(!D.mg)D.mg=[];D.mg.push({tx,done:false,id:Date.now()});document.getElementById('mgTxt').value='';tf('fMG');rMG();rGoalSync();rMGHome();sv();toast('📌 月目標已新增')}
+function addMGG(){const tx=document.getElementById('mgTxtG').value.trim();if(!tx)return;if(!D.mg)D.mg=[];D.mg.push({tx,done:false,id:Date.now()});document.getElementById('mgTxtG').value='';tf('fMGG');rMG();rGoalSync();rMGHome();sv();toast('📌 月目標已新增')}
+function addMGHome(){
+  const tx=document.getElementById('mgTxtHome').value.trim();if(!tx)return;
+  const note=document.getElementById('mgNoteHome').value.trim();
+  if(!D.mg)D.mg=[];D.mg.push({tx,note,done:false,id:Date.now()});
+  document.getElementById('mgTxtHome').value='';document.getElementById('mgNoteHome').value='';
+  tf('fMGHome');rMG();rGoalSync();rMGHome();sv();toast('📌 月目標已新增');
 }
-// 目標頁週目標快速新增
-function addWGFromGoal(){const tx=document.getElementById('wgTxtG').value.trim();if(!tx)return;if(!D.wg)D.wg=[];D.wg.push({tx,done:false,id:Date.now()});document.getElementById('wgTxtG').value='';tf('fWGGoal');rWG();rGoalSum();rStats();sv();toast('🎯 週目標已新增')}
-function addMGFromGoal(){const tx=document.getElementById('mgTxtG').value.trim();if(!tx)return;if(!D.mg)D.mg=[];D.mg.push({tx,done:false,id:Date.now()});document.getElementById('mgTxtG').value='';tf('fMGGoal');rMG();rGoalSum();sv();toast('📌 月目標已新增')}
+function tMG(id){const g=(D.mg||[]).find(g=>g.id===id);if(g)g.done=!g.done;rMG();rGoalSync();rMGHome();sv()}
+function dMG(id){D.mg=(D.mg||[]).filter(g=>g.id!==id);rMG();rGoalSync();rMGHome();sv()}
+function rMG(){
+  const el=document.getElementById('mgList');if(!el)return;
+  if(!(D.mg||[]).length){el.innerHTML='<div class="empty">這個月想達成什麼？</div>';return;}
+  el.innerHTML=D.mg.map(g=>`<div class="month-goal-item"><div class="mg-chk ${g.done?'done':''}" onclick="tMG(${g.id})">${g.done?'✓':''}</div><div class="mg-body"><div class="mg-name ${g.done?'done':''}">${g.tx}</div>${g.note?`<div class="mg-note">${g.note}</div>`:''}</div><button class="icon-btn" onclick="dMG(${g.id})">✕</button></div>`).join('');
+}
+function rMGHome(){
+  const mg=D.mg||[];
+  const sum=document.getElementById('mgSumHome'),list=document.getElementById('mgListHome');
+  if(!mg.length){if(sum)sum.innerHTML='';if(list)list.innerHTML='<div class="empty">尚未設定本月目標</div>';return;}
+  const dn=mg.filter(g=>g.done).length,p=Math.round(dn/mg.length*100);
+  if(sum)sum.innerHTML=`<div style="font-size:11px;color:var(--lav-muted);margin-bottom:5px">已達成 ${dn} / ${mg.length} 個（${p}%）</div><div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div>`;
+  if(list)list.innerHTML=mg.map(g=>`<div class="month-goal-item"><div class="mg-chk ${g.done?'done':''}" onclick="tMG(${g.id})">${g.done?'✓':''}</div><div class="mg-body"><div class="mg-name ${g.done?'done':''}">${g.tx}</div>${g.note?`<div class="mg-note">${g.note}</div>`:''}</div><button class="icon-btn" onclick="dMG(${g.id})">✕</button></div>`).join('');
+}
 
-// 季目標
-function addQG(){const tx=document.getElementById('qgTxt').value.trim();if(!tx)return;if(!D.qg)D.qg=[];D.qg.push({tx,done:false,id:Date.now()});document.getElementById('qgTxt').value='';tf('fQG');rQG();rGoalSum();sv();toast('🌿 季目標已新增')}
-function tQG(id){const g=(D.qg||[]).find(g=>g.id===id);if(g)g.done=!g.done;rQG();rGoalSum();sv()}
-function dQG(id){D.qg=(D.qg||[]).filter(g=>g.id!==id);rQG();rGoalSum();sv()}
+// ── 季目標 ──
+function addQGG(){const tx=document.getElementById('qgTxtG').value.trim();if(!tx)return;if(!D.qg)D.qg=[];D.qg.push({tx,done:false,id:Date.now()});document.getElementById('qgTxtG').value='';tf('fQGG');rQG();rGoalSync();sv();toast('🌿 季目標已新增')}
+function tQG(id){const g=(D.qg||[]).find(g=>g.id===id);if(g)g.done=!g.done;rQG();rGoalSync();sv()}
+function dQG(id){D.qg=(D.qg||[]).filter(g=>g.id!==id);rQG();rGoalSync();sv()}
 function rQG(){
-  const el=document.getElementById('qgList');if(!el)return;
-  const qs=document.getElementById('qgSum');
-  const qg=D.qg||[];
-  if(!qg.length){if(el)el.innerHTML='';if(qs)qs.innerHTML='<div class="empty">尚未設定季目標</div>';return;}
-  const dn=qg.filter(g=>g.done).length,p=Math.round(dn/qg.length*100);
-  if(qs)qs.innerHTML=`<div style="font-size:13px;margin-bottom:8px">已完成 ${dn} / ${qg.length} 個</div><div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div><div style="font-size:11px;color:var(--lav-muted);margin-top:5px">${p}% 完成</div>`;
-  el.innerHTML=qg.map(g=>`<div class="td-row"><div class="chk ${g.done?'done':''}" onclick="tQG(${g.id})">${g.done?'✓':''}</div><span class="td-name ${g.done?'done':''}">${g.tx}</span><button class="icon-btn" onclick="dQG(${g.id})">✕</button></div>`).join('');
+  const el=document.getElementById('qgListG');if(!el)return;
+  if(!(D.qg||[]).length){el.innerHTML='<div class="empty">尚未設定季目標</div>';return;}
+  el.innerHTML=D.qg.map(g=>`<div class="month-goal-item"><div class="mg-chk ${g.done?'done':''}" onclick="tQG(${g.id})">${g.done?'✓':''}</div><div class="mg-body"><div class="mg-name ${g.done?'done':''}">${g.tx}</div></div><button class="icon-btn" onclick="dQG(${g.id})">✕</button></div>`).join('');
 }
 
-function toggleTips(){
-  const b=document.getElementById('tipBody'),i=document.getElementById('tipIcon');
-  if(!b)return;
-  if(b.style.display==='none'||!b.style.display||b.style.display===''){
-    b.style.cssText='display:flex;flex-direction:column;gap:12px;padding:14px 18px';
-    i.textContent='▲ 收起';
-  } else {
-    b.style.display='none';i.textContent='▼ 展開';
+// ── 年目標 ──
+function addYG(){const tx=document.getElementById('ygTxt').value.trim(),cat=document.getElementById('ygCat').value.trim()||'其他';if(!tx)return;if(!D.yg)D.yg=[];D.yg.push({tx,cat,p:0,id:Date.now()});document.getElementById('ygTxt').value='';document.getElementById('ygCat').value='';tf('fYG');rYG();rYGSummaryHome();sv();toast('🌟 年度目標已新增')}
+function uYG(id,val){const g=(D.yg||[]).find(g=>g.id===id);if(g)g.p=parseInt(val);const p=document.getElementById('yp'+id),f=document.getElementById('yf'+id);if(p)p.textContent=val+'%';if(f)f.style.width=val+'%';sv()}
+function dYG(id){D.yg=(D.yg||[]).filter(g=>g.id!==id);rYG();rYGSummaryHome();sv()}
+function rYG(){
+  const el=document.getElementById('ygList');if(!el)return;
+  if(!(D.yg||[]).length){el.innerHTML='<div class="empty">設定你的年度大目標吧！</div>';return;}
+  el.innerHTML=D.yg.map(g=>`<div class="goal-item"><div class="goal-head"><span class="goal-name">${g.tx}</span><div style="display:flex;align-items:center;gap:7px"><span class="goal-cat">${g.cat}</span><button class="icon-btn" onclick="dYG(${g.id})">✕</button></div></div><div class="prog-row"><input type="range" min="0" max="100" value="${g.p}" step="1" style="flex:1;accent-color:var(--lav-500)" oninput="uYG(${g.id},this.value)"><span class="prog-pct" id="yp${g.id}">${g.p}%</span></div><div class="prog-bar"><div class="prog-fill" id="yf${g.id}" style="width:${g.p}%"></div></div></div>`).join('');
+}
+function rYGSummaryHome(){
+  const el=document.getElementById('ygSummaryHome');if(!el)return;
+  const yg=D.yg||[];
+  if(!yg.length){el.innerHTML='<div class="empty">尚未設定年度目標</div>';return;}
+  el.innerHTML=yg.slice(0,4).map(g=>`<div class="goal-item"><div class="goal-head"><span class="goal-name" style="font-size:11px">${g.tx}</span><span class="goal-cat">${g.cat}</span></div><div class="prog-bar"><div class="prog-fill" style="width:${g.p}%"></div></div><div style="font-size:10px;color:var(--lav-muted);text-align:right">${g.p}%</div></div>`).join('');
+  if(yg.length>4)el.innerHTML+=`<div style="font-size:10px;color:var(--lav-muted);text-align:center;padding:6px 0">還有 ${yg.length-4} 個目標...</div>`;
+}
+
+// ── 目標同步（目標頁進度摘要） ──
+function rGoalSync(){
+  const ws=document.getElementById('wgSum'),ms=document.getElementById('mgSum'),qs=document.getElementById('qgSum');
+  const wg=D.wg||[],mg=D.mg||[],qg=D.qg||[];
+  function sumHtml(arr,emptyMsg){
+    if(!arr.length)return`<div class="empty">${emptyMsg}</div>`;
+    const dn=arr.filter(g=>g.done).length,p=Math.round(dn/arr.length*100);
+    return`<div style="font-size:12px;margin-bottom:7px">已完成 ${dn} / ${arr.length} 個</div><div class="prog-bar"><div class="prog-fill" style="width:${p}%"></div></div><div style="font-size:10px;color:var(--lav-muted);margin-top:4px">${p}% 完成</div>`;
   }
+  if(ws)ws.innerHTML=sumHtml(wg,'尚未設定週目標');
+  if(ms)ms.innerHTML=sumHtml(mg,'尚未設定月目標');
+  if(qs)qs.innerHTML=sumHtml(qg,'尚未設定季目標');
+  // sync list in goal page
+  const wgl=document.getElementById('wgListG'),mgl=document.getElementById('mgListG');
+  if(wgl)wgl.innerHTML=wg.map(g=>`<div class="month-goal-item"><div class="mg-chk ${g.done?'done':''}" onclick="tWG(${g.id})">${g.done?'✓':''}</div><div class="mg-body"><div class="mg-name ${g.done?'done':''}">${g.tx}</div></div><button class="icon-btn" onclick="dWG(${g.id})">✕</button></div>`).join('');
+  if(mgl)mgl.innerHTML=mg.map(g=>`<div class="month-goal-item"><div class="mg-chk ${g.done?'done':''}" onclick="tMG(${g.id})">${g.done?'✓':''}</div><div class="mg-body"><div class="mg-name ${g.done?'done':''}">${g.tx}</div>${g.note?`<div class="mg-note">${g.note}</div>`:''}</div><button class="icon-btn" onclick="dMG(${g.id})">✕</button></div>`).join('');
 }
 
 init();
