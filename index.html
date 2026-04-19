@@ -308,23 +308,35 @@ body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-heig
             <div class="leg-item"><div class="leg-dot" style="background:var(--lav-400)"></div>有行程</div>
           </div>
         </div>
-        <!-- 選日詳情 -->
-        <div id="dayDetailPanel" class="day-detail-panel" style="margin:0 14px 14px;display:none">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <span style="font-size:12px;font-weight:600;color:var(--lav-text)" id="dayDetailTitle"></span>
-            <button class="btn-g" onclick="tf('fDayAdd')" style="font-size:11px;padding:4px 10px">+ 新增</button>
-          </div>
-          <div class="add-form" id="fDayAdd" style="margin-bottom:8px">
-            <div class="form-row" style="margin-top:0">
-              <input type="time" class="lav-input" id="dayEvTime" style="flex:0 0 100px">
-              <input type="text" class="lav-input" id="dayEvText" placeholder="活動名稱...">
+        <!-- 選日詳情 — 點日期即展開 -->
+        <div id="dayDetailPanel" style="display:none;margin:0 14px 14px">
+          <div style="background:var(--white);border:1px solid var(--lav-200);border-radius:12px;overflow:hidden">
+            <!-- 標題列 -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:linear-gradient(135deg,var(--lav-50),white);border-bottom:1px solid var(--border)">
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--lav-text)" id="dayDetailTitle"></div>
+                <div style="font-size:10px;color:var(--lav-muted)" id="dayDetailWx"></div>
+              </div>
+              <button onclick="closeDayPanel()" style="background:none;border:none;color:var(--lav-muted);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:6px;line-height:1">✕</button>
             </div>
-            <div class="form-row">
-              <button class="btn-p" onclick="addToDay()" style="padding:6px 14px;font-size:11px">新增</button>
-              <button class="btn-g" onclick="tf('fDayAdd')">取消</button>
+            <!-- 快速新增（Google Calendar 風格，預設展開） -->
+            <div style="padding:12px 14px;border-bottom:1px solid var(--border)">
+              <div style="font-size:10px;font-weight:600;color:var(--lav-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">➕ 新增行程</div>
+              <div style="display:flex;gap:7px;margin-bottom:7px">
+                <input type="time" class="lav-input" id="dayEvTime" style="flex:0 0 100px">
+                <input type="text" class="lav-input" id="dayEvText" placeholder="行程名稱，例如：接客人 / 女兒才藝...">
+              </div>
+              <div style="display:flex;gap:7px">
+                <button class="btn-p" onclick="addToDay()" style="padding:6px 16px;font-size:11px">✓ 新增</button>
+                <button class="btn-g" onclick="document.getElementById('dayEvText').value='';document.getElementById('dayEvTime').value=''">清空</button>
+              </div>
+            </div>
+            <!-- 當日行程列表 -->
+            <div style="padding:10px 14px">
+              <div style="font-size:10px;font-weight:600;color:var(--lav-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">📌 當日行程</div>
+              <div id="dayBody"></div>
             </div>
           </div>
-          <div id="dayBody"></div>
         </div>
       </div>
 
@@ -525,22 +537,29 @@ body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-heig
           </div>
         </div>
         <div id="dayDetailPanelFull" style="display:none;margin:0 14px 14px">
-          <div style="background:var(--lav-50);border:1px solid var(--border);border-radius:11px;padding:12px 14px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-              <span style="font-size:12px;font-weight:600;color:var(--lav-text)" id="dayDetailTitleFull"></span>
-              <button class="btn-g" onclick="tf('fDayAddFull')" style="font-size:11px;padding:4px 10px">+ 新增</button>
+          <div style="background:var(--white);border:1px solid var(--lav-200);border-radius:12px;overflow:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:linear-gradient(135deg,var(--lav-50),white);border-bottom:1px solid var(--border)">
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--lav-text)" id="dayDetailTitleFull"></div>
+                <div style="font-size:10px;color:var(--lav-muted)" id="dayDetailWxFull"></div>
+              </div>
+              <button onclick="closeDayPanelFull()" style="background:none;border:none;color:var(--lav-muted);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:6px;line-height:1">✕</button>
             </div>
-            <div class="add-form" id="fDayAddFull" style="margin-bottom:8px">
-              <div class="form-row" style="margin-top:0">
+            <div style="padding:12px 14px;border-bottom:1px solid var(--border)">
+              <div style="font-size:10px;font-weight:600;color:var(--lav-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">➕ 新增行程</div>
+              <div style="display:flex;gap:7px;margin-bottom:7px">
                 <input type="time" class="lav-input" id="dayEvTimeFull" style="flex:0 0 100px">
-                <input type="text" class="lav-input" id="dayEvTextFull" placeholder="活動名稱...">
+                <input type="text" class="lav-input" id="dayEvTextFull" placeholder="行程名稱，例如：接客人 / 女兒才藝...">
               </div>
-              <div class="form-row">
-                <button class="btn-p" onclick="addToDayFull()" style="padding:6px 14px;font-size:11px">新增</button>
-                <button class="btn-g" onclick="tf('fDayAddFull')">取消</button>
+              <div style="display:flex;gap:7px">
+                <button class="btn-p" onclick="addToDayFull()" style="padding:6px 16px;font-size:11px">✓ 新增</button>
+                <button class="btn-g" onclick="document.getElementById('dayEvTextFull').value='';document.getElementById('dayEvTimeFull').value=''">清空</button>
               </div>
             </div>
-            <div id="dayBodyFull"></div>
+            <div style="padding:10px 14px">
+              <div style="font-size:10px;font-weight:600;color:var(--lav-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">📌 當日行程</div>
+              <div id="dayBodyFull"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -633,6 +652,122 @@ body{font-family:var(--font);background:var(--bg);color:var(--lav-text);min-heig
 
 <div class="toast" id="toast"></div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+<script>
+// ── Firebase 初始化 ──
+const firebaseConfig = {
+  apiKey: "AIzaSyCHwiIOKswq613NuRclWaLFbWO8lgpN0IY",
+  authDomain: "roxi-planner.firebaseapp.com",
+  projectId: "roxi-planner",
+  storageBucket: "roxi-planner.firebasestorage.app",
+  messagingSenderId: "988384927354",
+  appId: "1:988384927354:web:40b403d40060d7195725c3"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const DOC_ID = 'roxi_main'; // 所有資料存在這一份文件
+let syncTimer = null;
+let isSyncing = false;
+
+// 從 Firestore 讀取
+async function loadFromCloud() {
+  try {
+    setSyncStatus('⟳ 同步中...');
+    const doc = await db.collection('planner').doc(DOC_ID).get();
+    if (doc.exists) {
+      const cloud = doc.data();
+      // 合併：雲端優先，但若本地有雲端沒有的也保留
+      const local = loadLocal();
+      D = mergeData(local, cloud);
+    } else {
+      // 第一次使用：讀本地，然後上傳
+      D = loadLocal();
+      await saveToCloud();
+    }
+    saveLocal(); // 也存本地備份
+    setSyncStatus('✓ 已同步');
+    rAll();
+  } catch(e) {
+    console.warn('雲端讀取失敗，使用本地資料:', e);
+    D = loadLocal();
+    setSyncStatus('⚠ 離線模式');
+    rAll();
+  }
+}
+
+// 儲存到 Firestore（防抖，1.5秒後觸發）
+function sv() {
+  saveLocal(); // 立即存本地
+  setSyncStatus('⟳ 儲存中...');
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    await saveToCloud();
+  }, 1500);
+}
+
+async function saveToCloud() {
+  try {
+    await db.collection('planner').doc(DOC_ID).set(D);
+    setSyncStatus('✓ 已同步');
+  } catch(e) {
+    console.warn('雲端儲存失敗:', e);
+    setSyncStatus('⚠ 僅本地已存');
+  }
+}
+
+// 本地備份
+const SK = 'lav_v8';
+function saveLocal() {
+  try { localStorage.setItem(SK, JSON.stringify(D)); } catch(e) {}
+}
+function loadLocal() {
+  try { return JSON.parse(localStorage.getItem(SK)) || df(); } catch(e) { return df(); }
+}
+
+function df() {
+  return { ev:{}, wg:[], mg:[], qg:[], yg:[], schChk:{}, wxPick:{} };
+}
+
+// 合併資料（雲端為主，本地補充缺漏）
+function mergeData(local, cloud) {
+  const merged = Object.assign({}, df(), local, cloud);
+  // 確保所有 key 存在
+  ['wg','mg','qg','yg'].forEach(k => {
+    if (!Array.isArray(merged[k])) merged[k] = [];
+  });
+  ['ev','schChk','wxPick'].forEach(k => {
+    if (typeof merged[k] !== 'object') merged[k] = {};
+  });
+  return merged;
+}
+
+function setSyncStatus(msg) {
+  const el = document.getElementById('syncTxt');
+  if (el) el.textContent = msg;
+}
+
+// 即時監聽雲端變更（其他裝置更新時自動刷新）
+function startRealtimeSync() {
+  db.collection('planner').doc(DOC_ID).onSnapshot(doc => {
+    if (doc.exists && !isSyncing) {
+      const cloud = doc.data();
+      if (cloud && JSON.stringify(cloud) !== JSON.stringify(D)) {
+        D = mergeData(D, cloud);
+        saveLocal();
+        rAll();
+        setSyncStatus('✓ 已同步（其他裝置更新）');
+      }
+    }
+  }, err => {
+    console.warn('即時同步監聽失敗:', err);
+  });
+}
+
+let D = df(); // 先給預設值，loadFromCloud 會覆蓋
+</script>
+
 <script>
 // ══════════════════════════════════
 // 週課表資料
@@ -715,12 +850,8 @@ function getOT(e){const k=e.join('');for(const[key,v] of Object.entries(OT)){if(
 const HOL={'2026-01-01':'元旦','2026-01-28':'除夕','2026-01-29':'春節','2026-01-30':'春節','2026-01-31':'春節','2026-02-01':'春節','2026-02-02':'春節','2026-02-28':'和平紀念日','2026-04-03':'兒童節補假','2026-04-04':'兒童節/清明','2026-05-01':'勞動節','2026-06-19':'端午節','2026-09-26':'中秋節','2026-10-10':'國慶日','2025-04-04':'兒童節/清明','2025-05-01':'勞動節','2025-10-10':'國慶日'};
 const FEST={'01-01':'元旦🎊','02-14':'情人節💝','03-08':'婦女節','04-04':'兒童節','05-01':'勞動節','05-08':'母親節','08-08':'父親節','09-28':'教師節','10-10':'國慶🎉','10-31':'萬聖節🎃','12-25':'聖誕節🎄'};
 
-// ── 資料 ──
-const SK='lav_v8';
-function ld(){try{return JSON.parse(localStorage.getItem(SK))||df()}catch(e){return df()}}
-function df(){return{ev:{},wg:[],mg:[],qg:[],yg:[],schChk:{},wxPick:{}}}
-function sv(){try{localStorage.setItem(SK,JSON.stringify(D));document.getElementById('syncTxt').textContent='已儲存'}catch(e){}}
-let D=ld();
+// ── 資料（由 Firebase 管理） ──
+// D, sv(), df() 已在上方 Firebase script 區塊定義
 ['ev','wg','mg','qg','yg','schChk','wxPick'].forEach(k=>{if(!D[k])D[k]=k==='ev'||k==='wxPick'||k==='schChk'?{}:[]});
 
 const NOW=new Date(),TODAY=NOW.toISOString().slice(0,10);
@@ -733,7 +864,25 @@ let modalEvId=null,modalEvDk=null;
 
 function init(){
   document.getElementById('headerDate').textContent=NOW.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
-  rAll();
+  // Enter 鍵新增行程
+  ['dayEvText','evText','evTextM'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){
+        if(id==='dayEvText')addToDay();
+        else if(id==='evText')addEv();
+        else if(id==='evTextM')addEvM();
+      }
+    });
+  });
+  ['dayEvTextFull'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('keydown',e=>{if(e.key==='Enter')addToDayFull();});
+  });
+  // 從 Firebase 讀取資料（自動同步）
+  loadFromCloud().then(()=>{
+    startRealtimeSync();
+  });
 }
 function rAll(){
   rWX();rWeekRoles();rEv();rEvM();
@@ -749,7 +898,7 @@ function showPage(id,btn){
 }
 function tf(id){const el=document.getElementById(id);if(!el)return;el.style.display=el.style.display==='block'?'none':'block'}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
-function saveAll(){sv();toast('💾 全部已儲存！')}
+function saveAll(){saveToCloud();toast('☁️ 已同步到雲端！')}
 
 // ── 成功法則收折 ──
 function toggleTips(){
@@ -909,16 +1058,47 @@ function chM(d){calM+=d;if(calM<0){calM=11;calY--}if(calM>11){calM=0;calY++}rCal
 function chMFull(d){calMF+=d;if(calMF<0){calMF=11;calYF--}if(calMF>11){calMF=0;calYF++}rCalFull()}
 
 function selCalDay(dk,day,sdKey,panelId,titleId,bodyId,y,m){
-  // 判斷是首頁月曆還是月曆頁
   const isHome=panelId==='dayDetailPanel';
   if(isHome)selDay=dk;else selDayFull=dk;
   if(isHome)rCal();else rCalFull();
-  const panel=document.getElementById(panelId);panel.style.display='block';
+
+  // 顯示面板
+  const panel=document.getElementById(panelId);
+  panel.style.display='block';
+
+  // 捲動到面板（手機）
+  setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+
   const dow=new Date(y,m,day).getDay(),dn=['日','一','二','三','四','五','六'];
-  const holName=HOL[dk]?` 【${HOL[dk]}】`:'',mk=String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0'),fest=FEST[mk]?` ${FEST[mk]}`:'';
-  const wEl=WX_CAL[mk];const wxL=wEl?` ｜五行：${wEl.join('·')}`:'';
-  document.getElementById(titleId).innerHTML=`${y}/${m+1}/${day}（週${dn[dow]}）${holName}${fest}<span style="font-size:10px;color:var(--lav-muted)">${wxL}</span>`;
+  const holName=HOL[dk]?` 【${HOL[dk]}】`:'';
+  const mk=String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+  const fest=FEST[mk]?` ${FEST[mk]}`:'';
+  const wEl=WX_CAL[mk];
+
+  const titleEl=document.getElementById(titleId);
+  if(titleEl)titleEl.textContent=`${y}/${m+1}/${day}（週${dn[dow]}）${holName}${fest}`;
+
+  // 五行顏色提示
+  const wxElId=isHome?'dayDetailWx':'dayDetailWxFull';
+  const wxEl=document.getElementById(wxElId);
+  if(wxEl&&wEl){
+    wxEl.innerHTML=`五行：${wEl.map(e=>`<span style="display:inline-flex;align-items:center;gap:2px;margin-right:4px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${WX_C[e]}"></span>${e}</span>`).join('')}　宜穿 ${wEl.map(e=>EL[e].cols[0]).join(' / ')}`;
+  }else if(wxEl){wxEl.textContent='';}
+
+  // 自動 focus 輸入框
+  const inputId=isHome?'dayEvText':'dayEvTextFull';
+  setTimeout(()=>{const inp=document.getElementById(inputId);if(inp)inp.focus();},150);
+
   if(isHome)rDayDetail(dk);else rDayDetailFull(dk);
+}
+
+function closeDayPanel(){
+  document.getElementById('dayDetailPanel').style.display='none';
+  selDay=null;rCal();
+}
+function closeDayPanelFull(){
+  document.getElementById('dayDetailPanelFull').style.display='none';
+  selDayFull=null;rCalFull();
 }
 function rDayDetail(dk){
   const evs=D.ev[dk]||[],el=document.getElementById('dayBody');if(!el)return;
@@ -932,29 +1112,42 @@ function rDayDetailFull(dk){
 }
 function addToDay(){
   if(!selDay){toast('請先點選日期');return;}
-  const tx=document.getElementById('dayEvText').value.trim(),t=document.getElementById('dayEvTime').value;
-  if(!tx)return;
+  const tx=document.getElementById('dayEvText').value.trim();
+  const t=document.getElementById('dayEvTime').value;
+  if(!tx){toast('⚠️ 請輸入行程名稱');return;}
   if(!D.ev[selDay])D.ev[selDay]=[];
   D.ev[selDay].push({t,tx,id:Date.now()});
   D.ev[selDay].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
-  document.getElementById('dayEvText').value='';document.getElementById('dayEvTime').value='';
-  const f=document.getElementById('fDayAdd');if(f)f.style.display='none';
-  rDayDetail(selDay);rCal();rWkView();rWeekRoles();
-  if(selDay===TODAY){rEv();rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);}
-  sv();toast('🌿 活動已新增');
+  // 清空輸入但保持面板開啟（Google Calendar 風格）
+  document.getElementById('dayEvText').value='';
+  document.getElementById('dayEvTime').value='';
+  document.getElementById('dayEvText').focus();
+  rDayDetail(selDay);
+  rCal();
+  rWkView(); // 立即同步本週時間表格
+  rWeekRoles();
+  if(selDay===TODAY){rEv();}
+  rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);
+  sv();toast('✅ 行程已新增，已同步到本週！');
 }
 function addToDayFull(){
   if(!selDayFull){toast('請先點選日期');return;}
-  const tx=document.getElementById('dayEvTextFull').value.trim(),t=document.getElementById('dayEvTimeFull').value;
-  if(!tx)return;
+  const tx=document.getElementById('dayEvTextFull').value.trim();
+  const t=document.getElementById('dayEvTimeFull').value;
+  if(!tx){toast('⚠️ 請輸入行程名稱');return;}
   if(!D.ev[selDayFull])D.ev[selDayFull]=[];
   D.ev[selDayFull].push({t,tx,id:Date.now()});
   D.ev[selDayFull].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
-  document.getElementById('dayEvTextFull').value='';document.getElementById('dayEvTimeFull').value='';
-  const f=document.getElementById('fDayAddFull');if(f)f.style.display='none';
-  rDayDetailFull(selDayFull);rCalFull();rWkView();rWeekRoles();
-  if(selDayFull===TODAY){rEv();rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);}
-  sv();toast('🌿 活動已新增');
+  document.getElementById('dayEvTextFull').value='';
+  document.getElementById('dayEvTimeFull').value='';
+  document.getElementById('dayEvTextFull').focus();
+  rDayDetailFull(selDayFull);
+  rCalFull();
+  rWkView(); // 立即同步本週時間表格
+  rWeekRoles();
+  if(selDayFull===TODAY){rEv();}
+  rSchContent('schContentHome','schProgBarHome','schProgTxtHome',true);
+  sv();toast('✅ 行程已新增，已同步到本週！');
 }
 
 // ── 週視圖 ──
