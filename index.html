@@ -64,11 +64,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
 .empty-ico{font-size:44px;margin-bottom:14px;}
 
 /* ── HERO ── */
-.today-hero{background:linear-gradient(135deg,var(--mocha-d) 0%,#3A2C20 60%,var(--warm-d) 100%);border-radius:20px;padding:30px 28px;color:#F5EDE0;margin-bottom:22px;position:relative;overflow:hidden;}
-.today-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(245,237,224,0.05);}
-.hero-date{font-size:15px;opacity:.65;margin-bottom:10px;letter-spacing:0.1em;}
-.hero-quote{font-family:var(--serif);font-size:21px;font-weight:700;line-height:1.8;margin-bottom:16px;}
-.hero-mantra{font-size:15px;opacity:.65;padding:12px 16px;background:rgba(245,237,224,0.1);border-radius:12px;line-height:1.7;}
+.today-hero{background:linear-gradient(135deg,#EDE3D8 0%,#E2D5C8 60%,#D9C9B8 100%);border-radius:20px;padding:30px 28px;color:var(--mocha-d);margin-bottom:22px;position:relative;overflow:hidden;border:1px solid var(--border);}
+.today-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(122,106,88,0.06);}
+.hero-date{font-size:15px;color:var(--txt-m);margin-bottom:10px;letter-spacing:0.1em;}
+.hero-quote{font-family:var(--serif);font-size:21px;font-weight:700;line-height:1.8;margin-bottom:16px;color:var(--mocha-d);}
+.hero-mantra{font-size:15px;color:var(--txt-m);padding:12px 16px;background:rgba(122,106,88,0.08);border-radius:12px;line-height:1.7;}
 
 /* ── WUXING ── */
 .wx-7day{background:var(--card);border-radius:18px;border:1px solid var(--border);margin-bottom:20px;overflow:hidden;}
@@ -266,7 +266,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
   <div class="sb-sec">能量</div>
   <div class="sb-item" onclick="nav('energy',this)"><span class="ico">✨</span><span>能量管理</span></div>
   <div class="sb-item" onclick="nav('ideas',this)"><span class="ico">💡</span><span>素材庫</span></div>
-  <div class="sb-item" onclick="nav('gratitude',this)"><span class="ico">🙏</span><span>感恩日記</span></div>
+  <div class="sb-item" onclick="nav('gratitude',this)"><span class="ico">🙏</span><span>每日日誌</span></div>
 </div>
 
 <!-- MAIN -->
@@ -572,10 +572,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
   </div>
 </div>
 
-<!-- ══ 感恩日記 ══ -->
+<!-- ══ 每日日誌 ══ -->
 <div class="pg" id="pg-gratitude">
-  <div class="pg-ttl">感恩日記</div>
-  <div class="pg-sub">點選日期，記錄那一天。讓每個日子都被好好記住。</div>
+  <div class="pg-ttl">每日日誌</div>
+  <div class="pg-sub">點選任何一天，記錄主任務・感恩・心情・能量。往後隨時翻回來看。</div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start">
 
@@ -622,7 +622,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
         <div class="card-bd" id="grDayContent">
           <div class="empty" style="padding:60px 20px">
             <div class="empty-ico">🗓️</div>
-            <div style="font-size:16px;color:var(--txt-l)">點選左邊月曆的日期<br>開始記錄那天的感恩日記</div>
+            <div style="font-size:16px;color:var(--txt-l)">點選左邊月曆的日期<br>記錄那一天的任務、感恩與心情</div>
           </div>
         </div>
       </div>
@@ -709,7 +709,7 @@ const WEEK_ROLE_OPTIONS=[
   {key:'recharge',label:'🌙 低社交回充日',sub:'安靜、整理、休息、補能量',c:'#5A4480',bg:'#EDE8F5',bc:'#C8C0E8'},
 ];
 
-const PAGE_TITLES={'today':'今日能量','cal':'月曆行程','week':'本週概覽','goals':'目標追蹤','energy':'能量管理','ideas':'素材庫','gratitude':'感恩日記'};
+const PAGE_TITLES={'today':'今日能量','cal':'月曆行程','week':'本週概覽','goals':'目標追蹤','energy':'能量管理','ideas':'素材庫','gratitude':'每日日誌'};
 const NOW=new Date(),TODAY=NOW.toISOString().slice(0,10);
 const TMR=new Date(NOW);TMR.setDate(NOW.getDate()+1);const TOMORROW=TMR.toISOString().slice(0,10);
 let calY=NOW.getFullYear(),calM=NOW.getMonth(),selDay=null,moId=null,moDk=null;
@@ -1021,22 +1021,63 @@ function grRenderView(dk){
   grIsEditing=false;
   const content=document.getElementById('grDayContent');if(!content)return;
   const editBtn=document.getElementById('grEditBtn');if(editBtn){editBtn.textContent='✏️ 編輯';editBtn.onclick=()=>grToggleEdit();}
+  // 取今日任務（從 D.tasks）
+  const td=D.tasks[dk]||{};
+  const mainTask=td.mainTask||td.main||'';
+  const sub1=td.s1||'',sub2=td.s2||'';
+  const d1=td.d1||false,d2=td.d2||false;
+  // 取今日行程
+  const evs=D.ev[dk]||[];
+  // 取感恩記錄
   const rec=D.gratitude[dk]||{};
   const items=Array.isArray(rec)?rec:(rec.items||[]);
   const energyTags=rec.energyTags||[], energyCustom=rec.energyCustom||'', selfMsg=rec.selfMsg||'';
-  if(!items.length){grRenderEdit(dk);return;}
+  const hasTasks=mainTask||sub1||sub2;
+  const hasEvs=evs.length>0;
+  const hasGr=items.length>0;
+  const hasEnergy=energyTags.length||energyCustom;
+  const hasSelf=selfMsg;
+  // 如果完全沒資料 → 進編輯
+  if(!hasTasks&&!hasEvs&&!hasGr&&!hasEnergy&&!hasSelf){grRenderEdit(dk);return;}
   let h='';
-  // 感恩 3 件
-  h+=`<div style="margin-bottom:20px">`;
-  h+=`<div style="font-size:15px;font-weight:700;color:var(--mocha-d);margin-bottom:12px;letter-spacing:0.06em">🙏 感恩的事</div>`;
-  items.forEach((it,i)=>{
-    h+=`<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;padding:14px 18px;background:var(--mocha-ll);border-radius:12px">
-      <span style="width:28px;height:28px;border-radius:50%;background:var(--mocha-d);color:#F5EDE0;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
-      <div style="font-family:var(--serif);font-size:17px;color:var(--txt);line-height:1.7;padding-top:2px">${it}</div>
+
+  // ── 今日任務 ──
+  if(hasTasks){
+    h+=`<div style="margin-bottom:20px;padding:18px 20px;background:var(--sage-l);border-radius:14px;border:1px solid var(--border)">
+      <div style="font-size:15px;font-weight:700;color:var(--sage-d);margin-bottom:12px;letter-spacing:0.04em">🎯 今日主軸任務</div>`;
+    if(mainTask){
+      h+=`<div style="font-family:var(--serif);font-size:18px;font-weight:700;color:var(--txt);line-height:1.7;margin-bottom:10px">${mainTask}</div>`;
+    }
+    if(sub1||sub2){
+      h+=`<div style="font-size:14px;font-weight:600;color:var(--txt-m);margin-bottom:7px">次要任務</div>`;
+      if(sub1)h+=`<div style="display:flex;align-items:center;gap:10px;font-size:16px;color:${d1?'var(--txt-l)':'var(--txt)'};${d1?'text-decoration:line-through':''};margin-bottom:5px"><span style="width:20px;height:20px;border-radius:50%;${d1?'background:var(--sage);':'border:2px solid var(--border);'}display:flex;align-items:center;justify-content:center;font-size:12px;color:${d1?'#fff':'transparent'};flex-shrink:0">${d1?'✓':''}</span>${sub1}</div>`;
+      if(sub2)h+=`<div style="display:flex;align-items:center;gap:10px;font-size:16px;color:${d2?'var(--txt-l)':'var(--txt)'};${d2?'text-decoration:line-through':''};margin-bottom:5px"><span style="width:20px;height:20px;border-radius:50%;${d2?'background:var(--sage);':'border:2px solid var(--border);'}display:flex;align-items:center;justify-content:center;font-size:12px;color:${d2?'#fff':'transparent'};flex-shrink:0">${d2?'✓':''}</span>${sub2}</div>`;
+    }
+    h+=`</div>`;
+  }
+
+  // ── 當日行程 ──
+  if(hasEvs){
+    h+=`<div style="margin-bottom:20px;padding:18px 20px;background:var(--mocha-ll);border-radius:14px;border:1px solid var(--border)">
+      <div style="font-size:15px;font-weight:700;color:var(--mocha-d);margin-bottom:12px">🕐 當日行程</div>
+      ${evs.map(e=>`<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:16px"><span style="font-size:14px;color:var(--txt-m);min-width:44px;font-weight:600">${e.t||'--:--'}</span><div style="width:3px;height:22px;background:var(--mocha-l);border-radius:2px"></div><span style="color:var(--txt)">${e.tx}</span></div>`).join('')}
     </div>`;
-  });
-  h+=`</div>`;
-  // 能量
+  }
+
+  // ── 感恩 3 件 ──
+  if(hasGr){
+    h+=`<div style="margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700;color:var(--mocha-d);margin-bottom:12px">🙏 今日感恩</div>`;
+    items.forEach((it,i)=>{
+      h+=`<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:10px;padding:14px 18px;background:var(--card2);border-radius:12px;border:1px solid var(--border)">
+        <span style="width:26px;height:26px;border-radius:50%;background:var(--mocha-d);color:#F5EDE0;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
+        <div style="font-family:var(--serif);font-size:17px;color:var(--txt);line-height:1.7;padding-top:1px">${it}</div>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+
+  // ── 能量留給誰 ──
   const allTags=[...energyTags,energyCustom].filter(x=>x);
   if(allTags.length){
     h+=`<div style="margin-bottom:16px;padding:16px 18px;background:var(--gold-l);border-radius:12px;border:1px solid var(--border)">
@@ -1044,33 +1085,63 @@ function grRenderView(dk){
       <div style="display:flex;flex-wrap:wrap;gap:8px">${allTags.map(t=>`<span style="padding:6px 16px;border-radius:20px;background:var(--warm-l);color:var(--warm-d);font-size:15px;font-weight:600">${t}</span>`).join('')}</div>
     </div>`;
   }
-  // 感謝自己
-  if(selfMsg){
+
+  // ── 感謝自己 ──
+  if(hasSelf){
     h+=`<div style="padding:18px 20px;background:var(--lav-l);border-radius:12px;border:1px solid var(--border)">
       <div style="font-size:15px;font-weight:700;color:var(--lav-d);margin-bottom:8px">💜 對自己說</div>
       <div style="font-family:var(--serif);font-size:18px;color:var(--lav-d);font-style:italic;line-height:1.7">${selfMsg}</div>
     </div>`;
   }
+
   content.innerHTML=h;
 }
 
-// 編輯模式
+// 編輯模式（完整版，包含任務讀取提示）
 function grRenderEdit(dk){
   grIsEditing=true;
   const content=document.getElementById('grDayContent');if(!content)return;
-  const editBtn=document.getElementById('grEditBtn');if(editBtn){editBtn.textContent='👁 閱覽';editBtn.onclick=()=>{if(D.gratitude[dk])grRenderView(dk);};}
+  const editBtn=document.getElementById('grEditBtn');if(editBtn){editBtn.textContent='👁 閱覽';editBtn.onclick=()=>{const hasData=(D.gratitude[dk]&&((D.gratitude[dk].items||[]).length))||(D.tasks[dk]&&(D.tasks[dk].mainTask||D.tasks[dk].main));if(hasData)grRenderView(dk);};}
   const rec=D.gratitude[dk]||{};
   const items=Array.isArray(rec)?rec:(rec.items||[]);
   const energyTags=rec.energyTags||[], energyCustom=rec.energyCustom||'', selfMsg=rec.selfMsg||'';
-  grCurTags=[...energyTags];
-  grCurCustom=energyCustom;grCurSelfMsg=selfMsg;
+  // 讀取已儲存的任務（如有）
+  const td=D.tasks[dk]||{};
+  const savedMain=td.mainTask||td.main||'';
+  const savedS1=td.s1||'',savedS2=td.s2||'';
+  grCurTags=[...energyTags];grCurCustom=energyCustom;grCurSelfMsg=selfMsg;
+  const isToday=dk===TODAY;
   const ETAG_LIST=[{t:'陪伴女兒',e:'👧'},{t:'服務客人',e:'💆‍♀️'},{t:'創作拍攝',e:'🎬'},{t:'好好休息',e:'🌙'},{t:'自我照顧',e:'🌸'},{t:'學習成長',e:'📚'},{t:'家人陪伴',e:'🏠'},{t:'運動身體',e:'🏃‍♀️'}];
   const SELF_LIST=['我今天其實已經很努力了。','我今天做到了自己能做的。','我今天允許自己不夠完美。','我今天選擇了對的事。','我值得被好好對待。'];
-  let h=`
-  <div style="font-size:14px;color:var(--txt-l);margin-bottom:16px;line-height:1.6;background:var(--mocha-ll);border-radius:10px;padding:12px 16px">越具體越好。例如：「感恩客人帶來早餐，讓我感受到被記得」</div>
-  <div style="margin-bottom:14px"><label style="font-size:15px;font-weight:700;color:var(--sage-d);display:block;margin-bottom:6px">🌿 感恩 1</label><textarea id="grE1" rows="2" class="es-area" placeholder="感恩今天..." oninput="grLivePreview()">${items[0]||''}</textarea></div>
-  <div style="margin-bottom:14px"><label style="font-size:15px;font-weight:700;color:var(--sage-d);display:block;margin-bottom:6px">🌿 感恩 2</label><textarea id="grE2" rows="2" class="es-area" placeholder="感恩今天..." oninput="grLivePreview()">${items[1]||''}</textarea></div>
-  <div style="margin-bottom:20px"><label style="font-size:15px;font-weight:700;color:var(--sage-d);display:block;margin-bottom:6px">🌿 感恩 3</label><textarea id="grE3" rows="2" class="es-area" placeholder="感恩今天..." oninput="grLivePreview()">${items[2]||''}</textarea></div>
+
+  let h=``;
+
+  // 如果是今天，提示任務區已自動帶入
+  if(isToday&&savedMain){
+    h+=`<div style="font-size:14px;background:var(--sage-l);border-radius:10px;padding:12px 16px;margin-bottom:16px;color:var(--sage-d)">✅ 今日任務已自動記錄（${savedMain}）。在下方補充感恩記錄。</div>`;
+  }
+
+  // 若不是今天，顯示任務輸入區
+  if(!isToday){
+    h+=`<div style="margin-bottom:20px;padding:16px 18px;background:var(--sage-l);border-radius:14px;border:1px solid var(--border)">
+      <div style="font-size:15px;font-weight:700;color:var(--sage-d);margin-bottom:12px">🎯 那天的主軸任務</div>
+      <textarea id="grEMain" rows="2" class="es-area" placeholder="那天最重要的一件事是什麼？">${savedMain}</textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+        <input id="grES1" type="text" class="inp" placeholder="次要任務 1" value="${savedS1}" style="font-size:15px">
+        <input id="grES2" type="text" class="inp" placeholder="次要任務 2" value="${savedS2}" style="font-size:15px">
+      </div>
+    </div>`;
+  }
+
+  // 感恩 3 件
+  h+=`<div style="margin-bottom:20px">
+    <div style="font-size:15px;font-weight:700;color:var(--mocha-d);margin-bottom:12px">🙏 感恩的事（越具體越好）</div>
+    <div style="font-size:13px;color:var(--txt-l);margin-bottom:12px;line-height:1.6">例如：「感恩客人帶來早餐，讓我感受到被記得」</div>
+    <div style="margin-bottom:10px"><label style="font-size:14px;font-weight:700;color:var(--sage-d);display:block;margin-bottom:6px">🌿 感恩 1</label><textarea id="grE1" rows="2" class="es-area" placeholder="感恩今天..." oninput="grLivePreview()">${items[0]||''}</textarea></div>
+    <div style="margin-bottom:10px"><label style="font-size:14px;font-weight:700;color:var(--sage-d);display:block;margin-bottom:6px">🌿 感恩 2</label><textarea id="grE2" rows="2" class="es-area" placeholder="感恩今天..." oninput="grLivePreview()">${items[1]||''}</textarea></div>
+    <div><label style="font-size:14px;font-weight:700;color:var(--sage-d);display:block;margin-bottom:6px">🌿 感恩 3</label><textarea id="grE3" rows="2" class="es-area" placeholder="感恩今天..." oninput="grLivePreview()">${items[2]||''}</textarea></div>
+  </div>
+
   <div style="background:var(--gold-l);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:18px">
     <div style="font-size:15px;font-weight:700;color:var(--gold-d);margin-bottom:10px">⚡ 今天我把能量留給了什麼？</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
@@ -1078,6 +1149,7 @@ function grRenderEdit(dk){
     </div>
     <textarea id="grECustom" rows="1" class="es-area" placeholder="或自己填寫..." oninput="grLivePreview()">${energyCustom}</textarea>
   </div>
+
   <div style="background:var(--lav-l);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:20px">
     <div style="font-size:15px;font-weight:700;color:var(--lav-d);margin-bottom:6px">💜 今天，我想對自己說</div>
     <div style="font-size:13px;color:var(--lav-d);opacity:.8;margin-bottom:12px">讓靈魂停止戰鬥。</div>
@@ -1086,17 +1158,20 @@ function grRenderEdit(dk){
     </div>
     <textarea id="grESelf" rows="2" class="es-area" placeholder="或用自己的話..." style="font-style:italic;font-family:var(--serif)" oninput="grLivePreview()">${selfMsg}</textarea>
   </div>
+
   <div style="display:flex;gap:10px;flex-wrap:wrap">
-    <button class="btn btn-p" onclick="saveGratitude('${dk}')">💾 儲存</button>
-    ${D.gratitude[dk]?`<button class="btn btn-s" style="color:var(--rose-d);border-color:var(--rose-l)" onclick="deleteGrRecord('${dk}')">🗑️ 刪除</button>`:''}
+    <button class="btn btn-p" onclick="saveGratitude('${dk}')">💾 儲存這天</button>
+    ${(D.gratitude[dk]||D.tasks[dk])?`<button class="btn btn-s" style="color:var(--rose-d);border-color:var(--rose-l)" onclick="deleteGrRecord('${dk}')">🗑️ 清除感恩記錄</button>`:''}
   </div>`;
   content.innerHTML=h;
 }
 
 function grToggleEdit(){
   if(!grSelDk)return;
-  if(grIsEditing){if(D.gratitude[grSelDk])grRenderView(grSelDk);}
-  else{grRenderEdit(grSelDk);}
+  if(grIsEditing){
+    const hasData=(D.gratitude[grSelDk]&&((D.gratitude[grSelDk].items||[]).length))||(D.tasks[grSelDk]&&(D.tasks[grSelDk].mainTask||D.tasks[grSelDk].main));
+    if(hasData)grRenderView(grSelDk);
+  }else{grRenderEdit(grSelDk);}
 }
 function grToggleTag(el,tag){
   if(el.classList.contains('on')){el.classList.remove('on');el.style.cssText='';grCurTags=grCurTags.filter(t=>t!==tag);}
@@ -1118,54 +1193,78 @@ function grLivePreview(){
 
 function saveGratitude(dk){
   const d=dk||grSelDk;if(!d){toast('請先點選日期');return;}
+  // 儲存感恩記錄
   const items=['grE1','grE2','grE3'].map(id=>{const el=document.getElementById(id);return el?el.value.trim():'';}).filter(x=>x);
-  if(!items.length){toast('請至少寫一件感恩的事');return;}
   const ec=document.getElementById('grECustom');const sm=document.getElementById('grESelf');
   if(!D.gratitude)D.gratitude={};
-  D.gratitude[d]={items,energyTags:[...grCurTags],energyCustom:ec?ec.value.trim():'',selfMsg:sm?sm.value.trim():''};
+  if(items.length||grCurTags.length||(ec&&ec.value.trim())||(sm&&sm.value.trim())){
+    D.gratitude[d]={items,energyTags:[...grCurTags],energyCustom:ec?ec.value.trim():'',selfMsg:sm?sm.value.trim():''};
+  }
+  // 若不是今天，也儲存任務
+  if(d!==TODAY){
+    const mainEl=document.getElementById('grEMain');
+    const s1El=document.getElementById('grES1');const s2El=document.getElementById('grES2');
+    if(mainEl&&mainEl.value.trim()){
+      if(!D.tasks[d])D.tasks[d]={};
+      D.tasks[d].mainTask=mainEl.value.trim();
+      if(s1El)D.tasks[d].s1=s1El.value.trim();
+      if(s2El)D.tasks[d].s2=s2El.value.trim();
+    }
+  }
   sv();buildGrCal();grMonthlySummary();grRenderView(d);
   toast('💚 已儲存！');
 }
 function deleteGrRecord(dk){
-  if(!confirm('確定要刪除這天的記錄嗎？'))return;
-  delete D.gratitude[dk];sv();buildGrCal();grMonthlySummary();grRenderEdit(dk);toast('已刪除');
+  if(!confirm('確定要清除這天的感恩記錄嗎？'))return;
+  delete D.gratitude[dk];sv();buildGrCal();grMonthlySummary();grRenderEdit(dk);toast('已清除感恩記錄');
 }
 
-// 月度摘要
+// 月度摘要（整合任務 + 感恩 + 行程）
 function grMonthlySummary(){
   const el=document.getElementById('grMonthlySummary');if(!el)return;
-  const gr=D.gratitude||{};
+  const gr=D.gratitude||{};const tasks=D.tasks||{};const evs=D.ev||{};
   const prefix=`${grY}-${String(grM+1).padStart(2,'0')}-`;
-  const keys=Object.keys(gr).filter(dk=>dk.startsWith(prefix)).sort();
   const total=new Date(grY,grM+1,0).getDate();
+  // 收集有任何資料的日期
+  const allKeys=new Set();
+  Object.keys(gr).filter(dk=>dk.startsWith(prefix)).forEach(dk=>allKeys.add(dk));
+  Object.keys(tasks).filter(dk=>dk.startsWith(prefix)&&(tasks[dk].mainTask||tasks[dk].main||tasks[dk].s1)).forEach(dk=>allKeys.add(dk));
+  Object.keys(evs).filter(dk=>dk.startsWith(prefix)&&evs[dk]&&evs[dk].length).forEach(dk=>allKeys.add(dk));
+  const keys=[...allKeys].sort().reverse();
   if(!keys.length){
-    el.innerHTML=`<div class="empty"><div class="empty-ico">🌱</div><div style="font-size:16px">這個月還沒有記錄<br>點選日期開始寫吧</div></div>`;return;
+    el.innerHTML=`<div class="empty"><div class="empty-ico">🌱</div><div style="font-size:16px">這個月還沒有任何記錄<br>點選日期開始寫吧</div></div>`;return;
   }
-  const pct=Math.round(keys.length/total*100);
+  const grCount=Object.keys(gr).filter(dk=>dk.startsWith(prefix)&&(gr[dk].items||gr[dk]||[]).length).length;
   const dn=['日','一','二','三','四','五','六'];
-  let h=`
-  <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:16px 18px;background:var(--mocha-ll);border-radius:12px">
-    <div style="text-align:center">
+  let h=`<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:16px 18px;background:var(--mocha-ll);border-radius:12px">
+    <div style="text-align:center;min-width:60px">
       <div style="font-family:var(--serif);font-size:32px;font-weight:900;color:var(--mocha-d)">${keys.length}</div>
-      <div style="font-size:13px;color:var(--txt-m)">天有記錄</div>
+      <div style="font-size:12px;color:var(--txt-m)">天有記錄</div>
     </div>
     <div style="flex:1">
-      <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--txt-m);margin-bottom:6px"><span>記錄率</span><span style="font-weight:700;color:var(--mocha-d)">${pct}%</span></div>
-      <div class="pb" style="height:10px"><div class="pf" style="width:${pct}%;height:10px"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--txt-m);margin-bottom:6px"><span>本月有記錄天數</span><span style="font-weight:700;color:var(--mocha-d)">${Math.round(keys.length/total*100)}%</span></div>
+      <div class="pb" style="height:8px"><div class="pf" style="width:${Math.round(keys.length/total*100)}%;height:8px"></div></div>
+      <div style="font-size:12px;color:var(--txt-l);margin-top:5px">其中 ${grCount} 天有感恩紀錄</div>
     </div>
   </div>
-  <div style="font-size:15px;font-weight:700;color:var(--txt-m);margin-bottom:10px">本月每日紀錄</div>`;
-  keys.reverse().forEach(dk=>{
+  <div style="font-size:15px;font-weight:700;color:var(--txt-m);margin-bottom:12px;letter-spacing:0.04em">所有日記</div>`;
+  keys.forEach(dk=>{
     const rec=gr[dk]||{};
-    const items=Array.isArray(rec)?rec:(rec.items||[]);
+    const grItems=Array.isArray(rec)?rec:(rec.items||[]);
     const tags=[...(rec.energyTags||[]),(rec.energyCustom||'')].filter(x=>x);
+    const td=tasks[dk]||{};
+    const mainTask=td.mainTask||td.main||'';
+    const dayEvs=evs[dk]||[];
     const d=new Date(dk);
-    h+=`<div onclick="grSelDay('${dk}')" style="padding:14px 18px;border-radius:12px;margin-bottom:8px;border:1.5px solid var(--border);cursor:pointer;transition:.15s" onmouseover="this.style.background='var(--mocha-ll)'" onmouseout="this.style.background=''">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div style="font-size:15px;font-weight:700;color:var(--mocha-d)">${d.getMonth()+1}/${d.getDate()}（週${dn[d.getDay()]}）</div>
-        ${dk===TODAY?'<span class="bdg bdg-mocha">今天</span>':''}
+    const isT=dk===TODAY;
+    h+=`<div onclick="grSelDay('${dk}')" style="padding:16px 18px;border-radius:14px;margin-bottom:10px;border:1.5px solid ${isT?'var(--mocha-d)':'var(--border)'};cursor:pointer;background:${isT?'var(--mocha-ll)':'var(--card)'};transition:.15s" onmouseover="this.style.background='var(--mocha-ll)'" onmouseout="this.style.background='${isT?'var(--mocha-ll)':'var(--card)'}'">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:16px;font-weight:700;color:var(--mocha-d)">${d.getMonth()+1} / ${d.getDate()}（週${dn[d.getDay()]}）</div>
+        ${isT?'<span class="bdg bdg-mocha">今天</span>':''}
       </div>
-      ${items.length?`<div style="font-size:14px;color:var(--txt-m);line-height:1.6;margin-bottom:6px">🌿 ${items.slice(0,2).join('　🌿 ')}${items.length>2?'...':''}</div>`:''}
+      ${mainTask?`<div style="font-size:15px;color:var(--txt);margin-bottom:7px;display:flex;align-items:flex-start;gap:8px"><span style="color:var(--sage-d);font-weight:700;flex-shrink:0">🎯</span><span style="font-family:var(--serif)">${mainTask}</span></div>`:''}
+      ${dayEvs.length?`<div style="font-size:13px;color:var(--txt-m);margin-bottom:7px">🕐 ${dayEvs.slice(0,3).map(e=>(e.t?e.t.slice(0,5)+' ':'')+e.tx).join('　')}</div>`:''}
+      ${grItems.length?`<div style="font-size:14px;color:var(--txt-m);margin-bottom:6px">🌿 ${grItems.slice(0,2).join('　·　')}${grItems.length>2?'...':''}</div>`:''}
       ${tags.length?`<div style="display:flex;flex-wrap:wrap;gap:5px">${tags.map(t=>`<span style="font-size:12px;padding:2px 10px;border-radius:12px;background:var(--gold-l);color:var(--gold-d)">${t}</span>`).join('')}</div>`:''}
     </div>`;
   });
