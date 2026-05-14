@@ -834,13 +834,39 @@ function rWX(){
 function rRoxiSpecial(){
   const w=document.getElementById('roxiSpecialWrap');if(!w)return;
   const rd=ROXI[TODAY]||'';
-  w.innerHTML=rd?`<div class="roxi-special"><div class="roxi-special-ico">${rd[0]}</div><div><div class="roxi-special-txt">${rd}</div><div style="font-size:13px;color:#B06090;margin-top:4px">${NOW.toLocaleDateString('zh-TW',{month:'long',day:'numeric'})} 珞熙特殊日</div></div></div>`:'';
+  if(!rd){w.innerHTML='';return;}
+  function getRoxiIcon(v){
+    if(v.includes('桃花')||v.includes('事業'))return{ic:'🌸',c:'#BE185D',bg:'#FDF2F8',bc:'#F9A8D4'};
+    if(v.includes('得財'))return{ic:'💰',c:'#92400E',bg:'#FFFBEB',bc:'#FDE68A'};
+    if(v.includes('健康'))return{ic:'⚠️',c:'#B45309',bg:'#FFFBEB',bc:'#FCD34D'};
+    if(v.includes('犯小人'))return{ic:'🚫',c:'#991B1B',bg:'#FEF2F2',bc:'#FECACA'};
+    return{ic:'✨',c:'#5A7A66',bg:'var(--sageL)',bc:'var(--sage)'};
+  }
+  const r=getRoxiIcon(rd);
+  w.innerHTML=`<div class="roxi-special" style="background:${r.bg};border-color:${r.bc}"><div class="roxi-special-ico">${r.ic}</div><div><div class="roxi-special-txt" style="color:${r.c}">${rd.replace(/^[^\s]*\s/,'')}</div><div style="font-size:13px;color:${r.c};opacity:.7;margin-top:4px">${NOW.toLocaleDateString('zh-TW',{month:'long',day:'numeric'})} 珞熙特殊日</div></div></div>`;
 }
 function rRoxiMonth(){
   const el=document.getElementById('roxiMonthList');if(!el)return;
   const entries=Object.entries(ROXI).filter(([dk])=>dk.startsWith(calY+'-'+String(calM+1).padStart(2,'0')));
   if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-ico">🌿</div>本月無珞熙特殊日</div>';return;}
-  el.innerHTML=entries.map(([dk,v])=>{const d=new Date(dk);const dn=['日','一','二','三','四','五','六'];return`<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bdr)"><div style="font-size:20px">${v[0]}</div><div><div style="font-size:15px;font-weight:700;color:#9E5A80">${v}</div><div style="font-size:13px;color:var(--mut)">${d.getMonth()+1}/${d.getDate()}（週${dn[d.getDay()]}）</div></div></div>`;}).join('');
+  function getRoxiIcon(v){
+    if(v.includes('桃花')||v.includes('事業'))return{ic:'🌸',c:'#BE185D',bg:'#FDF2F8',bc:'#F9A8D4'};
+    if(v.includes('得財'))return{ic:'💰',c:'#92400E',bg:'#FFFBEB',bc:'#FDE68A'};
+    if(v.includes('健康'))return{ic:'⚠️',c:'#B45309',bg:'#FFFBEB',bc:'#FCD34D'};
+    if(v.includes('犯小人'))return{ic:'🚫',c:'#991B1B',bg:'#FEF2F2',bc:'#FECACA'};
+    return{ic:'✨',c:'#5A7A66',bg:'var(--sageL)',bc:'var(--sage)'};
+  }
+  const dn=['日','一','二','三','四','五','六'];
+  el.innerHTML=entries.map(([dk,v])=>{
+    const d=new Date(dk),r=getRoxiIcon(v);
+    return`<div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--bdr)">
+      <div style="width:44px;height:44px;border-radius:50%;background:${r.bg};border:2px solid ${r.bc};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${r.ic}</div>
+      <div>
+        <div style="font-size:16px;font-weight:700;color:${r.c}">${v.replace(/^[^\s]*\s/,'')}</div>
+        <div style="font-size:13px;color:var(--mut);margin-top:2px">${d.getMonth()+1}/${d.getDate()}（週${dn[d.getDay()]}）</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 function rTasks(){
   const td=D.tasks[TODAY]||{};
@@ -874,7 +900,7 @@ function buildCal(){
     const mk=String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),rd=ROXI[dk]||'',wEl=WX[mk];
     const wxb=wEl?`<div class="wx-dots">${wEl.map(e=>`<div class="wxd" style="background:${WXC[e]}"></div>`).join('')}</div>`:'';
     const evd=(D.ev[dk]||[]).length?'<div class="ev-dot"></div>':'';
-    let lbl='';if(rd)lbl=`<div class="dlbl" style="color:#BE185D">${rd[0]}</div>`;else if(HOL[dk])lbl=`<div class="dlbl" style="color:var(--rose)">${HOL[dk].slice(0,4)}</div>`;else if(FEST[mk])lbl=`<div class="dlbl" style="color:var(--lav)">${FEST[mk].slice(0,3)}</div>`;
+    let lbl='';if(rd){const calIc=rd.includes('桃花')||rd.includes('事業')?'🌸':rd.includes('得財')?'💰':rd.includes('健康')?'⚠️':rd.includes('犯小人')?'🚫':'✨';lbl=`<div class="dlbl" style="color:#BE185D">${calIc}</div>`;}else if(HOL[dk])lbl=`<div class="dlbl" style="color:var(--rose)">${HOL[dk].slice(0,4)}</div>`;else if(FEST[mk])lbl=`<div class="dlbl" style="color:var(--lav)">${FEST[mk].slice(0,3)}</div>`;
     let cls='cd';if(isT)cls+=' today';else if(isSel)cls+=' sel';if(isSat)cls+=' sat';if(isSun||isHol)cls+=' sun hol';if(rd&&!isT)cls+=' roxi';
     h+=`<div class="${cls}" onclick="selD('${dk}',${d},${calY},${calM})"><span class="dn">${d}</span>${lbl}${wxb}${evd}</div>`;
   }
@@ -951,12 +977,12 @@ function rIdeas(){const el=document.getElementById('ideaList');if(!el)return;con
 
 // ── 感恩日記 ──
 const GR_THEMES=[
-  {id:'sage',name:'鼠尾草綠',bg1:'#3D6B4F',bg2:'#2A4A35',textC:'#FFFFFF',subC:'rgba(255,255,255,0.65)',lineC:'rgba(255,255,255,0.2)',dotC:'#8BB89A',emoji:'🌿'},
-  {id:'gold',name:'暖金晨光',bg1:'#C4A46B',bg2:'#8C6B3A',textC:'#FFFFFF',subC:'rgba(255,255,255,0.65)',lineC:'rgba(255,255,255,0.2)',dotC:'#F9F0E0',emoji:'✨'},
-  {id:'rose',name:'玫瑰晨霧',bg1:'#C2747A',bg2:'#9E5A60',textC:'#FFFFFF',subC:'rgba(255,255,255,0.65)',lineC:'rgba(255,255,255,0.2)',dotC:'#F5E8EA',emoji:'🌸'},
-  {id:'lav',name:'薰衣草紫',bg1:'#8C6BC2',bg2:'#5A3A8C',textC:'#FFFFFF',subC:'rgba(255,255,255,0.65)',lineC:'rgba(255,255,255,0.2)',dotC:'#F0E8FA',emoji:'💜'},
-  {id:'night',name:'深夜靛藍',bg1:'#1A2A4A',bg2:'#0A1828',textC:'#FFFFFF',subC:'rgba(255,255,255,0.55)',lineC:'rgba(255,255,255,0.12)',dotC:'#90CAF9',emoji:'🌙'},
-  {id:'cream',name:'奶油白',bg1:'#F5EDE0',bg2:'#EAD8C0',textC:'#3D2A1A',subC:'rgba(61,42,26,0.55)',lineC:'rgba(61,42,26,0.12)',dotC:'#C4A46B',emoji:'☕'},
+  {id:'moome',name:'沐蜜奶茶',bg1:'#EDE0D4',bg2:'#D4C4B0',textC:'#3A2E24',subC:'rgba(58,46,36,0.5)',lineC:'rgba(58,46,36,0.12)',dotC:'#B8956A',numC:'#FFFFFF',numBg:'#B8956A',emoji:'🌿',dark:false},
+  {id:'sage',name:'晨霧鼠尾草',bg1:'#E8F2EC',bg2:'#D4E8DA',textC:'#2A4A35',subC:'rgba(42,74,53,0.5)',lineC:'rgba(42,74,53,0.12)',dotC:'#5A8C6B',numC:'#FFFFFF',numBg:'#5A8C6B',emoji:'🪴',dark:false},
+  {id:'blush',name:'玫瑰奶霧',bg1:'#F5EAE8',bg2:'#EDD4CE',textC:'#5A2A2A',subC:'rgba(90,42,42,0.48)',lineC:'rgba(90,42,42,0.1)',dotC:'#C2747A',numC:'#FFFFFF',numBg:'#C2747A',emoji:'🌸',dark:false},
+  {id:'lavmist',name:'薰衣草晨',bg1:'#EDE8F5',bg2:'#DDD4ED',textC:'#3A2A5A',subC:'rgba(58,42,90,0.48)',lineC:'rgba(58,42,90,0.1)',dotC:'#8C6BC2',numC:'#FFFFFF',numBg:'#8C6BC2',emoji:'💜',dark:false},
+  {id:'night',name:'深夜月光',bg1:'#1C2A3A',bg2:'#101820',textC:'#F0EDE8',subC:'rgba(240,237,232,0.5)',lineC:'rgba(240,237,232,0.12)',dotC:'#90CAF9',numC:'#101820',numBg:'rgba(240,237,232,0.8)',emoji:'🌙',dark:true},
+  {id:'gold',name:'暖金午後',bg1:'#F5EDD8',bg2:'#EAD8B0',textC:'#4A3A1A',subC:'rgba(74,58,26,0.5)',lineC:'rgba(74,58,26,0.12)',dotC:'#C4A46B',numC:'#FFFFFF',numBg:'#C4A46B',emoji:'✨',dark:false},
 ];
 let curTheme=GR_THEMES[0];
 
@@ -965,7 +991,7 @@ function initGratitude(){
   const tg=document.getElementById('themeGrid');
   if(!tg)return;
   tg.innerHTML=GR_THEMES.map(t=>`
-    <div onclick="selectTheme('${t.id}')" id="th-${t.id}" style="border-radius:12px;padding:14px;cursor:pointer;text-align:center;border:2px solid transparent;background:linear-gradient(135deg,${t.bg1},${t.bg2});transition:.2s">
+    <div onclick="selectTheme('${t.id}')" id="th-${t.id}" style="border-radius:12px;padding:14px;cursor:pointer;text-align:center;border:2px solid rgba(0,0,0,0.08);background:linear-gradient(135deg,${t.bg1},${t.bg2});transition:.2s;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
       <div style="font-size:20px;margin-bottom:5px">${t.emoji}</div>
       <div style="font-size:12px;font-weight:700;color:${t.textC}">${t.name}</div>
     </div>`).join('');
@@ -1054,105 +1080,149 @@ function updateGrPreview(){
 function drawGrCard(){
   const canvas=document.getElementById('grCanvas');if(!canvas)return;
   const ctx=canvas.getContext('2d');
-  const W=900,H=1380;
+  const W=1080,H=1440;
   canvas.width=W;canvas.height=H;
   const T=curTheme;
 
-  // 背景
-  const grd=ctx.createLinearGradient(0,0,W*0.4,H);
+  // ── 背景 ──
+  const grd=ctx.createLinearGradient(0,0,W,H);
   grd.addColorStop(0,T.bg1);grd.addColorStop(1,T.bg2);
   ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
 
-  // 裝飾圓
-  ctx.save();ctx.globalAlpha=0.07;
-  ctx.beginPath();ctx.arc(W+80,H*0.12,300,0,Math.PI*2);ctx.fillStyle=T.textC;ctx.fill();
-  ctx.beginPath();ctx.arc(-60,H*0.88,260,0,Math.PI*2);ctx.fill();
+  // 裝飾圓（非常淡）
+  ctx.save();ctx.globalAlpha=0.06;
+  ctx.beginPath();ctx.arc(W*0.85,H*0.1,320,0,Math.PI*2);ctx.fillStyle=T.textC;ctx.fill();
+  ctx.beginPath();ctx.arc(W*0.12,H*0.9,260,0,Math.PI*2);ctx.fill();
   ctx.restore();
 
-  // 頂部 emoji
-  ctx.font='60px serif';ctx.textAlign='center';ctx.fillText(T.emoji,W/2,90);
+  // ── 頂部裝飾線 ──
+  ctx.strokeStyle=T.lineC;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(80,60);ctx.lineTo(W-80,60);ctx.stroke();
 
-  // 標題
+  // ── emoji ──
+  ctx.font='56px serif';ctx.textAlign='center';
+  ctx.fillText(T.emoji,W/2,130);
+
+  // ── 主標題 ──
   ctx.fillStyle=T.textC;
-  ctx.font='bold 50px "Noto Serif TC",serif';ctx.textAlign='center';
-  ctx.fillText('感 恩 日 記',W/2,170);
+  ctx.font='bold 58px "Noto Serif TC",serif';
+  ctx.letterSpacing='0.2em';
+  ctx.textAlign='center';
+  ctx.fillText('感  恩  日  記',W/2,210);
 
-  // 日期
-  ctx.fillStyle=T.subC;ctx.font='26px "Noto Sans TC",sans-serif';
-  ctx.fillText(NOW.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'}),W/2,220);
+  // ── 日期 ──
+  ctx.fillStyle=T.subC;
+  ctx.font='26px "Noto Sans TC",sans-serif';
+  ctx.letterSpacing='0.08em';
+  ctx.fillText(NOW.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'}),W/2,260);
 
-  // 分隔線
+  // ── 分隔線 ──
   ctx.strokeStyle=T.lineC;ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(70,252);ctx.lineTo(W-70,252);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(80,295);ctx.lineTo(W-80,295);ctx.stroke();
 
-  // ── 感恩 3 件 ──
+  // ── 感恩 3 件（寬鬆排版）──
   const grItems=['gr1','gr2','gr3'].map(id=>{const el=document.getElementById(id);return el?el.value.trim():'';});
-  let y=300;
+  let y=355;
+  const ITEM_FONT_SIZE=32;
+  const LINE_H=52;
+  const SIDE_PAD=100;
+
   grItems.slice(0,3).forEach((item,i)=>{
     const isFilled=!!item;
+
+    // 數字圓
     ctx.save();
-    ctx.beginPath();ctx.arc(84,y+6,20,0,Math.PI*2);
-    ctx.fillStyle=isFilled?T.dotC:'rgba(255,255,255,0.15)';ctx.fill();ctx.restore();
-    ctx.fillStyle=isFilled?T.bg2:T.subC;
-    ctx.font='bold 20px "Noto Sans TC",sans-serif';ctx.textAlign='center';
-    ctx.fillText(i+1,84,y+14);
+    ctx.beginPath();ctx.arc(SIDE_PAD-14,y+2,24,0,Math.PI*2);
+    ctx.fillStyle=isFilled?T.numBg:'rgba(128,128,128,0.15)';ctx.fill();
+    ctx.restore();
+    ctx.fillStyle=isFilled?T.numC:'rgba(128,128,128,0.4)';
+    ctx.font='bold 22px "Noto Sans TC",sans-serif';ctx.textAlign='center';
+    ctx.letterSpacing='0';
+    ctx.fillText(i+1,SIDE_PAD-14,y+10);
+
+    // 文字
     ctx.fillStyle=isFilled?T.textC:T.subC;
-    ctx.font=isFilled?'400 28px "Noto Serif TC",serif':'italic 24px "Noto Sans TC",sans-serif';
+    ctx.font=isFilled?`400 ${ITEM_FONT_SIZE}px "Noto Serif TC",serif`:`italic ${ITEM_FONT_SIZE-4}px "Noto Sans TC",sans-serif`;
     ctx.textAlign='left';
-    const lines=wrapText(ctx,item||'感恩今天...',W-180);
-    lines.forEach((line,li)=>ctx.fillText(line,130,y+li*38));
-    y+=Math.max(lines.length*38,46)+36;
-    if(i<2){ctx.strokeStyle=T.lineC;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(70,y-14);ctx.lineTo(W-70,y-14);ctx.stroke();}
+    ctx.letterSpacing='0.04em';
+    const maxW=W-SIDE_PAD*2+40;
+    const lines=wrapText(ctx,item||'感恩今天...',maxW);
+    lines.forEach((line,li)=>ctx.fillText(line,SIDE_PAD+20,y+li*LINE_H));
+    const blockH=Math.max(lines.length*LINE_H,60);
+    y+=blockH+50;
+
+    // 淡分隔線
+    if(i<2){
+      ctx.strokeStyle=T.lineC;ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(80,y-26);ctx.lineTo(W-80,y-26);ctx.stroke();
+    }
   });
 
-  y+=16;
+  // 空一段
+  y+=20;
   ctx.strokeStyle=T.lineC;ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(70,y);ctx.lineTo(W-70,y);ctx.stroke();
-  y+=28;
+  ctx.beginPath();ctx.moveTo(80,y);ctx.lineTo(W-80,y);ctx.stroke();
+  y+=50;
 
-  // ── 能量給了誰 ──
+  // ── 能量留給了誰 ──
   const ec=document.getElementById('energyCustom');
   const allTags=[...selectedEnergyTags];
   if(ec&&ec.value.trim())allTags.push(ec.value.trim());
   if(allTags.length>0){
-    ctx.fillStyle=T.subC;ctx.font='bold 22px "Noto Sans TC",sans-serif';ctx.textAlign='left';
-    ctx.fillText('⚡ 今天我把能量留給了',80,y);y+=38;
-    ctx.fillStyle=T.textC;ctx.font='28px "Noto Serif TC",serif';ctx.textAlign='center';
-    const tagLine=allTags.join('　·　');
-    const tagLines=wrapText(ctx,tagLine,W-160);
-    tagLines.forEach(line=>{ ctx.fillText(line,W/2,y);y+=38;});
-    y+=16;
+    ctx.fillStyle=T.subC;
+    ctx.font=`600 24px "Noto Sans TC",sans-serif`;
+    ctx.textAlign='center';ctx.letterSpacing='0.06em';
+    ctx.fillText('⚡  今天，我把能量留給了',W/2,y);
+    y+=52;
+    ctx.fillStyle=T.textC;
+    ctx.font=`500 34px "Noto Serif TC",serif`;
+    ctx.letterSpacing='0.06em';
+    const tagLine=allTags.join('  ·  ');
+    const tagLines=wrapText(ctx,tagLine,W-200);
+    tagLines.forEach(line=>{ctx.fillText(line,W/2,y);y+=50;});
+    y+=30;
     ctx.strokeStyle=T.lineC;ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(70,y);ctx.lineTo(W-70,y);ctx.stroke();
-    y+=28;
+    ctx.beginPath();ctx.moveTo(80,y);ctx.lineTo(W-80,y);ctx.stroke();
+    y+=50;
   }
 
   // ── 感謝自己 ──
   const sm=document.getElementById('selfMsg');
   if(sm&&sm.value.trim()){
-    ctx.fillStyle=T.subC;ctx.font='bold 22px "Noto Sans TC",sans-serif';ctx.textAlign='left';
-    ctx.fillText('💜 今天，我想對自己說',80,y);y+=38;
-    ctx.fillStyle=T.textC;ctx.font='italic 30px "Noto Serif TC",serif';ctx.textAlign='center';
-    const smLines=wrapText(ctx,sm.value.trim(),W-160);
-    smLines.forEach(line=>{ctx.fillText(line,W/2,y);y+=42;});
-    y+=10;
+    ctx.fillStyle=T.subC;
+    ctx.font=`600 24px "Noto Sans TC",sans-serif`;
+    ctx.textAlign='center';ctx.letterSpacing='0.06em';
+    ctx.fillText('💜  今天，我想對自己說',W/2,y);
+    y+=56;
+    ctx.fillStyle=T.textC;
+    ctx.font=`italic 36px "Noto Serif TC",serif`;
+    ctx.letterSpacing='0.05em';
+    const smLines=wrapText(ctx,sm.value.trim(),W-200);
+    smLines.forEach(line=>{ctx.fillText(line,W/2,y);y+=52;});
+    y+=30;
     ctx.strokeStyle=T.lineC;ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(70,y);ctx.lineTo(W-70,y);ctx.stroke();
-    y+=28;
+    ctx.beginPath();ctx.moveTo(80,y);ctx.lineTo(W-80,y);ctx.stroke();
+    y+=50;
   }
 
   // ── 底部語句 ──
-  const footerY=Math.max(y+20,H-140);
-  ctx.fillStyle=T.subC;ctx.font='italic 22px "Noto Serif TC",serif';ctx.textAlign='center';
+  const footerY=Math.max(y+40,H-180);
+  ctx.fillStyle=T.subC;
+  ctx.font=`italic 26px "Noto Serif TC",serif`;
+  ctx.textAlign='center';ctx.letterSpacing='0.04em';
   ctx.fillText('我不是把自己燃燒掉才有價值。',W/2,footerY);
-  ctx.fillText('我穩定發光，本身就有力量。',W/2,footerY+36);
-  ctx.fillStyle=T.subC;ctx.globalAlpha=0.45;
-  ctx.font='18px "Noto Sans TC",sans-serif';
-  ctx.fillText('珞熙・能量生活',W/2,footerY+76);
+  ctx.fillText('我穩定發光，本身就有力量。',W/2,footerY+44);
+
+  // 品牌小字
+  ctx.globalAlpha=0.35;
+  ctx.font=`400 20px "Noto Sans TC",sans-serif`;
+  ctx.letterSpacing='0.1em';
+  ctx.fillText('珞 熙 ・ 能 量 生 活',W/2,footerY+92);
   ctx.globalAlpha=1;
 
-  // 裁剪 canvas 到實際高度
-  canvas.style.height='auto';
+  // 底部裝飾線
+  ctx.strokeStyle=T.lineC;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(80,H-40);ctx.lineTo(W-80,H-40);ctx.stroke();
 }
 
 function wrapText(ctx,text,maxW){
