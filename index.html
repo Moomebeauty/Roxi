@@ -2,562 +2,779 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>珞熙・能量生活</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>珞熙・能量生活系統</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #F5F2ED;
-  --white: #FFFFFF;
-  --border: #DDD8CF;
-  --sage: #5E8B6E;
-  --sage-l: #E8F2EC;
-  --sage-d: #3D6B4F;
-  --warm: #C4845A;
-  --warm-l: #F5EAE0;
-  --lav: #7B6FAA;
-  --lav-l: #EDE9F7;
-  --gold: #B8923A;
-  --gold-l: #F5EDD8;
-  --rose: #B86060;
-  --rose-l: #F5E8E8;
-  --text: #1A1A1A;
-  --text-m: #555;
-  --text-l: #999;
-  --font: 'Noto Sans TC', sans-serif;
+:root{
+  --sage:#5A8C6B;--sageL:#E8F5ED;--sageDk:#3D6B4F;--sageMid:#8BB89A;
+  --warm:#C4845A;--warmL:#F5EAE0;--warmDk:#8C5A38;
+  --gold:#C4A46B;--goldL:#F9F0E0;--goldDk:#8C6B3A;
+  --lav:#8C6BC2;--lavL:#F0E8FA;--lavDk:#5A3A8C;
+  --rose:#C2747A;--roseL:#F5E8EA;--roseDk:#9E5A60;
+  --txt:#1A2A1F;--mut:#5A7A66;--bdr:#D8E8DC;
+  --bg:#F8FBF9;--bg2:#F0F5F2;--bg3:#E8F0EB;--card:#FFFFFF;
+  --shadow:0 2px 16px rgba(60,110,80,0.09);
+  --shadow2:0 4px 32px rgba(60,110,80,0.16);
 }
-body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.6; }
+*{box-sizing:border-box;margin:0;padding:0;letter-spacing:0.04em;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);font-size:17px;min-height:100vh;line-height:1.65;}
+h1,h2,h3{font-family:'Noto Serif TC',serif;letter-spacing:0.08em;}
 
-/* NAV */
-.nav { background: var(--white); border-bottom: 2px solid var(--border); display: flex; position: sticky; top: 0; z-index: 200; overflow-x: auto; }
-.nav::-webkit-scrollbar { display: none; }
-.nb { flex: 1; min-width: 64px; padding: 14px 8px 10px; border: none; border-bottom: 3px solid transparent; background: none; font-family: var(--font); font-size: 12px; font-weight: 500; color: var(--text-l); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all .2s; white-space: nowrap; }
-.nb .ic { font-size: 22px; }
-.nb.on { color: var(--sage-d); border-bottom-color: var(--sage); font-weight: 700; }
-.nb:hover { background: var(--sage-l); color: var(--sage-d); }
+/* SIDEBAR */
+.app{display:flex;min-height:100vh;}
+.sidebar{width:220px;background:linear-gradient(180deg,var(--sageDk) 0%,#2A4A35 100%);padding:14px 0;flex-shrink:0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;}
+.sb-logo{padding:20px 18px 24px;border-bottom:1px solid rgba(255,255,255,0.12);margin-bottom:8px;}
+.sb-logo-name{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:900;color:#fff;letter-spacing:0.12em;}
+.sb-logo-sub{font-size:12px;color:rgba(255,255,255,0.55);margin-top:4px;letter-spacing:0.06em;}
+.sb-item{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;transition:.2s;color:rgba(255,255,255,0.72);font-size:15px;border-left:4px solid transparent;letter-spacing:0.06em;}
+.sb-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.sb-item.active{background:rgba(255,255,255,0.18);color:#fff;border-left-color:var(--gold);font-weight:700;}
+.sb-item .ico{font-size:20px;width:26px;text-align:center;}
+.sb-section{padding:16px 18px 6px;font-size:11px;color:rgba(255,255,255,0.38);letter-spacing:0.12em;text-transform:uppercase;}
 
-/* SYNC BAR */
-.sync-bar { background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 60px; z-index: 190; }
-.sync-info { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-m); }
-.sdot { width: 8px; height: 8px; border-radius: 50%; background: #4CAF50; flex-shrink: 0; }
-.btn-sync { background: var(--sage); color: white; border: none; border-radius: 10px; padding: 8px 18px; font-size: 13px; font-family: var(--font); font-weight: 600; cursor: pointer; }
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;}
+.topbar{background:var(--card);border-bottom:1px solid var(--bdr);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
+.tb-ttl{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:700;color:var(--sageDk);letter-spacing:0.1em;}
+.tb-right{display:flex;align-items:center;gap:12px;}
+.sync-dot{width:9px;height:9px;border-radius:50%;background:var(--sage);}
+.sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sync-txt{font-size:13px;color:var(--mut);}
 
-/* PAGE */
-.pg { display: none; max-width: 680px; margin: 0 auto; padding: 20px 16px 80px; }
-.pg.on { display: block; }
+.content{padding:28px;flex:1;}
+.pg{display:none;}
+.pg.active{display:block;}
+.pg-ttl{font-family:'Noto Serif TC',serif;font-size:26px;font-weight:900;color:var(--sageDk);margin-bottom:5px;letter-spacing:0.1em;}
+.pg-sub{font-size:14px;color:var(--mut);margin-bottom:24px;letter-spacing:0.06em;}
 
-/* CARD */
-.card { background: var(--white); border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border); overflow: hidden; }
-.card-head { padding: 18px 20px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-.card-title { font-size: 16px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
-.card-body { padding: 18px 20px; }
+/* CARDS */
+.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);margin-bottom:20px;overflow:hidden;}
+.card-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--bdr);gap:12px;flex-wrap:wrap;}
+.card-ttl{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;color:var(--txt);letter-spacing:0.08em;}
+.card-bd{padding:20px 22px;}
 
-/* QUOTE */
-.quote-card { background: linear-gradient(135deg, var(--sage-d), var(--lav)); border-radius: 18px; padding: 22px 20px; margin-bottom: 16px; color: white; text-align: center; }
-.quote-date { font-size: 13px; opacity: .7; margin-bottom: 10px; }
-.quote-txt { font-size: 17px; line-height: 1.8; font-weight: 500; }
+/* STAT GRID */
+.sg{display:grid;gap:14px;margin-bottom:20px;}
+.sg2{grid-template-columns:repeat(2,1fr);}
+.sg3{grid-template-columns:repeat(3,1fr);}
+.sg4{grid-template-columns:repeat(4,1fr);}
+.sc{background:var(--card);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);border-top:3px solid var(--bdr);}
+.sc.sage{border-top-color:var(--sage);}
+.sc.gold{border-top-color:var(--gold);}
+.sc.warm{border-top-color:var(--warm);}
+.sc.lav{border-top-color:var(--lav);}
+.sc.rose{border-top-color:var(--rose);}
+.sl{font-size:13px;color:var(--mut);margin-bottom:8px;font-weight:600;letter-spacing:0.06em;}
+.sv{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;color:var(--txt);}
+.ss{font-size:13px;color:var(--mut);margin-top:5px;}
+
+/* BUTTONS */
+.btn{border:none;border-radius:9px;padding:10px 20px;font-size:15px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;font-weight:600;transition:.2s;letter-spacing:0.06em;}
+.btn-p{background:linear-gradient(135deg,var(--sage),var(--sageDk));color:#fff;}
+.btn-p:hover{opacity:.88;transform:translateY(-1px);}
+.btn-s{background:var(--bg2);color:var(--sageDk);border:1.5px solid var(--bdr);}
+.btn-s:hover{border-color:var(--sage);color:var(--sageDk);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--goldDk));color:#fff;}
+.btn-sm{padding:7px 14px;font-size:14px;}
+.btn-del{background:none;border:none;color:var(--mut);cursor:pointer;padding:5px 9px;border-radius:7px;font-size:17px;transition:.2s;}
+.btn-del:hover{background:var(--roseL);color:var(--rose);}
+
+/* BADGE / TAG */
+.bdg{display:inline-block;padding:3px 12px;border-radius:20px;font-size:13px;font-weight:700;}
+.bdg-sage{background:var(--sageL);color:var(--sageDk);}
+.bdg-gold{background:var(--goldL);color:var(--goldDk);}
+.bdg-warm{background:var(--warmL);color:var(--warmDk);}
+.bdg-lav{background:var(--lavL);color:var(--lavDk);}
+.bdg-rose{background:var(--roseL);color:var(--roseDk);}
 
 /* PROGRESS */
-.prog-wrap { background: var(--white); border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border); padding: 20px; }
-.prog-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.prog-title { font-size: 16px; font-weight: 700; }
-.prog-pct { font-size: 28px; font-weight: 700; color: var(--sage-d); }
-.prog-bar { height: 10px; background: var(--bg); border-radius: 6px; overflow: hidden; }
-.prog-fill { height: 100%; background: linear-gradient(90deg, var(--sage), var(--lav)); border-radius: 6px; transition: width .4s; }
-
-/* TASK */
-.task-main { background: var(--sage-l); border: 2px dashed var(--sage); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
-.task-hint { font-size: 13px; color: var(--sage-d); font-weight: 600; margin-bottom: 8px; }
-.task-area { width: 100%; border: none; outline: none; font-size: 16px; font-weight: 600; color: var(--text); background: transparent; font-family: var(--font); resize: none; line-height: 1.6; }
-.task-area::placeholder { color: #aaa; font-weight: 400; }
-.sub-label { font-size: 14px; font-weight: 700; color: var(--text-m); margin-bottom: 10px; }
-.sub-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-.sub-row:last-child { border-bottom: none; }
-.chk { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; color: transparent; transition: all .2s; font-weight: 700; }
-.chk.on { background: var(--sage); border-color: var(--sage); color: white; }
-.sub-in { flex: 1; border: none; outline: none; font-size: 15px; font-family: var(--font); color: var(--text); background: transparent; }
-.sub-in::placeholder { color: #bbb; }
-.sub-in.done { text-decoration: line-through; color: var(--text-l); }
-
-/* TIME BLOCKS */
-.tb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.tb { border-radius: 14px; padding: 16px; }
-.tb-time { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; opacity: .7; margin-bottom: 6px; }
-.tb-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-.tb-note { font-size: 13px; opacity: .8; line-height: 1.6; }
-
-/* EV */
-.ev-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-.ev-row:last-child { border-bottom: none; }
-.ev-row:hover .ev-name { color: var(--sage-d); }
-.ev-time { font-size: 13px; color: var(--text-m); min-width: 40px; font-weight: 600; }
-.ev-dot { width: 4px; height: 28px; background: var(--sage); border-radius: 3px; flex-shrink: 0; }
-.ev-name { flex: 1; font-size: 15px; font-weight: 500; }
-.ev-edit { font-size: 14px; color: var(--text-l); }
-
-/* WUXING */
-.wx-banner { background: var(--gold-l); border: 1px solid #E5CF9A; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
-.wx-elems { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-.wx-pill { padding: 6px 16px; border-radius: 24px; font-size: 14px; font-weight: 700; border: 2px solid; }
-.wx-tip { font-size: 14px; color: var(--text-m); line-height: 1.6; }
-.wx-outfit { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.oc { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; }
-.oc-ic { font-size: 20px; margin-bottom: 4px; }
-.oc-lbl { font-size: 12px; color: var(--text-l); margin-bottom: 4px; }
-.oc-val { font-size: 14px; font-weight: 700; }
-
-/* CALENDAR */
-.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.cal-arr { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 6px 14px; font-size: 18px; cursor: pointer; color: var(--sage-d); font-weight: 700; }
-.cal-arr:hover { background: var(--sage-l); }
-.cal-title { font-size: 17px; font-weight: 700; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 14px; }
-.cdh { text-align: center; font-size: 12px; font-weight: 700; color: var(--text-m); padding: 4px 0; }
-.cd { border-radius: 10px; min-height: 58px; display: flex; flex-direction: column; align-items: center; padding: 5px 2px 4px; gap: 2px; cursor: pointer; transition: background .15s; }
-.cd:hover { background: var(--sage-l); }
-.dn { width: 26px; height: 26px; border-radius: 50%; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
-.cd.today .dn { background: var(--sage); color: white; }
-.cd.sel .dn { background: var(--sage-l); color: var(--sage-d); }
-.cd.other { opacity: .25; }
-.cd.sat .dn { color: #2563EB; }
-.cd.sun .dn, .cd.hol .dn { color: var(--rose); }
-.cd.today .dn { color: white !important; }
-.cd.roxi { background: #FDF6EE; border: 1px solid #E5CF9A; }
-.dlbl { font-size: 9px; text-align: center; line-height: 1.3; max-width: 36px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 700; }
-.wx-dots { display: flex; gap: 2px; justify-content: center; }
-.wxd { width: 7px; height: 7px; border-radius: 50%; }
-.ev-dot-cal { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); }
-
-/* DAY PANEL */
-.day-panel { display: none; margin: 0 16px 18px; background: var(--sage-l); border: 2px solid var(--sage); border-radius: 16px; overflow: hidden; }
-.day-panel.open { display: block; }
-.dp-head { background: var(--sage-d); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
-.dp-title { font-size: 15px; font-weight: 700; color: white; }
-.dp-wx { font-size: 13px; color: rgba(255,255,255,.8); margin-top: 3px; }
-.dp-close { background: none; border: none; color: white; cursor: pointer; font-size: 20px; padding: 2px 8px; border-radius: 8px; line-height: 1; }
-.dp-add { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; background: white; }
-.dp-body { padding: 12px 16px; background: white; }
-
-/* WEEK */
-.wd { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
-.wd.today-wd { border: 2px solid var(--sage); }
-.wd-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
-.wd-name { font-size: 15px; font-weight: 700; }
-.wd-role { font-size: 13px; padding: 4px 14px; border-radius: 20px; font-weight: 600; }
-.wd-evs { font-size: 14px; color: var(--text-m); line-height: 1.7; }
-
-/* GOALS */
-.goal-row { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
-.goal-row:last-child { border-bottom: none; }
-.gc { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; color: transparent; transition: all .2s; margin-top: 2px; font-weight: 700; }
-.gc.on { background: var(--sage); border-color: var(--sage); color: white; }
-.gn { font-size: 15px; font-weight: 600; }
-.gn.done { text-decoration: line-through; color: var(--text-l); }
-.gnote { font-size: 13px; color: var(--text-m); margin-top: 3px; }
-
-/* ENERGY PAGE */
-.es-lbl { font-size: 15px; font-weight: 700; color: var(--sage-d); margin-bottom: 8px; margin-top: 16px; display: block; }
-.es-area { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 14px; font-size: 15px; font-family: var(--font); color: var(--text); background: var(--bg); outline: none; resize: none; line-height: 1.7; transition: border-color .2s; }
-.es-area:focus { border-color: var(--sage); background: white; }
-
-/* IDEAS */
-.idea-row { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
-.idea-row:last-child { border-bottom: none; }
-.idea-cat { font-size: 13px; padding: 4px 12px; border-radius: 10px; background: var(--sage-l); color: var(--sage-d); flex-shrink: 0; margin-top: 2px; font-weight: 700; }
-.idea-txt { flex: 1; font-size: 15px; color: var(--text); line-height: 1.6; }
-.idea-date { font-size: 12px; color: var(--text-l); margin-top: 4px; }
+.pb{background:var(--bg2);border-radius:10px;overflow:hidden;}
+.pf{border-radius:10px;transition:width .4s;background:linear-gradient(90deg,var(--sage),var(--gold));}
 
 /* FORMS */
-.inp { border: 2px solid var(--border); border-radius: 12px; padding: 12px 14px; font-size: 15px; font-family: var(--font); color: var(--text); background: var(--bg); outline: none; transition: border-color .2s; flex: 1; }
-.inp:focus { border-color: var(--sage); background: white; }
-.inp-t { border: 2px solid var(--border); border-radius: 12px; padding: 12px 10px; font-size: 14px; font-family: var(--font); color: var(--text); background: var(--bg); outline: none; width: 100px; flex-shrink: 0; }
-.btn { background: var(--sage); color: white; border: none; border-radius: 12px; padding: 12px 20px; font-size: 15px; font-family: var(--font); font-weight: 700; cursor: pointer; white-space: nowrap; }
-.btn:hover { opacity: .88; }
-.btn-o { background: var(--bg); color: var(--sage-d); border: 2px solid var(--sage); border-radius: 12px; padding: 10px 18px; font-size: 14px; font-family: var(--font); font-weight: 600; cursor: pointer; white-space: nowrap; }
-.btn-o:hover { background: var(--sage-l); }
-.btn-del { background: #FEE2E2; color: #C73434; border: 2px solid #FECACA; border-radius: 12px; padding: 10px 16px; font-size: 14px; font-family: var(--font); font-weight: 600; cursor: pointer; }
-.ic-btn { background: none; border: none; color: var(--text-l); cursor: pointer; font-size: 16px; padding: 4px; line-height: 1; }
-.ic-btn:hover { color: var(--rose); }
-.add-wrap { display: none; background: var(--bg); border-radius: 14px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
-.fx { display: flex; gap: 10px; }
-.mt10 { margin-top: 10px; }
+.fgrp{display:flex;flex-direction:column;gap:6px;}
+.fgrp label{font-size:14px;font-weight:600;color:var(--sageDk);letter-spacing:0.06em;}
+.fgrp input,.fgrp select,.fgrp textarea{border:1.5px solid var(--bdr);border-radius:9px;padding:11px 14px;font-size:15px;font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--txt);transition:.2s;width:100%;}
+.fgrp input:focus,.fgrp select:focus,.fgrp textarea:focus{outline:none;border-color:var(--sage);background:#fff;}
+.fg{display:grid;gap:14px;}
+.fg2{grid-template-columns:1fr 1fr;}
 
 /* MODAL */
-.mo { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 9000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
-.mo.open { opacity: 1; pointer-events: all; }
-.mo-box { background: white; border-radius: 20px; width: 94%; max-width: 400px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.2); transform: translateY(16px); transition: transform .25s; }
-.mo.open .mo-box { transform: translateY(0); }
-.mo-head { padding: 18px 20px; background: var(--sage-l); display: flex; align-items: center; justify-content: space-between; }
-.mo-title { font-size: 16px; font-weight: 700; color: var(--sage-d); }
-.mo-close { background: none; border: none; color: var(--text-m); cursor: pointer; font-size: 20px; padding: 4px 8px; border-radius: 8px; line-height: 1; }
-.mo-body { padding: 20px; }
-.mo-lbl { font-size: 13px; font-weight: 700; color: var(--text-m); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
-.mo-field { margin-bottom: 14px; }
-.mo-foot { padding: 14px 20px; background: var(--bg); border-top: 1px solid var(--border); display: flex; gap: 10px; }
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(10,30,18,0.5);z-index:1000;backdrop-filter:blur(4px);}
+.modal-bg.open{display:flex;align-items:center;justify-content:center;}
+.modal{background:var(--card);border-radius:20px;padding:30px;width:92%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow2);}
+.mttl{font-family:'Noto Serif TC',serif;font-size:20px;font-weight:700;color:var(--sageDk);margin-bottom:22px;letter-spacing:0.08em;}
+.mbtns{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap;}
 
-/* TOAST */
-.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--sage-d); color: white; padding: 12px 24px; border-radius: 24px; font-size: 15px; font-weight: 600; opacity: 0; transition: all .3s; z-index: 9999; pointer-events: none; box-shadow: 0 6px 20px rgba(0,0,0,.2); }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* MISC */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sec-ttl{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;color:var(--txt);letter-spacing:0.08em;}
+.empty{text-align:center;padding:40px 20px;color:var(--mut);}
+.empty-ico{font-size:40px;margin-bottom:12px;}
+.etag{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;background:rgba(255,255,255,0.55);color:var(--goldDk);border:1.5px solid #E5D0A0;cursor:pointer;transition:all .2s;user-select:none;}
+.etag.on{background:var(--goldDk);color:#fff;border-color:var(--goldDk);}
+.stag{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;background:rgba(255,255,255,0.55);color:var(--lavDk);border:1.5px solid #C8C0E8;cursor:pointer;transition:all .2s;user-select:none;font-family:'Noto Serif TC',serif;font-style:italic;}
+.stag.on{background:var(--lavDk);color:#fff;border-color:var(--lavDk);}
+.etag:hover{background:rgba(196,164,107,0.25);}
+.stag:hover{background:rgba(140,107,194,0.12);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--sageDk);color:#fff;padding:13px 22px;border-radius:12px;font-size:15px;font-weight:600;z-index:9999;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+.notice{background:var(--sageL);border-left:4px solid var(--sage);border-radius:9px;padding:13px 16px;font-size:14px;color:var(--sageDk);margin-bottom:18px;}
 
-.empty { text-align: center; padding: 24px 0; color: var(--text-l); font-size: 15px; line-height: 1.8; }
+/* TODAY PAGE SPECIFIC */
+.today-hero{background:linear-gradient(135deg,var(--sageDk) 0%,#2A5A3A 60%,var(--goldDk) 100%);border-radius:20px;padding:28px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden;}
+.today-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.today-hero::after{content:'';position:absolute;bottom:-50px;left:20px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.hero-date{font-size:14px;opacity:.7;margin-bottom:10px;letter-spacing:0.1em;}
+.hero-quote{font-family:'Noto Serif TC',serif;font-size:19px;font-weight:700;line-height:1.7;margin-bottom:18px;}
+.hero-mantra{font-size:13px;opacity:.7;padding:10px 16px;background:rgba(255,255,255,0.1);border-radius:10px;line-height:1.6;}
+
+/* WUXING */
+.wx-card{background:linear-gradient(135deg,var(--goldL),#FFF8EC);border:1.5px solid #E5D0A0;border-radius:16px;padding:20px;margin-bottom:20px;}
+.wx-title{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;color:var(--goldDk);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.wx-elems{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+.wx-pill{padding:7px 18px;border-radius:24px;font-size:15px;font-weight:700;border:2px solid;}
+.wx-outfit{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.oc{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:14px 16px;text-align:center;box-shadow:var(--shadow);}
+.oc-ic{font-size:22px;margin-bottom:6px;}
+.oc-lbl{font-size:12px;color:var(--mut);margin-bottom:5px;font-weight:600;}
+.oc-val{font-size:15px;font-weight:700;color:var(--txt);}
+
+/* ROXI SPECIAL */
+.roxi-special{background:linear-gradient(135deg,#FDF2F8,#FFF5FC);border:2px solid #F0B8C8;border-radius:14px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.roxi-special-ico{font-size:28px;flex-shrink:0;}
+.roxi-special-txt{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;color:#9E5A80;}
+
+/* TASK */
+.task-main-wrap{background:var(--sageL);border:2px dashed var(--sageMid);border-radius:14px;padding:18px 20px;margin-bottom:16px;}
+.task-main-lbl{font-size:13px;font-weight:700;color:var(--sageDk);margin-bottom:8px;letter-spacing:0.06em;}
+.task-area{width:100%;border:none;outline:none;font-size:17px;font-weight:700;color:var(--txt);font-family:'Noto Serif TC',serif;background:transparent;resize:none;line-height:1.6;}
+.task-area::placeholder{color:#A0C0A8;font-weight:400;font-family:'Noto Sans TC',sans-serif;font-style:italic;}
+.sub-wrap{border-top:1px solid var(--bdr);}
+.sub-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--bdr);}
+.sub-row:last-child{border-bottom:none;}
+.chk{width:24px;height:24px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:transparent;transition:.2s;font-weight:700;}
+.chk.on{background:var(--sage);border-color:var(--sage);color:#fff;}
+.sub-in{flex:1;border:none;outline:none;font-size:16px;font-family:'Noto Sans TC',sans-serif;color:var(--txt);background:transparent;}
+.sub-in::placeholder{color:#B0C8B8;}
+.sub-in.done{text-decoration:line-through;color:var(--mut);}
+.sub-lbl{font-size:13px;font-weight:700;color:var(--mut);padding:12px 0 6px;letter-spacing:0.06em;}
+
+/* ENERGY REMIND */
+.energy-section{margin-bottom:20px;}
+.energy-time-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.energy-ico{font-size:24px;}
+.energy-time-name{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;color:var(--txt);}
+.energy-time-sub{font-size:13px;color:var(--mut);}
+.energy-blocks{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.eb{border-radius:14px;padding:16px 18px;}
+.eb-ico{font-size:20px;margin-bottom:6px;}
+.eb-name{font-size:15px;font-weight:700;margin-bottom:5px;}
+.eb-tips{font-size:13px;line-height:1.7;opacity:.85;}
+
+/* ENERGY WARNING */
+.energy-warn{border-radius:12px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
+.ew-ico{font-size:20px;flex-shrink:0;margin-top:2px;}
+.ew-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+.ew-desc{font-size:13px;line-height:1.6;opacity:.85;}
+
+/* EVENTS */
+.ev-list{display:flex;flex-direction:column;gap:2px;}
+.ev-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:.15s;}
+.ev-row:hover{background:var(--bg2);}
+.ev-time{font-size:13px;color:var(--mut);min-width:42px;font-weight:600;}
+.ev-bar{width:3px;height:28px;background:var(--sage);border-radius:2px;flex-shrink:0;opacity:.6;}
+.ev-name{flex:1;font-size:16px;font-weight:500;}
+.ev-edit{font-size:14px;color:var(--mut);opacity:.5;}
+
+/* CAL */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.cal-arr{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:9px;padding:6px 14px;font-size:18px;cursor:pointer;color:var(--sageDk);font-weight:700;transition:.2s;}
+.cal-arr:hover{background:var(--sageL);}
+.cal-title{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:700;color:var(--txt);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px;}
+.cdh{text-align:center;font-size:12px;font-weight:700;color:var(--mut);padding:5px 0;}
+.cd{border-radius:10px;min-height:60px;display:flex;flex-direction:column;align-items:center;padding:5px 2px 4px;gap:2px;cursor:pointer;transition:background .15s;}
+.cd:hover{background:var(--sageL);}
+.dn{width:28px;height:28px;border-radius:50%;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.cd.today .dn{background:var(--sage);color:#fff;}
+.cd.sel .dn{background:var(--sageL);color:var(--sageDk);}
+.cd.other{opacity:.22;}
+.cd.sat .dn{color:#2563EB;}
+.cd.sun .dn,.cd.hol .dn{color:var(--rose);}
+.cd.today .dn{color:#fff!important;}
+.cd.roxi{background:#FEF6EC;border:1px solid #E8CEA0;}
+.dlbl{font-size:8px;text-align:center;line-height:1.3;max-width:36px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:700;}
+.wx-dots{display:flex;gap:2px;justify-content:center;}
+.wxd{width:7px;height:7px;border-radius:50%;}
+.ev-dot{width:6px;height:6px;border-radius:50%;background:var(--sage);}
+
+/* DAY PANEL */
+.day-panel{display:none;margin:0 18px 20px;background:var(--sageL);border:2px solid var(--sage);border-radius:16px;overflow:hidden;}
+.day-panel.open{display:block;}
+.dp-head{background:var(--sageDk);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;}
+.dp-title{font-family:'Noto Serif TC',serif;font-size:15px;font-weight:700;color:#fff;}
+.dp-wx{font-size:13px;color:rgba(255,255,255,.75);margin-top:3px;}
+.dp-close{background:none;border:none;color:#fff;cursor:pointer;font-size:20px;padding:2px 8px;border-radius:7px;opacity:.75;}
+.dp-close:hover{opacity:1;}
+.dp-add{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;gap:10px;background:#fff;}
+.dp-body{padding:14px 18px;background:#fff;}
+
+/* GOALS */
+.goal-row{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--bdr);}
+.goal-row:last-child{border-bottom:none;}
+.gc{width:22px;height:22px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:transparent;transition:.2s;margin-top:2px;font-weight:700;}
+.gc.on{background:var(--sage);border-color:var(--sage);color:#fff;}
+.gn{font-size:16px;font-weight:600;}
+.gn.done{text-decoration:line-through;color:var(--mut);}
+.gnote{font-size:13px;color:var(--mut);margin-top:3px;}
+
+/* PROGRESS BAR */
+.plbl{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-bottom:7px;}
+
+/* IDEAS */
+.idea-row{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--bdr);}
+.idea-row:last-child{border-bottom:none;}
+.idea-cat{font-size:13px;padding:4px 12px;border-radius:10px;background:var(--sageL);color:var(--sageDk);flex-shrink:0;margin-top:2px;font-weight:700;}
+.idea-txt{flex:1;font-size:15px;line-height:1.6;}
+.idea-date{font-size:12px;color:var(--mut);margin-top:4px;}
+
+/* ENERGY PAGE */
+.es-lbl{font-size:15px;font-weight:700;color:var(--sageDk);margin-bottom:8px;margin-top:18px;display:block;}
+.es-area{width:100%;border:1.5px solid var(--bdr);border-radius:10px;padding:13px 16px;font-size:15px;font-family:'Noto Sans TC',sans-serif;color:var(--txt);background:var(--bg);outline:none;resize:none;line-height:1.7;transition:.2s;}
+.es-area:focus{border-color:var(--sage);background:#fff;}
+
+@media(max-width:768px){
+  .sidebar{width:60px;}
+  .sb-item span:last-child,.sb-logo-sub,.sb-section,.sb-logo-name{display:none;}
+  .sb-item{padding:14px;justify-content:center;}
+  .sb-logo{padding:16px;text-align:center;}
+  .main{margin-left:60px;}
+  .sg4,.sg3{grid-template-columns:repeat(2,1fr);}
+  .sg2{grid-template-columns:1fr;}
+  .fg2{grid-template-columns:1fr;}
+  .energy-blocks{grid-template-columns:1fr;}
+  .content{padding:16px;}
+  .today-hero{padding:20px;}
+  .hero-quote{font-size:16px;}
+}
 </style>
 </head>
 <body>
+<div class="app">
 
-<div class="nav">
-  <button class="nb on" onclick="sp('today',this)"><span class="ic">🌿</span>今日</button>
-  <button class="nb" onclick="sp('week',this)"><span class="ic">📅</span>本週</button>
-  <button class="nb" onclick="sp('cal',this)"><span class="ic">🗓️</span>月曆</button>
-  <button class="nb" onclick="sp('goals',this)"><span class="ic">🎯</span>目標</button>
-  <button class="nb" onclick="sp('energy',this)"><span class="ic">✨</span>能量</button>
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div style="font-size:22px;margin-bottom:6px">🌿</div>
+    <div class="sb-logo-name">珞熙</div>
+    <div class="sb-logo-sub">穩定發光，本身就有力量</div>
+  </div>
+  <div class="sb-section">每日</div>
+  <div class="sb-item active" onclick="nav('today',this)"><span class="ico">🏠</span><span>今日能量</span></div>
+  <div class="sb-item" onclick="nav('cal',this)"><span class="ico">🗓️</span><span>月曆行程</span></div>
+  <div class="sb-section">規劃</div>
+  <div class="sb-item" onclick="nav('week',this)"><span class="ico">📅</span><span>本週概覽</span></div>
+  <div class="sb-item" onclick="nav('goals',this)"><span class="ico">🎯</span><span>目標追蹤</span></div>
+  <div class="sb-section">能量</div>
+  <div class="sb-item" onclick="nav('energy',this)"><span class="ico">✨</span><span>能量管理</span></div>
+  <div class="sb-item" onclick="nav('ideas',this)"><span class="ico">💡</span><span>素材庫</span></div>
+  <div class="sb-item" onclick="nav('gratitude',this)"><span class="ico">🙏</span><span>感恩日記</span></div>
 </div>
 
-<div class="sync-bar">
-  <div class="sync-info">
-    <span class="sdot" id="sdot"></span>
-    <span id="syncTxt">載入中...</span>
-    <span id="hDate" style="color:#bbb"></span>
-  </div>
-  <button class="btn-sync" onclick="saveAll()">☁️ 同步</button>
-</div>
-
-<!-- ══ 今日 ══ -->
-<div class="pg on" id="pg-today">
-
-  <div class="quote-card">
-    <div class="quote-date" id="todayLbl"></div>
-    <div class="quote-txt" id="dailyQ"></div>
-  </div>
-
-  <div class="prog-wrap">
-    <div class="prog-label">
-      <div class="prog-title">今日例程進度</div>
-      <div class="prog-pct" id="pct">0%</div>
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="tb-ttl" id="topTitle">今日能量</span>
+    <div class="tb-right">
+      <span class="sync-dot" id="syncDot"></span>
+      <span class="sync-txt" id="syncTxt">載入中...</span>
+      <button class="btn btn-s btn-sm" onclick="saveAll()">☁️ 同步</button>
     </div>
-    <div class="prog-bar"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
   </div>
 
-  <div class="card">
-    <div class="card-head"><span class="card-title">🎯 今天最重要的事</span></div>
-    <div class="card-body">
-      <div class="task-main">
-        <div class="task-hint">問自己：今天最重要的一件事是什麼？</div>
-        <textarea class="task-area" id="mainTask" placeholder="只有一件，不是十件。" rows="2" oninput="saveTasks()"></textarea>
+  <div class="content">
+
+    <!-- ══ 今日能量 ══ -->
+    <div class="pg active" id="pg-today">
+      <!-- Hero -->
+      <div class="today-hero">
+        <div class="hero-date" id="heroDate"></div>
+        <div class="hero-quote" id="heroQuote"></div>
+        <div class="hero-mantra">我不是把自己燃燒掉才有價值。我穩定發光，本身就有力量。</div>
       </div>
-      <div class="sub-label">次要任務（最多2件）</div>
-      <div class="sub-row">
-        <div class="chk" id="c1" onclick="tSub(1)"></div>
-        <input class="sub-in" id="s1" placeholder="次要任務 1" oninput="saveTasks()">
-      </div>
-      <div class="sub-row">
-        <div class="chk" id="c2" onclick="tSub(2)"></div>
-        <input class="sub-in" id="s2" placeholder="次要任務 2" oninput="saveTasks()">
-      </div>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="card-head"><span class="card-title">⏰ 今日能量節奏</span></div>
-    <div class="card-body">
-      <div class="tb-grid">
-        <div class="tb" style="background:var(--gold-l);color:#7A5C1E">
-          <div class="tb-time">🌅 早晨</div>
-          <div class="tb-name">能量建立</div>
-          <div class="tb-note">喝水・曬太陽・安靜<br>不滑手機不回訊息</div>
-        </div>
-        <div class="tb" style="background:var(--sage-l);color:var(--sage-d)">
-          <div class="tb-time">☀️ 上午</div>
-          <div class="tb-name">黃金時段</div>
-          <div class="tb-note">創作・拍片・思考<br>重要的事放這裡</div>
-        </div>
-        <div class="tb" style="background:var(--lav-l);color:var(--lav)">
-          <div class="tb-time">🌤 下午</div>
-          <div class="tb-name">執行區</div>
-          <div class="tb-note">客人服務・行政<br>固定時間回訊息</div>
-        </div>
-        <div class="tb" style="background:var(--rose-l);color:var(--rose)">
-          <div class="tb-time">🌙 晚上</div>
-          <div class="tb-name">回充區</div>
-          <div class="tb-note">散步・泡澡・放鬆<br>大腦需要收工</div>
-        </div>
-      </div>
-    </div>
-  </div>
+      <!-- 珞熙特殊日 -->
+      <div id="roxiSpecialWrap"></div>
 
-  <div class="card">
-    <div class="card-head">
-      <span class="card-title">🕐 今日行程</span>
-      <button class="btn-o" onclick="tog('addEv')">＋ 新增</button>
-    </div>
-    <div class="card-body">
-      <div class="add-wrap" id="addEv">
-        <div class="fx">
-          <input type="time" class="inp-t" id="evTime">
-          <input type="text" class="inp" id="evText" placeholder="行程名稱...">
-        </div>
-        <div class="fx mt10">
-          <button class="btn" onclick="addEv()">新增</button>
-          <button class="btn-o" onclick="tog('addEv')">取消</button>
-        </div>
-      </div>
-      <div id="evList"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-head">
-      <span class="card-title">✨ 今日五行穿衣</span>
-      <span style="font-size:13px;color:var(--text-m);font-weight:600" id="wxDate"></span>
-    </div>
-    <div class="card-body">
-      <div class="wx-banner">
+      <!-- 今日五行穿衣 -->
+      <div class="wx-card">
+        <div class="wx-title">✨ 今日五行穿衣建議 <span style="font-size:13px;font-weight:400;color:var(--goldDk);font-family:'Noto Sans TC'" id="wxDate"></span></div>
         <div class="wx-elems" id="wxElems"></div>
-        <div class="wx-tip" id="wxTip"></div>
+        <div style="font-size:14px;color:var(--goldDk);margin-bottom:14px;line-height:1.6" id="wxTip"></div>
+        <div class="wx-outfit" id="wxOutfit"></div>
       </div>
-      <div class="wx-outfit" id="wxOutfit"></div>
-    </div>
-  </div>
 
-</div>
-
-<!-- ══ 本週 ══ -->
-<div class="pg" id="pg-week">
-  <div id="weekDays" style="padding-top:4px"></div>
-  <div class="card">
-    <div class="card-head">
-      <span class="card-title">🎯 本週目標</span>
-      <button class="btn-o" onclick="tog('addWG')">＋ 新增</button>
-    </div>
-    <div class="card-body">
-      <div class="add-wrap" id="addWG">
-        <div class="fx">
-          <input type="text" class="inp" id="wgTxt" placeholder="本週想達成...">
-          <button class="btn" onclick="addWG()">新增</button>
-        </div>
-      </div>
-      <div id="wgList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ 月曆 ══ -->
-<div class="pg" id="pg-cal">
-  <div class="card">
-    <div class="card-head"><span class="card-title">🗓️ 月曆</span></div>
-    <div class="card-body">
-      <div class="cal-nav">
-        <button class="cal-arr" onclick="chM(-1)">‹</button>
-        <span class="cal-title" id="calTitle"></span>
-        <button class="cal-arr" onclick="chM(1)">›</button>
-      </div>
-      <div class="cal-grid" id="calGrid"></div>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--text-m);font-weight:600">
-        <span>🌸 珞熙特殊日</span>
-        <span style="color:var(--rose)">● 假日</span>
-        <span style="color:var(--sage)">● 有行程</span>
-      </div>
-    </div>
-    <div class="day-panel" id="dayPanel">
-      <div class="dp-head">
+      <div class="sg sg2">
+        <!-- 今日主軸任務 -->
         <div>
-          <div class="dp-title" id="dpTitle"></div>
-          <div class="dp-wx" id="dpWx"></div>
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">🎯 今日主軸任務</span></div>
+            <div class="card-bd">
+              <div class="task-main-wrap">
+                <div class="task-main-lbl">今天最重要的一件事</div>
+                <textarea class="task-area" id="mainTask" placeholder="不是十件，是一件。" rows="3" oninput="saveTasks()"></textarea>
+              </div>
+              <div class="sub-lbl">次要任務（最多 2 件）</div>
+              <div class="sub-wrap">
+                <div class="sub-row">
+                  <div class="chk" id="c1" onclick="tSub(1)"></div>
+                  <input class="sub-in" id="s1" placeholder="次要任務 1" oninput="saveTasks()">
+                </div>
+                <div class="sub-row">
+                  <div class="chk" id="c2" onclick="tSub(2)"></div>
+                  <input class="sub-in" id="s2" placeholder="次要任務 2" oninput="saveTasks()">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 今日行程 -->
+          <div class="card">
+            <div class="card-hd">
+              <span class="card-ttl">🕐 今日行程</span>
+              <button class="btn btn-s btn-sm" onclick="toggleForm('addEvWrap')">＋ 新增</button>
+            </div>
+            <div class="card-bd">
+              <div id="addEvWrap" style="display:none;margin-bottom:16px">
+                <div class="fg" style="grid-template-columns:110px 1fr auto;gap:10px;align-items:end">
+                  <div class="fgrp"><label>時間</label><input type="time" id="evTime"></div>
+                  <div class="fgrp"><label>行程名稱</label><input type="text" id="evText" placeholder="行程內容..."></div>
+                  <div><button class="btn btn-p" onclick="addEv()" style="margin-top:22px">新增</button></div>
+                </div>
+              </div>
+              <div id="evList" class="ev-list"></div>
+            </div>
+          </div>
         </div>
-        <button class="dp-close" onclick="closeDP()">✕</button>
-      </div>
-      <div class="dp-add">
-        <input type="time" class="inp-t" id="dpTime">
-        <input type="text" class="inp" id="dpText" placeholder="新增行程...">
-        <button class="btn" onclick="addDP()">✓ 新增</button>
-      </div>
-      <div class="dp-body" id="dpBody"></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-head">
-      <span class="card-title">📌 本月目標</span>
-      <button class="btn-o" onclick="tog('addMG')">＋ 新增</button>
-    </div>
-    <div class="card-body">
-      <div class="add-wrap" id="addMG">
-        <div class="fx">
-          <input type="text" class="inp" id="mgTxt" placeholder="本月想達成...">
-          <button class="btn" onclick="addMG()">新增</button>
+
+        <!-- 能量提醒 -->
+        <div>
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">⚡ 能量節奏提醒</span></div>
+            <div class="card-bd">
+              <div class="energy-blocks" style="margin-bottom:16px">
+                <div class="eb" style="background:var(--goldL);color:#7A5C1E">
+                  <div class="eb-ico">🌅</div>
+                  <div class="eb-name">早晨｜能量建立</div>
+                  <div class="eb-tips">起床不滑手機<br>喝水・曬太陽・安靜10分鐘<br>寫今天的主軸任務</div>
+                </div>
+                <div class="eb" style="background:var(--sageL);color:var(--sageDk)">
+                  <div class="eb-ico">☀️</div>
+                  <div class="eb-name">上午｜黃金時段</div>
+                  <div class="eb-tips">最重要的事放這裡<br>創作・拍片・思考<br>不要拿去回訊息</div>
+                </div>
+                <div class="eb" style="background:var(--lavL);color:var(--lavDk)">
+                  <div class="eb-ico">🌤</div>
+                  <div class="eb-name">下午｜執行服務</div>
+                  <div class="eb-tips">客人服務・行政<br>固定時間批次回訊息<br>不讓雜事入侵上午</div>
+                </div>
+                <div class="eb" style="background:var(--roseL);color:var(--roseDk)">
+                  <div class="eb-ico">🌙</div>
+                  <div class="eb-name">晚上｜回充收工</div>
+                  <div class="eb-tips">大腦需要真正關機<br>散步・泡澡・放音樂<br>不剪片到半夜</div>
+                </div>
+              </div>
+
+              <!-- 今日能量警示 -->
+              <div style="font-size:13px;font-weight:700;color:var(--mut);margin-bottom:10px;letter-spacing:0.06em;">🔋 今日能量保護</div>
+              <div class="energy-warn" style="background:var(--warmL)">
+                <div class="ew-ico">🚫</div>
+                <div><div class="ew-title" style="color:var(--warmDk)">停止能量漏水</div><div class="ew-desc" style="color:var(--warmDk)">避免處理別人的情緒・過度回訊息・硬撐不喜歡的關係。你的磁場很誠實，假裝沒事只會掉能量更快。</div></div>
+              </div>
+              <div class="energy-warn" style="background:var(--sageL)">
+                <div class="ew-ico">✅</div>
+                <div><div class="ew-title" style="color:var(--sageDk)">今日補充能量</div><div class="ew-desc" style="color:var(--sageDk)">感受到美、自由、真實，就會活過來。香氛・音樂・整潔空間・接觸自然，都會直接幫你充電。</div></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div id="mgList"></div>
+    </div>
+
+    <!-- ══ 月曆行程 ══ -->
+    <div class="pg" id="pg-cal">
+      <div class="pg-ttl">月曆行程</div>
+      <div class="pg-sub" id="calSubDate"></div>
+
+      <div class="sg sg2" style="align-items:start">
+        <div>
+          <div class="card">
+            <div class="card-bd">
+              <div class="cal-nav">
+                <button class="cal-arr" onclick="chM(-1)">‹</button>
+                <span class="cal-title" id="calTitle"></span>
+                <button class="cal-arr" onclick="chM(1)">›</button>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mut);font-weight:700">
+                <span>🌸 珞熙特殊日</span>
+                <span style="color:var(--rose)">● 假日</span>
+                <span style="color:var(--sage)">● 有行程</span>
+              </div>
+            </div>
+            <div class="day-panel" id="dayPanel">
+              <div class="dp-head">
+                <div><div class="dp-title" id="dpTitle"></div><div class="dp-wx" id="dpWx"></div></div>
+                <button class="dp-close" onclick="closeDP()">✕</button>
+              </div>
+              <div class="dp-add">
+                <input type="time" id="dpTime" style="border:1.5px solid var(--bdr);border-radius:9px;padding:9px 12px;font-size:14px;width:110px;flex-shrink:0;background:var(--bg);">
+                <input type="text" id="dpText" placeholder="新增行程..." style="flex:1;border:1.5px solid var(--bdr);border-radius:9px;padding:9px 14px;font-size:14px;background:var(--bg);">
+                <button class="btn btn-p btn-sm" onclick="addDP()">✓ 新增</button>
+              </div>
+              <div class="dp-body" id="dpBody"></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- 當月特殊日 -->
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">🌸 本月珞熙特殊日</span></div>
+            <div class="card-bd" id="roxiMonthList"></div>
+          </div>
+          <!-- 明日預覽 -->
+          <div class="card">
+            <div class="card-hd">
+              <span class="card-ttl">🌙 明日行程</span>
+              <button class="btn btn-s btn-sm" onclick="toggleForm('addEvMWrap')">＋ 新增</button>
+            </div>
+            <div class="card-bd">
+              <div id="addEvMWrap" style="display:none;margin-bottom:14px">
+                <div class="fg" style="grid-template-columns:110px 1fr auto;gap:10px;align-items:end">
+                  <div class="fgrp"><label>時間</label><input type="time" id="evTimeM"></div>
+                  <div class="fgrp"><label>行程</label><input type="text" id="evTextM" placeholder="明日行程..."></div>
+                  <div><button class="btn btn-p btn-sm" onclick="addEvM()" style="margin-top:22px">新增</button></div>
+                </div>
+              </div>
+              <div id="evListM" class="ev-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 本週概覽 ══ -->
+    <div class="pg" id="pg-week">
+      <div class="pg-ttl">本週概覽</div>
+      <div class="pg-sub" id="weekRangeLabel"></div>
+      <div id="weekDays"></div>
+      <div class="card">
+        <div class="card-hd"><span class="card-ttl">🎯 本週目標</span><button class="btn btn-s btn-sm" onclick="toggleForm('addWGWrap')">＋ 新增</button></div>
+        <div class="card-bd">
+          <div id="addWGWrap" style="display:none;margin-bottom:14px">
+            <div class="fg" style="grid-template-columns:1fr auto;gap:10px">
+              <input class="fgrp" style="border:1.5px solid var(--bdr);border-radius:9px;padding:11px 14px;font-size:15px;background:var(--bg);" id="wgTxt" placeholder="本週想達成...">
+              <button class="btn btn-p" onclick="addWG()">新增</button>
+            </div>
+          </div>
+          <div id="wgList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 目標追蹤 ══ -->
+    <div class="pg" id="pg-goals">
+      <div class="pg-ttl">目標追蹤</div>
+      <div class="pg-sub">唯有復盤，人生才能翻盤</div>
+
+      <!-- 激勵語 -->
+      <div class="notice" style="background:linear-gradient(135deg,var(--sageL),var(--goldL));border-color:var(--gold);padding:18px 22px;">
+        <div style="font-family:'Noto Serif TC',serif;font-size:15px;line-height:1.9;color:var(--txt);margin-bottom:10px">模仿是最快的學習方式，找到你當下目光所及認為最優秀的那個，把它作為你的標竿，以他為標準，他做什麼你做什麼，缺什麼補什麼。為了能夠成為她，你可以付出生命以外的任何東西，每個細節我要超越她。</div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:14px;font-weight:700;color:var(--sageDk);text-align:center;padding:10px;background:rgba(255,255,255,0.6);border-radius:10px">✨ 唯有復盤，人生才能翻盤 ✨</div>
+      </div>
+
+      <div class="sg sg2" style="align-items:start">
+        <div>
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">📋 本週目標</span><button class="btn btn-s btn-sm" onclick="toggleForm('addWGGWrap')">＋ 新增</button></div>
+            <div class="card-bd">
+              <div id="addWGGWrap" style="display:none;margin-bottom:14px"><div class="fg" style="grid-template-columns:1fr auto;gap:10px"><input style="border:1.5px solid var(--bdr);border-radius:9px;padding:11px 14px;font-size:15px;background:var(--bg);flex:1;" id="wgTxtG" placeholder="本週想達成..."><button class="btn btn-p" onclick="addWGG()">新增</button></div></div>
+              <div id="wgListG"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">📅 本月目標</span><button class="btn btn-s btn-sm" onclick="toggleForm('addMGWrap')">＋ 新增</button></div>
+            <div class="card-bd">
+              <div id="addMGWrap" style="display:none;margin-bottom:14px"><div class="fg" style="grid-template-columns:1fr auto;gap:10px"><input style="border:1.5px solid var(--bdr);border-radius:9px;padding:11px 14px;font-size:15px;background:var(--bg);flex:1;" id="mgTxt" placeholder="本月想達成..."><button class="btn btn-p" onclick="addMG()">新增</button></div></div>
+              <div id="mgList"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">🌟 年度目標</span><button class="btn btn-s btn-sm" onclick="toggleForm('addYGWrap')">＋ 新增</button></div>
+            <div class="card-bd">
+              <div id="addYGWrap" style="display:none;margin-bottom:14px">
+                <div class="fg">
+                  <div class="fg fg2">
+                    <div class="fgrp"><label>目標名稱</label><input id="ygTxt" placeholder="年度目標..."></div>
+                    <div class="fgrp"><label>類別</label><input id="ygCat" placeholder="類別"></div>
+                  </div>
+                  <div style="text-align:right"><button class="btn btn-p" onclick="addYG()">新增</button></div>
+                </div>
+              </div>
+              <div id="ygList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 能量管理 ══ -->
+    <div class="pg" id="pg-energy">
+      <div class="pg-ttl">能量管理</div>
+      <div class="pg-sub">當你狀態對了，整個人就會開始發光</div>
+
+      <div class="sg sg2" style="align-items:start">
+        <div>
+          <!-- 能量漏點 -->
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">🔍 能量漏點檢查（每月）</span></div>
+            <div class="card-bd">
+              <div class="notice" style="margin-bottom:0">你的磁場很容易被：人際情緒・關係壓力・混亂環境・過度資訊・一直回訊息 消耗掉。每月誠實問自己，找出漏水的地方。</div>
+              <label class="es-lbl" style="margin-top:16px">😤 最近誰最耗我？</label>
+              <textarea class="es-area" id="ec1" rows="2" placeholder="寫下讓你感覺沉重的人際關係..." oninput="saveEC()"></textarea>
+              <label class="es-lbl">⚡ 哪件事最消耗？</label>
+              <textarea class="es-area" id="ec2" rows="2" placeholder="哪些工作讓你感覺很累..." oninput="saveEC()"></textarea>
+              <label class="es-lbl">🗑️ 哪些事其實不重要？</label>
+              <textarea class="es-area" id="ec3" rows="2" placeholder="可以捨棄、拒絕或交給 AI 的事..." oninput="saveEC()"></textarea>
+              <label class="es-lbl">🌸 本月真正的放鬆是？</label>
+              <textarea class="es-area" id="ec4" rows="2" placeholder="不是滑手機，而是出門・自然・按摩..." oninput="saveEC()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- 開工收工儀式 -->
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">🕯️ 開工 & 收工儀式</span></div>
+            <div class="card-bd">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+                <div style="background:var(--goldL);border-radius:12px;padding:16px">
+                  <div style="font-size:14px;font-weight:700;color:var(--goldDk);margin-bottom:10px">🌅 開工前說</div>
+                  <div style="font-size:14px;color:var(--goldDk);line-height:1.9">我可以陪伴，<br>但不承接。<br><br>我只提供當下的服務，<br>不背負別人的人生。</div>
+                </div>
+                <div style="background:var(--lavL);border-radius:12px;padding:16px">
+                  <div style="font-size:14px;font-weight:700;color:var(--lavDk);margin-bottom:10px">🌙 收工儀式</div>
+                  <div style="font-size:14px;color:var(--lavDk);line-height:1.9">✓ 洗手 / 洗澡<br>✓ 換衣服<br>✓ 點香氛<br>✓ 放音樂<br>✓ 散步出門</div>
+                </div>
+              </div>
+              <div style="background:var(--sageL);border-radius:12px;padding:16px;border:2px solid var(--sage)">
+                <div style="font-size:14px;font-weight:700;color:var(--sageDk);margin-bottom:6px">📵 起床 & 睡前不滑手機</div>
+                <div style="font-size:14px;color:var(--sageDk);line-height:1.7">整理環境 = 整理能量。固定時間回覆訊息，不讓大腦隨時待命。</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 高能量來源 -->
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">💫 你的高能量來源</span></div>
+            <div class="card-bd">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="background:var(--sageL);border-radius:10px;padding:12px 14px"><div style="font-size:14px;font-weight:700;color:var(--sageDk);margin-bottom:4px">🌿 美感空間</div><div style="font-size:13px;color:var(--sageDk)">香味・光線・音樂・整潔・美感，都會直接幫你充電。你適合打造「讓自己一進去就舒服的空間」。</div></div>
+                <div style="background:var(--lavL);border-radius:10px;padding:12px 14px"><div style="font-size:14px;font-weight:700;color:var(--lavDk);margin-bottom:4px">🚶‍♀️ 身體流動感</div><div style="font-size:13px;color:var(--lavDk)">散步・拉筋・按摩・流汗・曬太陽・接觸自然。尤其水與陽光很適合你。</div></div>
+                <div style="background:var(--warmL);border-radius:10px;padding:12px 14px"><div style="font-size:14px;font-weight:700;color:var(--warmDk);margin-bottom:4px">🎬 真實輸出</div><div style="font-size:13px;color:var(--warmDk)">拍影片・分享想法・寫文字・聊真心話。你是「輸出型能量」，越真實，財富越容易靠近你。</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 每季校正 -->
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">🔄 每季問自己</span></div>
+            <div class="card-bd">
+              <div style="font-size:15px;color:var(--mut);line-height:1.7;margin-bottom:14px">每三個月校正方向：<br><strong style="color:var(--txt)">「我現在的人生，還是我想要的嗎？」</strong></div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                <div style="background:var(--goldL);border-radius:12px;padding:14px;text-align:center"><div style="font-size:20px;margin-bottom:6px">🔥</div><div style="font-size:13px;font-weight:700;color:var(--goldDk)">衝刺期</div><div style="font-size:12px;color:var(--goldDk);opacity:.8;margin-top:4px;line-height:1.5">創作・推廣<br>建立品牌</div></div>
+                <div style="background:var(--sageL);border-radius:12px;padding:14px;text-align:center"><div style="font-size:20px;margin-bottom:6px">⚖️</div><div style="font-size:13px;font-weight:700;color:var(--sageDk)">穩定期</div><div style="font-size:12px;color:var(--sageDk);opacity:.8;margin-top:4px;line-height:1.5">優化流程<br>穩定收入</div></div>
+                <div style="background:var(--lavL);border-radius:12px;padding:14px;text-align:center"><div style="font-size:20px;margin-bottom:6px">🌸</div><div style="font-size:13px;font-weight:700;color:var(--lavDk)">回充期</div><div style="font-size:12px;color:var(--lavDk);opacity:.8;margin-top:4px;line-height:1.5">放慢・旅行<br>回到生活</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 素材庫 ══ -->
+    <div class="pg" id="pg-ideas">
+      <div class="pg-ttl">素材庫</div>
+      <div class="pg-sub">平常記錄靈感，之後再整理・剪片・發文</div>
+      <div class="card">
+        <div class="card-hd"><span class="card-ttl">💡 靈感紀錄</span><button class="btn btn-p btn-sm" onclick="toggleForm('addIdeaWrap')">＋ 記錄靈感</button></div>
+        <div class="card-bd">
+          <div id="addIdeaWrap" style="display:none;margin-bottom:16px">
+            <div class="fg fg2">
+              <div class="fgrp"><label>類別</label><select id="ideaCat"><option>💡靈感</option><option>📖客人故事</option><option>🎬拍攝畫面</option><option>✍️句子</option><option>🌸生活感受</option></select></div>
+              <div class="fgrp"><label>內容</label><input id="ideaTxt" placeholder="記錄這個靈感..."></div>
+            </div>
+            <div style="text-align:right;margin-top:10px"><button class="btn btn-p" onclick="addIdea()">記錄</button></div>
+          </div>
+          <div id="ideaList"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══ 感恩日記 ══ -->
+    <div class="pg" id="pg-gratitude">
+      <div class="pg-ttl">感恩日記</div>
+      <div class="pg-sub">越具體越有力量。每天 3 件，讓心慢慢變軟。</div>
+
+      <div class="sg sg2" style="align-items:start">
+        <!-- 左欄：今日輸入 -->
+        <div>
+          <div class="card">
+            <div class="card-hd">
+              <span class="card-ttl">🙏 今日感恩</span>
+              <span style="font-size:13px;color:var(--mut)" id="grDate"></span>
+            </div>
+            <div class="card-bd">
+              <div style="font-size:14px;color:var(--mut);margin-bottom:16px;line-height:1.7;background:var(--sageL);border-radius:10px;padding:12px 16px">
+                越具體越好。不是「感恩今天很好」，<br>而是「感恩客人帶來的早餐，讓我感受到被記得」。
+              </div>
+              <div id="grInputs">
+                <div class="fgrp" style="margin-bottom:12px">
+                  <label style="font-size:13px;font-weight:700;color:var(--sageDk)">🌿 感恩 1</label>
+                  <textarea id="gr1" rows="2" placeholder="感恩今天..." oninput="updateGrPreview()" style="border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;font-size:15px;font-family:'Noto Sans TC',sans-serif;color:var(--txt);background:var(--bg);outline:none;resize:none;line-height:1.7;width:100%;transition:.2s"></textarea>
+                </div>
+                <div class="fgrp" style="margin-bottom:12px">
+                  <label style="font-size:13px;font-weight:700;color:var(--sageDk)">🌿 感恩 2</label>
+                  <textarea id="gr2" rows="2" placeholder="感恩今天..." oninput="updateGrPreview()" style="border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;font-size:15px;font-family:'Noto Sans TC',sans-serif;color:var(--txt);background:var(--bg);outline:none;resize:none;line-height:1.7;width:100%;transition:.2s"></textarea>
+                </div>
+                <div class="fgrp" style="margin-bottom:20px">
+                  <label style="font-size:13px;font-weight:700;color:var(--sageDk)">🌿 感恩 3</label>
+                  <textarea id="gr3" rows="2" placeholder="感恩今天..." oninput="updateGrPreview()" style="border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;font-size:15px;font-family:'Noto Sans TC',sans-serif;color:var(--txt);background:var(--bg);outline:none;resize:none;line-height:1.7;width:100%;transition:.2s"></textarea>
+                </div>
+
+                <!-- 今天我把能量留給了什麼 -->
+                <div style="background:var(--goldL);border:1.5px solid #E5D0A0;border-radius:14px;padding:16px 18px;margin-bottom:20px">
+                  <div style="font-size:14px;font-weight:700;color:var(--goldDk);margin-bottom:4px">⚡ 今天我把能量留給了什麼？</div>
+                  <div style="font-size:12px;color:var(--goldDk);opacity:.8;margin-bottom:12px">例如：陪伴女兒・重要客人・休息・創作</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px" id="energyTagsWrap">
+                    <div onclick="toggleEnergyTag(this,'陪伴女兒')" class="etag">👧 陪伴女兒</div>
+                    <div onclick="toggleEnergyTag(this,'服務客人')" class="etag">💆‍♀️ 服務客人</div>
+                    <div onclick="toggleEnergyTag(this,'創作拍攝')" class="etag">🎬 創作拍攝</div>
+                    <div onclick="toggleEnergyTag(this,'好好休息')" class="etag">🌙 好好休息</div>
+                    <div onclick="toggleEnergyTag(this,'自我照顧')" class="etag">🌸 自我照顧</div>
+                    <div onclick="toggleEnergyTag(this,'學習成長')" class="etag">📚 學習成長</div>
+                    <div onclick="toggleEnergyTag(this,'家人陪伴')" class="etag">🏠 家人陪伴</div>
+                    <div onclick="toggleEnergyTag(this,'運動身體')" class="etag">🏃‍♀️ 運動身體</div>
+                  </div>
+                  <textarea id="energyCustom" rows="1" placeholder="或自己填寫..." oninput="updateGrPreview()" style="border:1.5px solid #E5D0A0;border-radius:9px;padding:9px 12px;font-size:14px;font-family:'Noto Sans TC',sans-serif;color:var(--txt);background:rgba(255,255,255,0.6);outline:none;resize:none;line-height:1.6;width:100%;transition:.2s"></textarea>
+                </div>
+
+                <!-- 感謝自己 -->
+                <div style="background:var(--lavL);border:1.5px solid #C8C0E8;border-radius:14px;padding:16px 18px;margin-bottom:20px">
+                  <div style="font-size:14px;font-weight:700;color:var(--lavDk);margin-bottom:6px">💜 今天，我想對自己說</div>
+                  <div style="font-size:12px;color:var(--lavDk);opacity:.8;margin-bottom:12px">你很容易看見自己沒做到的。今天只說一句，讓靈魂停止戰鬥。</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+                    <div onclick="setSelfMsg(this,'我今天其實已經很努力了。')" class="stag">我今天其實已經很努力了。</div>
+                    <div onclick="setSelfMsg(this,'我今天做到了自己能做的。')" class="stag">我今天做到了自己能做的。</div>
+                    <div onclick="setSelfMsg(this,'我今天允許自己不夠完美。')" class="stag">我今天允許自己不夠完美。</div>
+                    <div onclick="setSelfMsg(this,'我今天選擇了對的事。')" class="stag">我今天選擇了對的事。</div>
+                    <div onclick="setSelfMsg(this,'我值得被好好對待。')" class="stag">我值得被好好對待。</div>
+                  </div>
+                  <textarea id="selfMsg" rows="2" placeholder="或用自己的話..." oninput="updateGrPreview()" style="border:1.5px solid #C8C0E8;border-radius:9px;padding:11px 14px;font-size:15px;font-family:'Noto Serif TC',serif;color:var(--lavDk);background:rgba(255,255,255,0.6);outline:none;resize:none;line-height:1.7;width:100%;transition:.2s;font-style:italic"></textarea>
+                </div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button class="btn btn-p" onclick="saveGratitude()">💾 儲存今日</button>
+                  <button class="btn btn-gold" onclick="generateGrCard()">🖼️ 產生截圖卡片</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 過去紀錄 -->
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">📖 過去紀錄</span></div>
+            <div class="card-bd" id="grHistory"></div>
+          </div>
+        </div>
+
+        <!-- 右欄：卡片預覽 -->
+        <div>
+          <div class="card">
+            <div class="card-hd">
+              <span class="card-ttl">📸 截圖卡片預覽</span>
+              <button class="btn btn-s btn-sm" onclick="downloadGrCard()">⬇️ 下載圖片</button>
+            </div>
+            <div class="card-bd" style="padding:16px">
+              <!-- Canvas 卡片 -->
+              <canvas id="grCanvas" width="900" height="1200" style="width:100%;border-radius:14px;box-shadow:0 4px 24px rgba(60,110,80,0.15);display:block"></canvas>
+              <div style="font-size:12px;color:var(--mut);text-align:center;margin-top:10px;line-height:1.6">✨ 長按圖片儲存（手機）<br>或點「⬇️ 下載圖片」（電腦）</div>
+            </div>
+          </div>
+
+          <!-- 主題選擇 -->
+          <div class="card">
+            <div class="card-hd"><span class="card-ttl">🎨 卡片主題</span></div>
+            <div class="card-bd">
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" id="themeGrid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Edit Ev Modal -->
+<div class="modal-bg" id="evModal">
+  <div class="modal">
+    <div class="mttl">✏️ 編輯行程</div>
+    <div class="fg">
+      <div class="fgrp"><label>時間</label><input type="time" id="moTime"></div>
+      <div class="fgrp"><label>行程名稱</label><input type="text" id="moText"></div>
+      <div class="fgrp"><label>日期</label><input type="date" id="moDate"></div>
+    </div>
+    <div class="mbtns">
+      <button class="btn btn-s" style="background:var(--roseL);color:var(--roseDk);border-color:var(--roseL)" onclick="delEv()">🗑️ 刪除</button>
+      <button class="btn btn-s" onclick="closeMo('evModal')">取消</button>
+      <button class="btn btn-p" onclick="saveEv()">儲存</button>
     </div>
   </div>
 </div>
 
-<!-- ══ 目標 ══ -->
-<div class="pg" id="pg-goals">
-  <div class="card" style="margin-top:0">
-    <div style="background:linear-gradient(135deg,var(--sage-d),var(--lav));padding:22px;color:white">
-      <div style="font-size:15px;line-height:1.9;opacity:.95;margin-bottom:14px">模仿是最快的學習方式，找到你當下目光所及認為最優秀的那個，把它作為你的標竿，以他為標準，他做什麼你做什麼，缺什麼補什麼。為了能夠成為她，你可以付出生命以外的任何東西，每個細節我要超越她。</div>
-      <div style="font-size:15px;font-weight:700;text-align:center;padding:12px;background:rgba(255,255,255,.18);border-radius:12px">✨ 唯有復盤，人生才能翻盤 ✨</div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-head"><span class="card-title">📋 週目標</span><button class="btn-o" onclick="tog('addWGG')">＋ 新增</button></div>
-    <div class="card-body">
-      <div class="add-wrap" id="addWGG"><div class="fx"><input type="text" class="inp" id="wgTxtG" placeholder="本週想達成..."><button class="btn" onclick="addWGG()">新增</button></div></div>
-      <div id="wgListG"></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-head"><span class="card-title">📅 月目標</span><button class="btn-o" onclick="tog('addMGG')">＋ 新增</button></div>
-    <div class="card-body">
-      <div class="add-wrap" id="addMGG"><div class="fx"><input type="text" class="inp" id="mgTxtG" placeholder="本月想達成..."><button class="btn" onclick="addMGG()">新增</button></div></div>
-      <div id="mgListG"></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-head"><span class="card-title">🌟 年度目標</span><button class="btn-o" onclick="tog('addYG')">＋ 新增</button></div>
-    <div class="card-body">
-      <div class="add-wrap" id="addYG">
-        <div class="fx">
-          <input type="text" class="inp" id="ygTxt" placeholder="年度目標名稱...">
-          <input type="text" class="inp" id="ygCat" placeholder="類別" style="flex:0 0 80px">
-        </div>
-        <div class="fx mt10"><button class="btn" onclick="addYG()">新增</button><button class="btn-o" onclick="tog('addYG')">取消</button></div>
-      </div>
-      <div id="ygList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ 能量 ══ -->
-<div class="pg" id="pg-energy">
-  <div class="card">
-    <div class="card-head"><span class="card-title">🔍 能量漏點（每月）</span></div>
-    <div class="card-body">
-      <div style="font-size:15px;color:var(--text-m);line-height:1.7;margin-bottom:4px">每個月誠實問自己，把消耗能量的地方找出來。</div>
-      <label class="es-lbl" style="margin-top:14px">😤 最近誰最耗我？</label>
-      <textarea class="es-area" id="ec1" rows="2" placeholder="寫下讓你感覺沉重的人際關係..." oninput="saveEC()"></textarea>
-      <label class="es-lbl">⚡ 哪件事最消耗？</label>
-      <textarea class="es-area" id="ec2" rows="2" placeholder="哪些工作讓你感覺很累..." oninput="saveEC()"></textarea>
-      <label class="es-lbl">🗑️ 哪些事其實不重要？</label>
-      <textarea class="es-area" id="ec3" rows="2" placeholder="可以捨棄、拒絕或交給 AI 的事..." oninput="saveEC()"></textarea>
-      <label class="es-lbl">🌸 本月真正的放鬆是？</label>
-      <textarea class="es-area" id="ec4" rows="2" placeholder="不是滑手機，而是出門・自然・按摩..." oninput="saveEC()"></textarea>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-head"><span class="card-title">🕯️ 開工 & 收工儀式</span></div>
-    <div class="card-body">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
-        <div style="background:var(--gold-l);border-radius:14px;padding:16px">
-          <div style="font-size:14px;font-weight:700;color:#7A5C1E;margin-bottom:10px">🌅 開工前說</div>
-          <div style="font-size:14px;color:#7A5C1E;line-height:1.9">我可以陪伴，<br>但不承接。<br><br>我只提供當下的服務，<br>不背負別人的人生。</div>
-        </div>
-        <div style="background:var(--lav-l);border-radius:14px;padding:16px">
-          <div style="font-size:14px;font-weight:700;color:var(--lav);margin-bottom:10px">🌙 收工儀式</div>
-          <div style="font-size:14px;color:var(--lav);line-height:1.9">✓ 洗手 / 洗澡<br>✓ 換衣服<br>✓ 點香氛<br>✓ 放音樂<br>✓ 散步出門</div>
-        </div>
-      </div>
-      <div style="background:var(--sage-l);border-radius:14px;padding:16px;border:2px solid var(--sage)">
-        <div style="font-size:15px;font-weight:700;color:var(--sage-d);margin-bottom:6px">📵 起床 & 睡前不滑手機</div>
-        <div style="font-size:14px;color:var(--text-m);line-height:1.7">整理環境 = 整理能量。<br>固定時間回覆訊息，不讓大腦隨時待命。</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-head"><span class="card-title">🔄 每季問自己</span></div>
-    <div class="card-body">
-      <div style="font-size:15px;color:var(--text-m);line-height:1.7;margin-bottom:16px">每三個月問自己：<br><strong style="color:var(--text)">「我現在的人生，還是我想要的嗎？」</strong></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-        <div style="background:var(--gold-l);border-radius:14px;padding:16px;text-align:center">
-          <div style="font-size:22px;margin-bottom:6px">🔥</div>
-          <div style="font-size:14px;font-weight:700;color:#7A5C1E">衝刺期</div>
-          <div style="font-size:13px;color:#7A5C1E;opacity:.8;margin-top:4px;line-height:1.5">創作・推廣<br>建立品牌</div>
-        </div>
-        <div style="background:var(--sage-l);border-radius:14px;padding:16px;text-align:center">
-          <div style="font-size:22px;margin-bottom:6px">⚖️</div>
-          <div style="font-size:14px;font-weight:700;color:var(--sage-d)">穩定期</div>
-          <div style="font-size:13px;color:var(--sage-d);opacity:.8;margin-top:4px;line-height:1.5">優化流程<br>穩定收入</div>
-        </div>
-        <div style="background:var(--lav-l);border-radius:14px;padding:16px;text-align:center">
-          <div style="font-size:22px;margin-bottom:6px">🌸</div>
-          <div style="font-size:14px;font-weight:700;color:var(--lav)">回充期</div>
-          <div style="font-size:13px;color:var(--lav);opacity:.8;margin-top:4px;line-height:1.5">放慢・旅行<br>回到生活</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-head">
-      <span class="card-title">💡 素材庫</span>
-      <button class="btn-o" onclick="tog('addIdea')">＋ 記錄</button>
-    </div>
-    <div class="card-body">
-      <div class="add-wrap" id="addIdea">
-        <div class="fx">
-          <select class="inp-t" id="ideaCat" style="width:auto;flex:0 0 auto">
-            <option>💡靈感</option><option>📖故事</option><option>🎬拍攝</option><option>✍️句子</option><option>🌸生活</option>
-          </select>
-          <input type="text" class="inp" id="ideaTxt" placeholder="記錄靈感...">
-        </div>
-        <div class="fx mt10"><button class="btn" onclick="addIdea()">記錄</button><button class="btn-o" onclick="tog('addIdea')">取消</button></div>
-      </div>
-      <div id="ideaList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal -->
-<div class="mo" id="evModal" onclick="closeMo(event)">
-  <div class="mo-box">
-    <div class="mo-head"><span class="mo-title">✏️ 編輯行程</span><button class="mo-close" onclick="closeMo()">✕</button></div>
-    <div class="mo-body">
-      <div class="mo-field"><div class="mo-lbl">時間</div><input type="time" class="inp" id="moTime" style="width:100%"></div>
-      <div class="mo-field"><div class="mo-lbl">行程名稱</div><input type="text" class="inp" id="moText" style="width:100%"></div>
-      <div class="mo-field"><div class="mo-lbl">日期</div><input type="date" class="inp" id="moDate" style="width:100%"></div>
-    </div>
-    <div class="mo-foot">
-      <button class="btn-del" onclick="delEv()">🗑️ 刪除</button>
-      <div style="flex:1"></div>
-      <button class="btn-o" onclick="closeMo()">取消</button>
-      <button class="btn" onclick="saveEv()">儲存</button>
-    </div>
-  </div>
-</div>
 <div class="toast" id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
 <script>
-// Firebase
 firebase.initializeApp({apiKey:"AIzaSyCHwiIOKswq613NuRclWaLFbWO8lgpN0IY",authDomain:"roxi-planner.firebaseapp.com",projectId:"roxi-planner",storageBucket:"roxi-planner.firebasestorage.app",messagingSenderId:"988384927354",appId:"1:988384927354:web:40b403d40060d7195725c3"});
-const db=firebase.firestore(),DOC='roxi_v10',SK='roxi_v10';
+const db=firebase.firestore(),DOC='roxi_v11',SK='roxi_v11';
 let D=df(),syncT=null;
-function df(){return{ev:{},wg:[],mg:[],yg:[],tasks:{},ec:{},ideas:[]};}
-function ek(o){['wg','mg','yg','ideas'].forEach(k=>{if(!Array.isArray(o[k]))o[k]=[];});['ev','tasks','ec'].forEach(k=>{if(!o[k]||typeof o[k]!=='object'||Array.isArray(o[k]))o[k]={};});return o;}
-function ss(m){const e=document.getElementById('syncTxt');if(e)e.textContent=m;}
+function df(){return{ev:{},wg:[],mg:[],yg:[],tasks:{},ec:{},ideas:[],gratitude:{}};}
+function ek(o){['wg','mg','yg','ideas'].forEach(k=>{if(!Array.isArray(o[k]))o[k]=[];});['ev','tasks','ec','gratitude'].forEach(k=>{if(!o[k]||typeof o[k]!=='object'||Array.isArray(o[k]))o[k]={};});return o;}
+function ss(m,err=false){const e=document.getElementById('syncTxt');if(e)e.textContent=m;const d=document.getElementById('syncDot');if(d){d.className='sync-dot'+(m.includes('⟳')?' syncing':'');}}
 function sl(){try{return ek(JSON.parse(localStorage.getItem(SK))||df());}catch{return df();}}
 function svl(){try{localStorage.setItem(SK,JSON.stringify(D));}catch{}}
 async function loadCloud(){
   ss('⟳ 同步中...');
-  try{
-    const r=await db.collection('p').doc(DOC).get();
-    if(r.exists){D=ek(Object.assign({},df(),r.data()));}
-    else{D=sl();await saveCloud();}
-    svl();ss('✓ 已同步');
-  }catch(e){D=sl();ss('⚠ 離線模式');}
+  try{const r=await db.collection('p').doc(DOC).get();if(r.exists)D=ek(Object.assign({},df(),r.data()));else{D=sl();await saveCloud();}svl();ss('✓ 已同步');}
+  catch(e){D=sl();ss('⚠ 離線模式');}
   rAll();
-  db.collection('p').doc(DOC).onSnapshot(s=>{
-    if(s.exists){const c=s.data();if(c&&JSON.stringify(c)!==JSON.stringify(D)){D=ek(Object.assign({},df(),c));svl();rAll();ss('✓ 已同步');}}
-  },()=>{});
+  db.collection('p').doc(DOC).onSnapshot(s=>{if(s.exists){const c=s.data();if(c&&JSON.stringify(c)!==JSON.stringify(D)){D=ek(Object.assign({},df(),c));svl();rAll();ss('✓ 已同步');}}},()=>{});
 }
 function sv(){svl();ss('⟳ 儲存中...');clearTimeout(syncT);syncT=setTimeout(saveCloud,1500);}
 async function saveCloud(){try{await db.collection('p').doc(DOC).set(D);ss('✓ 已同步');}catch{ss('⚠ 僅本地已存');}}
 function saveAll(){saveCloud();toast('☁️ 已同步到雲端！');}
 
-// 五行資料
+// 五行
 const WX={'04-06':['水','火','木'],'04-07':['火','金'],'04-08':['火','金'],'04-09':['水','火','木'],'04-10':['水','金'],'04-11':['水','金'],'04-12':['水','火','木'],'04-13':['水','木','金'],'04-14':['水','木','金'],'04-15':['水','火','木'],'04-16':['火','木'],'04-17':['火','木'],'04-18':['水','火','木'],'04-19':['火','金'],'04-20':['火','金'],'04-21':['水','火','木'],'04-22':['水','金'],'04-23':['水','金'],'04-24':['水','火','木'],'04-25':['水','木','金'],'04-26':['水','木','金'],'04-27':['水','火','木'],'04-28':['火','木'],'04-29':['火','木'],'04-30':['水','火','木'],'05-01':['火','金'],'05-02':['火','金'],'05-03':['水','火','木'],'05-04':['水','金'],'05-05':['金','水'],'05-06':['水','木','金'],'05-07':['水','金','木'],'05-08':['水','金','木'],'05-09':['水','木','金'],'05-10':['木','金','水'],'05-11':['木','金','水'],'05-12':['水','木','金'],'05-13':['金','水'],'05-14':['金','水'],'05-15':['水','木','金'],'05-16':['金','水'],'05-17':['金','水'],'05-18':['水','木','金'],'05-19':['水','金','木'],'05-20':['水','金','木'],'05-21':['水','木','金'],'05-22':['木','金','水'],'05-23':['木','金','水'],'05-24':['水','木','金'],'05-25':['金','水'],'05-26':['金','水'],'05-27':['水','木','金'],'05-28':['金','水'],'05-29':['金','水'],'05-30':['水','木','金'],'05-31':['水','金','木']};
 const EL={
   '木':{em:'🌿',c:['綠色','青色'],tip:'宜穿自然綠系',bg:'#E8F5E9',tc:'#2E7D32',bd:'#A5D6A7'},
@@ -567,271 +784,416 @@ const EL={
   '水':{em:'💧',c:['黑色','藍色'],tip:'宜穿黑藍深色系',bg:'#E3F2FD',tc:'#0D47A1',bd:'#90CAF9'}
 };
 const WXC={'木':'#4CAF50','火':'#EF5350','土':'#FF9800','金':'#DAA520','水':'#1565C0'};
-function getOT(e){
-  const opts={'水火木':'深藍色為底，點綴紅色與綠色，活力又沉穩。','火金':'白色或米色搭配紅色單品，清爽有亮點。','水金':'深色系打底搭配白色或金色，簡約高雅。','水木金':'深色系加入綠色，再以白色提亮，層次豐富。','火木':'大地綠系搭配紅色或磚紅，自然熱情。','金水':'白色或金色為主，搭配深色配件。','木金水':'自然綠色搭配金白色系，知性沉穩。','水金木':'深色系配金色，加入綠色點綴。'};
-  const k=e.join('');
-  for(const[key,v]of Object.entries(opts)){const ke=[...key];if(ke.length===e.length&&e.every(x=>ke.includes(x))&&ke.every(x=>e.includes(x)))return v;}
-  return e.map(x=>EL[x]?.tip||'').join('；');
-}
+function getOT(e){const o={'水火木':'深藍色為底，點綴紅色與綠色，活力又沉穩。','火金':'白色或米色搭配紅色單品，清爽有亮點。','水金':'深色系打底搭配白色或金色，簡約高雅。','水木金':'深色系加入綠色，再以白色提亮，層次豐富。','火木':'大地綠系搭配紅色或磚紅，自然熱情。','金水':'白色或金色為主，搭配深色配件。','木金水':'自然綠色搭配金白色系，知性沉穩。','水金木':'深色系配金色，加入綠色點綴。'};const k=e.join('');for(const[key,v]of Object.entries(o)){const ke=[...key];if(ke.length===e.length&&e.every(x=>ke.includes(x))&&ke.every(x=>e.includes(x)))return v;}return e.map(x=>EL[x]?.tip||'').join('；');}
 const HOL={'2026-01-01':'元旦','2026-01-28':'除夕','2026-01-29':'春節','2026-01-30':'春節','2026-01-31':'春節','2026-02-01':'春節','2026-02-02':'春節','2026-02-28':'和平紀念日','2026-04-03':'兒童節補假','2026-04-04':'兒童節/清明','2026-05-01':'勞動節','2026-06-19':'端午節','2026-09-26':'中秋節','2026-10-10':'國慶日'};
 const FEST={'02-14':'情人節💝','05-08':'母親節','08-08':'父親節','12-25':'聖誕節🎄'};
 const ROXI={'2026-04-22':'🌸 桃花日・事業機會日','2026-05-01':'💰 得財日','2026-05-12':'🌸 桃花日・事業機會日','2026-05-20':'🌸 桃花日・事業機會日','2026-05-21':'💰 得財日','2026-05-26':'⚠️ 健康注意日','2026-05-27':'🚫 犯小人日'};
-const SCH={
-  1:{role:'💕 約會日',c:'#FDF2F8',tc:'#9D174D',bc:'#F9A8D4'},
-  2:{role:'📝 產出日',c:'#EFF6FF',tc:'#1E40AF',bc:'#BFDBFE'},
-  3:{role:'💆‍♀️ 客人日',c:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},
-  4:{role:'💆‍♀️ 客人日',c:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},
-  5:{role:'💆‍♀️ 客人日',c:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},
-  6:{role:'💆‍♀️ 客人日',c:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},
-  0:{role:'👧 女兒日',c:'#FFFBEB',tc:'#92400E',bc:'#FDE68A'}
-};
-const QS=['我不是把自己燃燒掉才有價值。我穩定發光，本身就有力量。','今天，我只需要完成最重要的那一件事。','每個時段，只有一個身分。','允許事情不完美，這才是真實的我。','美與留白，是靈魂真正需要的。','整理環境 = 整理能量。','能量對了，整個人就會開始發光。','我不用一次完成整個人生，我只要完成今天最重要的事。'];
+const QS=['我不是把自己燃燒掉才有價值。我穩定發光，本身就有力量。','今天，我只需要完成最重要的那一件事。','當你狀態對了，整個人就會開始發光。','允許事情不完美，這才是真實的我。','美與留白，是靈魂真正需要的。','整理環境 = 整理能量。','感受到美、自由、真實，就會活過來。','我不用一次完成整個人生。'];
 
 const NOW=new Date(),TODAY=NOW.toISOString().slice(0,10);
 const TMR=new Date(NOW);TMR.setDate(NOW.getDate()+1);const TOMORROW=TMR.toISOString().slice(0,10);
 let calY=NOW.getFullYear(),calM=NOW.getMonth(),selDay=null,moId=null,moDk=null;
 
+const PAGE_TITLES={'today':'今日能量','cal':'月曆行程','week':'本週概覽','goals':'目標追蹤','energy':'能量管理','ideas':'素材庫','gratitude':'感恩日記'};
 function getMon(d){const dt=new Date(d),dow=dt.getDay(),off=dow===0?-6:1-dow;dt.setDate(dt.getDate()+off);return dt;}
 
 function init(){
-  document.getElementById('hDate').textContent=' · '+NOW.toLocaleDateString('zh-TW',{month:'short',day:'numeric',weekday:'short'});
-  document.getElementById('todayLbl').textContent=NOW.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
-  document.getElementById('dailyQ').textContent='「'+QS[NOW.getDate()%QS.length]+'」';
+  document.getElementById('heroDate').textContent=NOW.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+  document.getElementById('heroQuote').textContent='「'+QS[NOW.getDate()%QS.length]+'」';
   document.getElementById('dpText')?.addEventListener('keydown',e=>{if(e.key==='Enter')addDP();});
   document.getElementById('evText')?.addEventListener('keydown',e=>{if(e.key==='Enter')addEv();});
   loadCloud();
+  setTimeout(initGratitude,300);
 }
-
-function sp(id,btn){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.nb').forEach(n=>n.classList.remove('on'));
-  document.getElementById('pg-'+id).classList.add('on');
-  if(btn)btn.classList.add('on');
+function nav(id,el){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';
+  if(id==='gratitude'){setTimeout(initGratitude,100);}
 }
-function tog(id){
-  const el=document.getElementById(id);if(!el)return;
-  const open=el.style.display==='block';
-  el.style.display=open?'none':'block';
-  if(!open){const i=el.querySelector('input[type=text],textarea');if(i)setTimeout(()=>i.focus(),50);}
-}
+function toggleForm(id){const el=document.getElementById(id);if(!el)return;const open=el.style.display==='block';el.style.display=open?'none':'block';if(!open){const i=el.querySelector('input[type=text],input[type=time],textarea');if(i)setTimeout(()=>i.focus(),50);}}
+function openMo(id){document.getElementById(id).classList.add('open');}
+function closeMo(id){document.getElementById(id).classList.remove('open');}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function rAll(){rProg();rTasks();rEv();rWX();rWeek();rCal();rGoals();rEC();rIdeas();}
+function rAll(){rWX();rRoxiSpecial();rTasks();rEv();rEvM();rCal();rWeek();rGoals();rEC();rIdeas();rRoxiMonth();rGrHistory();}
 
-function rProg(){
-  const evs=D.ev[TODAY]||[];
-  const total=evs.length,done=0;
-  const p=total?Math.round(done/total*100):0;
-  const pe=document.getElementById('pct');if(pe)pe.textContent=p+'%';
-  const pb=document.getElementById('pbar');if(pb)pb.style.width=p+'%';
+function rWX(){
+  const mk=String(NOW.getMonth()+1).padStart(2,'0')+'-'+String(NOW.getDate()).padStart(2,'0');
+  const elems=WX[mk],rd=ROXI[TODAY]||'';
+  const wxDate=document.getElementById('wxDate');if(wxDate)wxDate.textContent=NOW.toLocaleDateString('zh-TW',{month:'long',day:'numeric'});
+  const wxEl=document.getElementById('wxElems'),wxTip=document.getElementById('wxTip'),wxOut=document.getElementById('wxOutfit');
+  if(!elems){if(wxEl)wxEl.innerHTML='<span style="color:#999;font-size:15px">今日暫無五行資料</span>';if(wxTip)wxTip.textContent='';if(wxOut)wxOut.innerHTML='';return;}
+  let eh=elems.map(e=>`<span class="wx-pill" style="background:${EL[e].bg};border-color:${EL[e].bd};color:${EL[e].tc}">${EL[e].em} ${e}</span>`).join('');
+  if(rd)eh+=`<span class="wx-pill" style="background:#FDF2F8;border-color:#F9A8D4;color:#BE185D;margin-left:6px">${rd}</span>`;
+  if(wxEl)wxEl.innerHTML=eh;
+  if(wxTip)wxTip.textContent=getOT(elems);
+  if(wxOut)wxOut.innerHTML=[{ic:'👗',l:'今日主色',v:elems.map(e=>EL[e].c[0]).join(' / ')},{ic:'💼',l:'配件顏色',v:elems.map(e=>EL[e].c[1]||EL[e].c[0]).join(' / ')},{ic:'🌈',l:'今日元素',v:elems.map(e=>EL[e].em+' '+e).join(' ')}].map(t=>`<div class="oc"><div class="oc-ic">${t.ic}</div><div class="oc-lbl">${t.l}</div><div class="oc-val">${t.v}</div></div>`).join('');
+}
+function rRoxiSpecial(){
+  const w=document.getElementById('roxiSpecialWrap');if(!w)return;
+  const rd=ROXI[TODAY]||'';
+  w.innerHTML=rd?`<div class="roxi-special"><div class="roxi-special-ico">${rd[0]}</div><div><div class="roxi-special-txt">${rd}</div><div style="font-size:13px;color:#B06090;margin-top:4px">${NOW.toLocaleDateString('zh-TW',{month:'long',day:'numeric'})} 珞熙特殊日</div></div></div>`:'';
+}
+function rRoxiMonth(){
+  const el=document.getElementById('roxiMonthList');if(!el)return;
+  const entries=Object.entries(ROXI).filter(([dk])=>dk.startsWith(calY+'-'+String(calM+1).padStart(2,'0')));
+  if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-ico">🌿</div>本月無珞熙特殊日</div>';return;}
+  el.innerHTML=entries.map(([dk,v])=>{const d=new Date(dk);const dn=['日','一','二','三','四','五','六'];return`<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bdr)"><div style="font-size:20px">${v[0]}</div><div><div style="font-size:15px;font-weight:700;color:#9E5A80">${v}</div><div style="font-size:13px;color:var(--mut)">${d.getMonth()+1}/${d.getDate()}（週${dn[d.getDay()]}）</div></div></div>`;}).join('');
 }
 function rTasks(){
   const td=D.tasks[TODAY]||{};
   ['mainTask','s1','s2'].forEach(id=>{const el=document.getElementById(id);if(el&&document.activeElement!==el)el.value=td[id]||'';});
   uChk(1,td.d1||false);uChk(2,td.d2||false);
 }
-function uChk(n,done){
-  const c=document.getElementById('c'+n),s=document.getElementById('s'+n);
-  if(c){c.className='chk'+(done?' on':'');c.textContent=done?'✓':'';}
-  if(s)s.className='sub-in'+(done?' done':'');
-}
+function uChk(n,done){const c=document.getElementById('c'+n),s=document.getElementById('s'+n);if(c){c.className='chk'+(done?' on':'');c.textContent=done?'✓':'';}if(s)s.className='sub-in'+(done?' done':'');}
 function tSub(n){if(!D.tasks[TODAY])D.tasks[TODAY]={};D.tasks[TODAY]['d'+n]=!D.tasks[TODAY]['d'+n];uChk(n,D.tasks[TODAY]['d'+n]);sv();}
-function saveTasks(){
-  if(!D.tasks[TODAY])D.tasks[TODAY]={};
-  ['mainTask','s1','s2'].forEach(id=>{const el=document.getElementById(id);if(el)D.tasks[TODAY][id]=el.value;});
-  sv();
-}
+function saveTasks(){if(!D.tasks[TODAY])D.tasks[TODAY]={};['mainTask','s1','s2'].forEach(id=>{const el=document.getElementById(id);if(el)D.tasks[TODAY][id]=el.value;});sv();}
 document.addEventListener('input',e=>{if(['mainTask','s1','s2'].includes(e.target.id))saveTasks();});
 
-function rWX(){
-  const mk=String(NOW.getMonth()+1).padStart(2,'0')+'-'+String(NOW.getDate()).padStart(2,'0');
-  const elems=WX[mk];
-  const wxDateEl=document.getElementById('wxDate');
-  const wxElemsEl=document.getElementById('wxElems');
-  const wxTipEl=document.getElementById('wxTip');
-  const wxOutfitEl=document.getElementById('wxOutfit');
-  if(wxDateEl)wxDateEl.textContent=NOW.toLocaleDateString('zh-TW',{month:'long',day:'numeric'});
-  const rd=ROXI[TODAY]||'';
-  if(!elems){
-    if(wxElemsEl)wxElemsEl.innerHTML='<span style="color:#999;font-size:15px">今日暫無五行資料</span>';
-    if(wxTipEl)wxTipEl.textContent='';
-    if(wxOutfitEl)wxOutfitEl.innerHTML='';
-    return;
-  }
-  let eh=elems.map(e=>`<span class="wx-pill" style="background:${EL[e].bg};border-color:${EL[e].bd};color:${EL[e].tc}">${EL[e].em} ${e}</span>`).join('');
-  if(rd)eh+=`<span class="wx-pill" style="background:#FDF2F8;border-color:#F9A8D4;color:#BE185D;margin-left:4px">${rd}</span>`;
-  if(wxElemsEl)wxElemsEl.innerHTML=eh;
-  if(wxTipEl)wxTipEl.textContent=getOT(elems);
-  if(wxOutfitEl)wxOutfitEl.innerHTML=[
-    {ic:'👗',l:'今日主色',v:elems.map(e=>EL[e].c[0]).join(' / ')},
-    {ic:'💼',l:'配件顏色',v:elems.map(e=>EL[e].c[1]||EL[e].c[0]).join(' / ')},
-    {ic:'🌈',l:'今日元素',v:elems.map(e=>EL[e].em+' '+e).join(' ')}
-  ].map(t=>`<div class="oc"><div class="oc-ic">${t.ic}</div><div class="oc-lbl">${t.l}</div><div class="oc-val">${t.v}</div></div>`).join('');
-}
-
-function addEv(){
-  const t=document.getElementById('evTime').value,tx=document.getElementById('evText').value.trim();
-  if(!tx)return;
-  if(!D.ev[TODAY])D.ev[TODAY]=[];
-  D.ev[TODAY].push({t,tx,id:Date.now()});
-  D.ev[TODAY].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
-  document.getElementById('evText').value='';document.getElementById('evTime').value='';
-  tog('addEv');rEv();rProg();sv();toast('行程已新增 🌿');
-}
-function rEv(){
-  const el=document.getElementById('evList');if(!el)return;
-  const evs=D.ev[TODAY]||[];
-  el.innerHTML=evs.length?evs.map(e=>`<div class="ev-row" onclick="openMo(${e.id},'${TODAY}')"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-dot"></div><span class="ev-name">${e.tx}</span><span class="ev-edit">✏️</span></div>`).join(''):'<div class="empty">還沒有行程<br>點右上角「＋ 新增」加入今天的安排</div>';
-}
-
-function rWeek(){
-  const mon=getMon(NOW),dN=['一','二','三','四','五','六','日'],order=[1,2,3,4,5,6,0];
-  const dates=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
-  const el=document.getElementById('weekDays');if(!el)return;
-  el.innerHTML=order.map((dow,i)=>{
-    const d=dates[i],dk=d.toISOString().slice(0,10),isT=dk===TODAY;
-    const sch=SCH[dow],rd=ROXI[dk]||'',evs=D.ev[dk]||[];
-    const evTxt=evs.length?evs.slice(0,3).map(e=>(e.t?e.t.slice(0,5)+' ':'')+e.tx).join('　'):'';
-    return`<div class="wd ${isT?'today-wd':''}" style="${isT&&sch?`background:${sch.c};border-color:${sch.bc}`:''}">
-      <div class="wd-head">
-        <div class="wd-name">週${dN[dow]}　${d.getDate()}日${isT?'<span style="font-size:12px;background:var(--sage);color:white;padding:2px 10px;border-radius:12px;margin-left:8px">今天</span>':''}${rd?`<span style="font-size:13px;color:#BE185D;margin-left:8px">${rd}</span>`:''}</div>
-        ${sch?`<span class="wd-role" style="background:${sch.c};color:${sch.tc};border:1px solid ${sch.bc}">${sch.role}</span>`:''}
-      </div>
-      <div class="wd-evs">${evTxt||'<span style="color:#bbb">今日無額外行程</span>'}</div>
-    </div>`;
-  }).join('');
-}
+function evHtml(evs,dk){return evs.map(e=>`<div class="ev-row" onclick="openEvMo(${e.id},'${dk}')"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-bar"></div><span class="ev-name">${e.tx}</span><span class="ev-edit">✏️</span></div>`).join('');}
+function addEv(){const t=document.getElementById('evTime').value,tx=document.getElementById('evText').value.trim();if(!tx)return;if(!D.ev[TODAY])D.ev[TODAY]=[];D.ev[TODAY].push({t,tx,id:Date.now()});D.ev[TODAY].sort((a,b)=>(a.t||'').localeCompare(b.t||''));document.getElementById('evText').value='';document.getElementById('evTime').value='';toggleForm('addEvWrap');rEv();rWeek();sv();toast('行程已新增 🌿');}
+function addEvM(){const t=document.getElementById('evTimeM').value,tx=document.getElementById('evTextM').value.trim();if(!tx)return;if(!D.ev[TOMORROW])D.ev[TOMORROW]=[];D.ev[TOMORROW].push({t,tx,id:Date.now()});D.ev[TOMORROW].sort((a,b)=>(a.t||'').localeCompare(b.t||''));document.getElementById('evTextM').value='';document.getElementById('evTimeM').value='';toggleForm('addEvMWrap');rEvM();rWeek();sv();toast('明日行程已新增 🌙');}
+function rEv(){const el=document.getElementById('evList');if(!el)return;const evs=D.ev[TODAY]||[];el.innerHTML=evs.length?evHtml(evs,TODAY):'<div class="empty"><div class="empty-ico">🕐</div>今日還沒有行程</div>';}
+function rEvM(){const el=document.getElementById('evListM');if(!el)return;const evs=D.ev[TOMORROW]||[];const mk=String(TMR.getMonth()+1).padStart(2,'0')+'-'+String(TMR.getDate()).padStart(2,'0');const wEl=WX[mk];const hint=wEl?`<div class="notice" style="margin-bottom:12px">明日五行：${wEl.map(e=>EL[e].em+e).join(' ')}　宜穿：${wEl.map(e=>EL[e].c[0]).join('/')}</div>`:'';el.innerHTML=hint+(evs.length?evHtml(evs,TOMORROW):'<div class="empty"><div class="empty-ico">🌙</div>明日還沒有行程</div>');}
+function openEvMo(id,dk){const ev=(D.ev[dk]||[]).find(e=>e.id===id);if(!ev)return;moId=id;moDk=dk;document.getElementById('moTime').value=ev.t||'';document.getElementById('moText').value=ev.tx||'';document.getElementById('moDate').value=dk;openMo('evModal');}
+function saveEv(){if(!moId||!moDk)return;const ndk=document.getElementById('moDate').value||moDk,nt=document.getElementById('moTime').value,ntx=document.getElementById('moText').value.trim();if(!ntx){toast('請輸入行程名稱');return;}D.ev[moDk]=(D.ev[moDk]||[]).filter(e=>e.id!==moId);if(!D.ev[ndk])D.ev[ndk]=[];D.ev[ndk].push({t:nt,tx:ntx,id:moId});D.ev[ndk].sort((a,b)=>(a.t||'').localeCompare(b.t||''));closeMo('evModal');if(selDay===moDk||selDay===ndk)rDP(selDay||ndk);moId=null;moDk=null;rEv();rEvM();rCal();rWeek();sv();toast('已更新 ✅');}
+function delEv(){if(!moId||!moDk)return;D.ev[moDk]=(D.ev[moDk]||[]).filter(e=>e.id!==moId);closeMo('evModal');if(selDay===moDk)rDP(selDay);moId=null;moDk=null;rEv();rEvM();rCal();rWeek();sv();toast('已刪除');}
 
 function buildCal(){
   const mn=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
   document.getElementById('calTitle').textContent=calY+'年 '+mn[calM];
+  const sub=document.getElementById('calSubDate');if(sub)sub.textContent=calY+'年 '+mn[calM];
   const firstOff=(new Date(calY,calM,1).getDay()+6)%7,total=new Date(calY,calM+1,0).getDate(),prev=new Date(calY,calM,0).getDate();
-  let h=['一','二','三','四','五','六','日'].map((d,i)=>`<div class="cdh" style="${i===5?'color:#2563EB':i===6?'color:#C47B7B':''}">${d}</div>`).join('');
+  let h=['一','二','三','四','五','六','日'].map((d,i)=>`<div class="cdh" style="${i===5?'color:#2563EB':i===6?'color:var(--rose)':''}">${d}</div>`).join('');
   for(let i=0;i<firstOff;i++)h+=`<div class="cd other"><span class="dn">${prev-firstOff+1+i}</span></div>`;
   for(let d=1;d<=total;d++){
     const dk=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isT=dk===TODAY,isSel=dk===selDay,dow=new Date(calY,calM,d).getDay(),isSat=dow===6,isSun=dow===0,isHol=!!HOL[dk];
     const mk=String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),rd=ROXI[dk]||'',wEl=WX[mk];
     const wxb=wEl?`<div class="wx-dots">${wEl.map(e=>`<div class="wxd" style="background:${WXC[e]}"></div>`).join('')}</div>`:'';
-    const evd=(D.ev[dk]||[]).length?'<div class="ev-dot-cal"></div>':'';
-    let lbl='';
-    if(rd)lbl=`<div class="dlbl" style="color:#BE185D">${rd[0]}</div>`;
-    else if(HOL[dk])lbl=`<div class="dlbl" style="color:var(--rose)">${HOL[dk].slice(0,4)}</div>`;
-    else if(FEST[mk])lbl=`<div class="dlbl" style="color:var(--lav)">${FEST[mk].slice(0,3)}</div>`;
-    let cls='cd';
-    if(isT)cls+=' today';else if(isSel)cls+=' sel';
-    if(isSat)cls+=' sat';if(isSun||isHol)cls+=' sun hol';if(rd&&!isT)cls+=' roxi';
+    const evd=(D.ev[dk]||[]).length?'<div class="ev-dot"></div>':'';
+    let lbl='';if(rd)lbl=`<div class="dlbl" style="color:#BE185D">${rd[0]}</div>`;else if(HOL[dk])lbl=`<div class="dlbl" style="color:var(--rose)">${HOL[dk].slice(0,4)}</div>`;else if(FEST[mk])lbl=`<div class="dlbl" style="color:var(--lav)">${FEST[mk].slice(0,3)}</div>`;
+    let cls='cd';if(isT)cls+=' today';else if(isSel)cls+=' sel';if(isSat)cls+=' sat';if(isSun||isHol)cls+=' sun hol';if(rd&&!isT)cls+=' roxi';
     h+=`<div class="${cls}" onclick="selD('${dk}',${d},${calY},${calM})"><span class="dn">${d}</span>${lbl}${wxb}${evd}</div>`;
   }
   const rem=Math.ceil((firstOff+total)/7)*7-firstOff-total;
   for(let i=1;i<=rem;i++)h+=`<div class="cd other"><span class="dn">${i}</span></div>`;
   document.getElementById('calGrid').innerHTML=h;
+  rRoxiMonth();
 }
 function rCal(){buildCal();}
 function chM(d){calM+=d;if(calM<0){calM=11;calY--;}if(calM>11){calM=0;calY++;}rCal();}
-
 function selD(dk,day,y,m){
   selDay=dk;rCal();
   const p=document.getElementById('dayPanel');p.classList.add('open');
   setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
   const dow=new Date(y,m,day).getDay(),dn=['日','一','二','三','四','五','六'];
-  const mk=String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-  const rd=ROXI[dk]||'',hol=HOL[dk]?` 【${HOL[dk]}】`:'';
+  const mk=String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0'),rd=ROXI[dk]||'',hol=HOL[dk]?` 【${HOL[dk]}】`:'';
   document.getElementById('dpTitle').textContent=`${y}/${m+1}/${day}（週${dn[dow]}）${hol}`;
-  const wEl=WX[mk];
-  const we=document.getElementById('dpWx');
-  if(we){
-    let wx='';
-    if(rd)wx+=`${rd}　`;
-    if(wEl)wx+=`五行：${wEl.join('・')}　宜穿：${wEl.map(e=>EL[e].c[0]).join('/')}`;
-    we.textContent=wx;
-  }
+  const wEl=WX[mk];const we=document.getElementById('dpWx');if(we){let wx='';if(rd)wx+=`${rd}　`;if(wEl)wx+=`五行：${wEl.join('・')}　宜穿：${wEl.map(e=>EL[e].c[0]).join('/')}`;we.textContent=wx;}
   setTimeout(()=>document.getElementById('dpText')?.focus(),150);
   rDP(dk);
 }
 function closeDP(){document.getElementById('dayPanel').classList.remove('open');selDay=null;rCal();}
-function rDP(dk){
-  const el=document.getElementById('dpBody');if(!el)return;
-  const evs=D.ev[dk]||[];
-  el.innerHTML=evs.length?evs.map(e=>`<div class="ev-row" onclick="openMo(${e.id},'${dk}')"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-dot"></div><span class="ev-name">${e.tx}</span><span class="ev-edit">✏️</span></div>`).join(''):'<div class="empty">這天還沒有行程</div>';
-}
-function addDP(){
-  if(!selDay){toast('請先點選日期');return;}
-  const tx=document.getElementById('dpText').value.trim(),t=document.getElementById('dpTime').value;
-  if(!tx){toast('請輸入行程名稱');return;}
-  if(!D.ev[selDay])D.ev[selDay]=[];
-  D.ev[selDay].push({t,tx,id:Date.now()});
-  D.ev[selDay].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
-  document.getElementById('dpText').value='';document.getElementById('dpTime').value='';
-  document.getElementById('dpText').focus();
-  rDP(selDay);rCal();rWeek();
-  if(selDay===TODAY)rEv();
-  sv();toast('行程已新增 ✅');
-}
-function openMo(id,dk){
-  const ev=(D.ev[dk]||[]).find(e=>e.id===id);if(!ev)return;
-  moId=id;moDk=dk;
-  document.getElementById('moTime').value=ev.t||'';
-  document.getElementById('moText').value=ev.tx||'';
-  document.getElementById('moDate').value=dk;
-  document.getElementById('evModal').classList.add('open');
-}
-function closeMo(e){if(e&&e.target!==document.getElementById('evModal'))return;document.getElementById('evModal').classList.remove('open');moId=null;moDk=null;}
-function saveEv(){
-  if(!moId||!moDk)return;
-  const ndk=document.getElementById('moDate').value||moDk,nt=document.getElementById('moTime').value,ntx=document.getElementById('moText').value.trim();
-  if(!ntx){toast('請輸入行程名稱');return;}
-  D.ev[moDk]=(D.ev[moDk]||[]).filter(e=>e.id!==moId);
-  if(!D.ev[ndk])D.ev[ndk]=[];
-  D.ev[ndk].push({t:nt,tx:ntx,id:moId});
-  D.ev[ndk].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
-  document.getElementById('evModal').classList.remove('open');
-  if(selDay===moDk||selDay===ndk)rDP(selDay||ndk);
-  moId=null;moDk=null;
-  rEv();rCal();rWeek();sv();toast('已更新 ✅');
-}
-function delEv(){
-  if(!moId||!moDk)return;
-  D.ev[moDk]=(D.ev[moDk]||[]).filter(e=>e.id!==moId);
-  document.getElementById('evModal').classList.remove('open');
-  if(selDay===moDk)rDP(selDay);
-  moId=null;moDk=null;
-  rEv();rCal();rWeek();sv();toast('已刪除');
+function rDP(dk){const el=document.getElementById('dpBody');if(!el)return;const evs=D.ev[dk]||[];el.innerHTML=evs.length?evHtml(evs,dk):'<div class="empty">這天還沒有行程</div>';}
+function addDP(){if(!selDay){toast('請先點選日期');return;}const tx=document.getElementById('dpText').value.trim(),t=document.getElementById('dpTime').value;if(!tx){toast('請輸入行程名稱');return;}if(!D.ev[selDay])D.ev[selDay]=[];D.ev[selDay].push({t,tx,id:Date.now()});D.ev[selDay].sort((a,b)=>(a.t||'').localeCompare(b.t||''));document.getElementById('dpText').value='';document.getElementById('dpTime').value='';document.getElementById('dpText').focus();rDP(selDay);rCal();rWeek();if(selDay===TODAY)rEv();sv();toast('行程已新增 ✅');}
+
+function rWeek(){
+  const mon=getMon(NOW),dN=['一','二','三','四','五','六','日'],order=[1,2,3,4,5,6,0];
+  const dates=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
+  const rl={1:{role:'💕 約會日',c:'#FDF2F8',tc:'#9D174D',bc:'#F9A8D4'},2:{role:'📝 產出日',c:'#EFF6FF',tc:'#1E40AF',bc:'#BFDBFE'},3:{role:'💆‍♀️ 客人日',c:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},4:{role:'💆‍♀️ 客人日',c:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},5:{role:'💆‍♀️ 客人日',c:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},6:{role:'💆‍♀️ 客人日',c:'#F0FDF4',tc:'#166534',bc:'#86EFAC'},0:{role:'👧 女兒日',c:'#FFFBEB',tc:'#92400E',bc:'#FDE68A'}};
+  const rl2=document.getElementById('weekRangeLabel');if(rl2)rl2.textContent=dates[0].toLocaleDateString('zh-TW',{month:'short',day:'numeric'})+' – '+dates[6].toLocaleDateString('zh-TW',{month:'short',day:'numeric'});
+  const el=document.getElementById('weekDays');if(!el)return;
+  el.innerHTML=order.map((dow,i)=>{
+    const d=dates[i],dk=d.toISOString().slice(0,10),isT=dk===TODAY,r=rl[dow],rd=ROXI[dk]||'';
+    const evs=D.ev[dk]||[],evTxt=evs.length?evs.slice(0,3).map(e=>(e.t?e.t.slice(0,5)+' ':'')+e.tx).join('　'):'';
+    return`<div class="card" style="margin-bottom:10px;${isT?`border:2px solid var(--sage);`:''}">
+      <div class="card-hd" style="${isT&&r?`background:${r.c};`:``}">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700">週${dN[dow]}　${d.getDate()}日</span>
+          ${isT?`<span class="bdg bdg-sage">今天</span>`:''}
+          ${r?`<span class="bdg" style="background:${r.c};color:${r.tc};border:1px solid ${r.bc}">${r.role}</span>`:''}
+          ${rd?`<span class="bdg" style="background:#FDF2F8;color:#BE185D;border:1px solid #F9A8D4">${rd}</span>`:''}
+        </div>
+      </div>
+      <div class="card-bd" style="padding:12px 22px">
+        <div style="font-size:15px;color:var(--mut)">${evTxt||'今日無額外行程'}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
-function goalRow(g,tf,df){
-  return`<div class="goal-row"><div class="gc ${g.done?'on':''}" onclick="${tf}(${g.id})">${g.done?'✓':''}</div><div style="flex:1"><div class="gn ${g.done?'done':''}">${g.tx}</div></div><button class="ic-btn" onclick="${df}(${g.id})">✕</button></div>`;
-}
-function addWG(){const tx=document.getElementById('wgTxt').value.trim();if(!tx)return;D.wg.push({tx,done:false,id:Date.now()});document.getElementById('wgTxt').value='';tog('addWG');rGoals();sv();toast('週目標已新增');}
-function addWGG(){const tx=document.getElementById('wgTxtG').value.trim();if(!tx)return;D.wg.push({tx,done:false,id:Date.now()});document.getElementById('wgTxtG').value='';tog('addWGG');rGoals();sv();toast('週目標已新增');}
+function goalRow(g,tf,df){return`<div class="goal-row"><div class="gc ${g.done?'on':''}" onclick="${tf}(${g.id})">${g.done?'✓':''}</div><div style="flex:1"><div class="gn ${g.done?'done':''}">${g.tx}</div>${g.note?`<div class="gnote">${g.note}</div>`:''}</div><button class="btn-del" onclick="${df}(${g.id})">✕</button></div>`;}
+function addWG(){const tx=document.getElementById('wgTxt').value.trim();if(!tx)return;D.wg.push({tx,done:false,id:Date.now()});document.getElementById('wgTxt').value='';toggleForm('addWGWrap');rGoals();sv();toast('週目標已新增');}
+function addWGG(){const tx=document.getElementById('wgTxtG').value.trim();if(!tx)return;D.wg.push({tx,done:false,id:Date.now()});document.getElementById('wgTxtG').value='';toggleForm('addWGGWrap');rGoals();sv();toast('週目標已新增');}
 function tWG(id){const g=D.wg.find(g=>g.id===id);if(g)g.done=!g.done;rGoals();sv();}
 function dWG(id){D.wg=D.wg.filter(g=>g.id!==id);rGoals();sv();}
-function addMG(){const tx=document.getElementById('mgTxt').value.trim();if(!tx)return;D.mg.push({tx,done:false,id:Date.now()});document.getElementById('mgTxt').value='';tog('addMG');rGoals();sv();toast('月目標已新增');}
-function addMGG(){const tx=document.getElementById('mgTxtG').value.trim();if(!tx)return;D.mg.push({tx,done:false,id:Date.now()});document.getElementById('mgTxtG').value='';tog('addMGG');rGoals();sv();toast('月目標已新增');}
+function addMG(){const tx=document.getElementById('mgTxt').value.trim();if(!tx)return;D.mg.push({tx,done:false,id:Date.now()});document.getElementById('mgTxt').value='';toggleForm('addMGWrap');rGoals();sv();toast('月目標已新增');}
 function tMG(id){const g=D.mg.find(g=>g.id===id);if(g)g.done=!g.done;rGoals();sv();}
 function dMG(id){D.mg=D.mg.filter(g=>g.id!==id);rGoals();sv();}
-function addYG(){const tx=document.getElementById('ygTxt').value.trim(),cat=document.getElementById('ygCat').value.trim()||'其他';if(!tx)return;D.yg.push({tx,cat,p:0,id:Date.now()});document.getElementById('ygTxt').value='';document.getElementById('ygCat').value='';tog('addYG');rGoals();sv();toast('年度目標已新增');}
+function addYG(){const tx=document.getElementById('ygTxt').value.trim(),cat=document.getElementById('ygCat').value.trim()||'其他';if(!tx)return;D.yg.push({tx,cat,p:0,id:Date.now()});document.getElementById('ygTxt').value='';document.getElementById('ygCat').value='';toggleForm('addYGWrap');rGoals();sv();toast('年度目標已新增');}
 function uYG(id,val){const g=D.yg.find(g=>g.id===id);if(g)g.p=parseInt(val);const pp=document.getElementById('yp'+id),pf=document.getElementById('yf'+id);if(pp)pp.textContent=val+'%';if(pf)pf.style.width=val+'%';sv();}
 function dYG(id){D.yg=D.yg.filter(g=>g.id!==id);rGoals();sv();}
 function rGoals(){
-  const wl=document.getElementById('wgList'),wlg=document.getElementById('wgListG');
-  const ml=document.getElementById('mgList'),mlg=document.getElementById('mgListG');
-  const yl=document.getElementById('ygList');
-  const wh=D.wg.length?D.wg.map(g=>goalRow(g,'tWG','dWG')).join(''):'<div class="empty">設定本週目標吧</div>';
-  const mh=D.mg.length?D.mg.map(g=>goalRow(g,'tMG','dMG')).join(''):'<div class="empty">這個月想達成什麼？</div>';
-  if(wl)wl.innerHTML=wh;if(wlg)wlg.innerHTML=wh;
-  if(ml)ml.innerHTML=mh;if(mlg)mlg.innerHTML=mh;
-  if(yl)yl.innerHTML=D.yg.length?D.yg.map(g=>`<div class="goal-row"><div style="flex:1"><div class="gn">${g.tx} <span style="font-size:13px;color:#999;font-weight:400">${g.cat}</span></div><div style="display:flex;align-items:center;gap:10px;margin-top:8px"><input type="range" min="0" max="100" value="${g.p}" step="1" style="flex:1;accent-color:var(--sage);height:6px" oninput="uYG(${g.id},this.value)"><span style="font-size:14px;color:var(--text-m);font-weight:700;min-width:36px" id="yp${g.id}">${g.p}%</span></div><div class="prog-bar" style="height:6px;margin-top:6px"><div class="prog-fill" id="yf${g.id}" style="width:${g.p}%"></div></div></div><button class="ic-btn" onclick="dYG(${g.id})">✕</button></div>`).join(''):'<div class="empty">設定你的年度大目標吧</div>';
+  const wl=document.getElementById('wgList'),wlg=document.getElementById('wgListG'),ml=document.getElementById('mgList'),yl=document.getElementById('ygList');
+  const wh=D.wg.length?D.wg.map(g=>goalRow(g,'tWG','dWG')).join(''):'<div class="empty"><div class="empty-ico">🎯</div>設定本週目標吧</div>';
+  const mh=D.mg.length?D.mg.map(g=>goalRow(g,'tMG','dMG')).join(''):'<div class="empty"><div class="empty-ico">📅</div>這個月想達成什麼？</div>';
+  if(wl)wl.innerHTML=wh;if(wlg)wlg.innerHTML=wh;if(ml)ml.innerHTML=mh;
+  if(yl)yl.innerHTML=D.yg.length?D.yg.map(g=>`<div class="goal-row"><div style="flex:1"><div class="gn">${g.tx} <span class="bdg bdg-sage" style="font-size:12px">${g.cat}</span></div><div class="plbl" style="margin-top:10px"><span>進度</span><span id="yp${g.id}">${g.p}%</span></div><div class="pb" style="height:8px"><div class="pf" id="yf${g.id}" style="width:${g.p}%;height:8px"></div></div><input type="range" min="0" max="100" value="${g.p}" step="1" style="width:100%;margin-top:8px;accent-color:var(--sage)" oninput="uYG(${g.id},this.value)"></div><button class="btn-del" onclick="dYG(${g.id})">✕</button></div>`).join(''):'<div class="empty"><div class="empty-ico">🌟</div>設定你的年度大目標吧</div>';
 }
-
 function saveEC(){if(!D.ec)D.ec={};['ec1','ec2','ec3','ec4'].forEach(id=>{const el=document.getElementById(id);if(el)D.ec[id]=el.value;});sv();}
 function rEC(){const ec=D.ec||{};['ec1','ec2','ec3','ec4'].forEach(id=>{const el=document.getElementById(id);if(el&&ec[id]&&document.activeElement!==el)el.value=ec[id];});}
-
-function addIdea(){const cat=document.getElementById('ideaCat').value,tx=document.getElementById('ideaTxt').value.trim();if(!tx)return;if(!D.ideas)D.ideas=[];D.ideas.unshift({cat,tx,id:Date.now(),date:TODAY});document.getElementById('ideaTxt').value='';tog('addIdea');rIdeas();sv();toast('靈感已記錄 💡');}
+function addIdea(){const cat=document.getElementById('ideaCat').value,tx=document.getElementById('ideaTxt').value.trim();if(!tx)return;if(!D.ideas)D.ideas=[];D.ideas.unshift({cat,tx,id:Date.now(),date:TODAY});document.getElementById('ideaTxt').value='';toggleForm('addIdeaWrap');rIdeas();sv();toast('靈感已記錄 💡');}
 function dIdea(id){D.ideas=(D.ideas||[]).filter(i=>i.id!==id);rIdeas();sv();}
-function rIdeas(){
-  const el=document.getElementById('ideaList');if(!el)return;
-  const ideas=D.ideas||[];
-  el.innerHTML=ideas.length?ideas.slice(0,30).map(i=>`<div class="idea-row"><span class="idea-cat">${i.cat}</span><div><div class="idea-txt">${i.tx}</div><div class="idea-date">${i.date}</div></div><button class="ic-btn" onclick="dIdea(${i.id})">✕</button></div>`).join(''):'<div class="empty">把靈感、故事、拍攝想法記錄在這裡<br>之後再整理・剪片・發文</div>';
+function rIdeas(){const el=document.getElementById('ideaList');if(!el)return;const ideas=D.ideas||[];el.innerHTML=ideas.length?ideas.slice(0,30).map(i=>`<div class="idea-row"><span class="idea-cat">${i.cat}</span><div><div class="idea-txt">${i.tx}</div><div class="idea-date">${i.date}</div></div><button class="btn-del" onclick="dIdea(${i.id})">✕</button></div>`).join(''):'<div class="empty"><div class="empty-ico">💡</div>把靈感、故事、拍攝想法記錄在這裡<br>之後再整理・剪片・發文</div>';}
+
+// ── 感恩日記 ──
+const GR_THEMES=[
+  {id:'sage',name:'鼠尾草綠',bg1:'#3D6B4F',bg2:'#2A4A35',textC:'#FFFFFF',subC:'rgba(255,255,255,0.65)',lineC:'rgba(255,255,255,0.2)',dotC:'#8BB89A',emoji:'🌿'},
+  {id:'gold',name:'暖金晨光',bg1:'#C4A46B',bg2:'#8C6B3A',textC:'#FFFFFF',subC:'rgba(255,255,255,0.65)',lineC:'rgba(255,255,255,0.2)',dotC:'#F9F0E0',emoji:'✨'},
+  {id:'rose',name:'玫瑰晨霧',bg1:'#C2747A',bg2:'#9E5A60',textC:'#FFFFFF',subC:'rgba(255,255,255,0.65)',lineC:'rgba(255,255,255,0.2)',dotC:'#F5E8EA',emoji:'🌸'},
+  {id:'lav',name:'薰衣草紫',bg1:'#8C6BC2',bg2:'#5A3A8C',textC:'#FFFFFF',subC:'rgba(255,255,255,0.65)',lineC:'rgba(255,255,255,0.2)',dotC:'#F0E8FA',emoji:'💜'},
+  {id:'night',name:'深夜靛藍',bg1:'#1A2A4A',bg2:'#0A1828',textC:'#FFFFFF',subC:'rgba(255,255,255,0.55)',lineC:'rgba(255,255,255,0.12)',dotC:'#90CAF9',emoji:'🌙'},
+  {id:'cream',name:'奶油白',bg1:'#F5EDE0',bg2:'#EAD8C0',textC:'#3D2A1A',subC:'rgba(61,42,26,0.55)',lineC:'rgba(61,42,26,0.12)',dotC:'#C4A46B',emoji:'☕'},
+];
+let curTheme=GR_THEMES[0];
+
+function initGratitude(){
+  // 主題格
+  const tg=document.getElementById('themeGrid');
+  if(!tg)return;
+  tg.innerHTML=GR_THEMES.map(t=>`
+    <div onclick="selectTheme('${t.id}')" id="th-${t.id}" style="border-radius:12px;padding:14px;cursor:pointer;text-align:center;border:2px solid transparent;background:linear-gradient(135deg,${t.bg1},${t.bg2});transition:.2s">
+      <div style="font-size:20px;margin-bottom:5px">${t.emoji}</div>
+      <div style="font-size:12px;font-weight:700;color:${t.textC}">${t.name}</div>
+    </div>`).join('');
+  // 標記預設選中
+  const firstEl=document.getElementById('th-sage');
+  if(firstEl)firstEl.style.outline='3px solid var(--sage)';
+  // 日期
+  const gd=document.getElementById('grDate');
+  if(gd)gd.textContent=NOW.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+  // 載入今日資料
+  loadTodayGr();
+  // 初始化 canvas
+  drawGrCard();
+}
+
+function selectTheme(id){
+  curTheme=GR_THEMES.find(t=>t.id===id)||GR_THEMES[0];
+  GR_THEMES.forEach(t=>{const el=document.getElementById('th-'+t.id);if(el)el.style.outline='none';});
+  const el=document.getElementById('th-'+id);if(el)el.style.outline='3px solid var(--sage)';
+  drawGrCard();
+}
+
+let selectedEnergyTags=[];
+
+function toggleEnergyTag(el,tag){
+  if(el.classList.contains('on')){
+    el.classList.remove('on');
+    selectedEnergyTags=selectedEnergyTags.filter(t=>t!==tag);
+  }else{
+    el.classList.add('on');
+    selectedEnergyTags.push(tag);
+  }
+  updateGrPreview();
+}
+
+function setSelfMsg(el,msg){
+  document.querySelectorAll('.stag').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  const ta=document.getElementById('selfMsg');
+  if(ta){ta.value=msg;}
+  updateGrPreview();
+}
+
+function loadTodayGr(){
+  const gr=D.gratitude?.[TODAY];
+  if(!gr)return;
+  ['gr1','gr2','gr3'].forEach((id,i)=>{const el=document.getElementById(id);if(el&&gr.items?.[i])el.value=gr.items[i];});
+  // energy tags
+  selectedEnergyTags=gr.energyTags||[];
+  document.querySelectorAll('.etag').forEach(el=>{
+    const tag=el.textContent.trim().replace(/^[^\s]+\s/,'');
+    if(selectedEnergyTags.some(t=>el.textContent.includes(t.replace(/^[^\s]+\s/,''))))el.classList.add('on');
+  });
+  const ec=document.getElementById('energyCustom');if(ec&&gr.energyCustom)ec.value=gr.energyCustom;
+  const sm=document.getElementById('selfMsg');if(sm&&gr.selfMsg)sm.value=gr.selfMsg;
+  drawGrCard();
+}
+
+function saveGratitude(){
+  if(!D.gratitude)D.gratitude={};
+  const items=['gr1','gr2','gr3'].map(id=>{const el=document.getElementById(id);return el?el.value.trim():'';}).filter(x=>x);
+  if(!items.length){toast('請至少寫一件感恩的事');return;}
+  const ec=document.getElementById('energyCustom');
+  const sm=document.getElementById('selfMsg');
+  D.gratitude[TODAY]={
+    items,
+    energyTags:selectedEnergyTags,
+    energyCustom:ec?ec.value.trim():'',
+    selfMsg:sm?sm.value.trim():'',
+  };
+  sv();rGrHistory();
+  toast('💚 感恩日記已儲存！');
+}
+
+function generateGrCard(){
+  const items=['gr1','gr2','gr3'].map(id=>{const el=document.getElementById(id);return el?el.value.trim():'';}).filter(x=>x);
+  if(!items.length){toast('請先寫感恩的事');return;}
+  drawGrCard();
+  toast('✨ 卡片已產生，可長按儲存！');
+}
+
+function updateGrPreview(){
+  drawGrCard();
+}
+
+function drawGrCard(){
+  const canvas=document.getElementById('grCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=900,H=1380;
+  canvas.width=W;canvas.height=H;
+  const T=curTheme;
+
+  // 背景
+  const grd=ctx.createLinearGradient(0,0,W*0.4,H);
+  grd.addColorStop(0,T.bg1);grd.addColorStop(1,T.bg2);
+  ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+
+  // 裝飾圓
+  ctx.save();ctx.globalAlpha=0.07;
+  ctx.beginPath();ctx.arc(W+80,H*0.12,300,0,Math.PI*2);ctx.fillStyle=T.textC;ctx.fill();
+  ctx.beginPath();ctx.arc(-60,H*0.88,260,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+
+  // 頂部 emoji
+  ctx.font='60px serif';ctx.textAlign='center';ctx.fillText(T.emoji,W/2,90);
+
+  // 標題
+  ctx.fillStyle=T.textC;
+  ctx.font='bold 50px "Noto Serif TC",serif';ctx.textAlign='center';
+  ctx.fillText('感 恩 日 記',W/2,170);
+
+  // 日期
+  ctx.fillStyle=T.subC;ctx.font='26px "Noto Sans TC",sans-serif';
+  ctx.fillText(NOW.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'}),W/2,220);
+
+  // 分隔線
+  ctx.strokeStyle=T.lineC;ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(70,252);ctx.lineTo(W-70,252);ctx.stroke();
+
+  // ── 感恩 3 件 ──
+  const grItems=['gr1','gr2','gr3'].map(id=>{const el=document.getElementById(id);return el?el.value.trim():'';});
+  let y=300;
+  grItems.slice(0,3).forEach((item,i)=>{
+    const isFilled=!!item;
+    ctx.save();
+    ctx.beginPath();ctx.arc(84,y+6,20,0,Math.PI*2);
+    ctx.fillStyle=isFilled?T.dotC:'rgba(255,255,255,0.15)';ctx.fill();ctx.restore();
+    ctx.fillStyle=isFilled?T.bg2:T.subC;
+    ctx.font='bold 20px "Noto Sans TC",sans-serif';ctx.textAlign='center';
+    ctx.fillText(i+1,84,y+14);
+    ctx.fillStyle=isFilled?T.textC:T.subC;
+    ctx.font=isFilled?'400 28px "Noto Serif TC",serif':'italic 24px "Noto Sans TC",sans-serif';
+    ctx.textAlign='left';
+    const lines=wrapText(ctx,item||'感恩今天...',W-180);
+    lines.forEach((line,li)=>ctx.fillText(line,130,y+li*38));
+    y+=Math.max(lines.length*38,46)+36;
+    if(i<2){ctx.strokeStyle=T.lineC;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(70,y-14);ctx.lineTo(W-70,y-14);ctx.stroke();}
+  });
+
+  y+=16;
+  ctx.strokeStyle=T.lineC;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(70,y);ctx.lineTo(W-70,y);ctx.stroke();
+  y+=28;
+
+  // ── 能量給了誰 ──
+  const ec=document.getElementById('energyCustom');
+  const allTags=[...selectedEnergyTags];
+  if(ec&&ec.value.trim())allTags.push(ec.value.trim());
+  if(allTags.length>0){
+    ctx.fillStyle=T.subC;ctx.font='bold 22px "Noto Sans TC",sans-serif';ctx.textAlign='left';
+    ctx.fillText('⚡ 今天我把能量留給了',80,y);y+=38;
+    ctx.fillStyle=T.textC;ctx.font='28px "Noto Serif TC",serif';ctx.textAlign='center';
+    const tagLine=allTags.join('　·　');
+    const tagLines=wrapText(ctx,tagLine,W-160);
+    tagLines.forEach(line=>{ ctx.fillText(line,W/2,y);y+=38;});
+    y+=16;
+    ctx.strokeStyle=T.lineC;ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(70,y);ctx.lineTo(W-70,y);ctx.stroke();
+    y+=28;
+  }
+
+  // ── 感謝自己 ──
+  const sm=document.getElementById('selfMsg');
+  if(sm&&sm.value.trim()){
+    ctx.fillStyle=T.subC;ctx.font='bold 22px "Noto Sans TC",sans-serif';ctx.textAlign='left';
+    ctx.fillText('💜 今天，我想對自己說',80,y);y+=38;
+    ctx.fillStyle=T.textC;ctx.font='italic 30px "Noto Serif TC",serif';ctx.textAlign='center';
+    const smLines=wrapText(ctx,sm.value.trim(),W-160);
+    smLines.forEach(line=>{ctx.fillText(line,W/2,y);y+=42;});
+    y+=10;
+    ctx.strokeStyle=T.lineC;ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(70,y);ctx.lineTo(W-70,y);ctx.stroke();
+    y+=28;
+  }
+
+  // ── 底部語句 ──
+  const footerY=Math.max(y+20,H-140);
+  ctx.fillStyle=T.subC;ctx.font='italic 22px "Noto Serif TC",serif';ctx.textAlign='center';
+  ctx.fillText('我不是把自己燃燒掉才有價值。',W/2,footerY);
+  ctx.fillText('我穩定發光，本身就有力量。',W/2,footerY+36);
+  ctx.fillStyle=T.subC;ctx.globalAlpha=0.45;
+  ctx.font='18px "Noto Sans TC",sans-serif';
+  ctx.fillText('珞熙・能量生活',W/2,footerY+76);
+  ctx.globalAlpha=1;
+
+  // 裁剪 canvas 到實際高度
+  canvas.style.height='auto';
+}
+
+function wrapText(ctx,text,maxW){
+  const lines=[];let line='';
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    const test=line+ch;
+    if(ctx.measureText(test).width>maxW&&line.length>0){lines.push(line);line=ch;}
+    else line=test;
+  }
+  if(line)lines.push(line);
+  return lines.length?lines:[''];
+}
+
+function downloadGrCard(){
+  const canvas=document.getElementById('grCanvas');if(!canvas)return;
+  const a=document.createElement('a');
+  a.download='珞熙感恩日記_'+TODAY+'.png';
+  a.href=canvas.toDataURL('image/png');
+  a.click();
+  toast('🎉 圖片已下載！');
+}
+
+function rGrHistory(){
+  const el=document.getElementById('grHistory');if(!el)return;
+  const gr=D.gratitude||{};
+  const keys=Object.keys(gr).sort().reverse().slice(0,14);
+  if(!keys.length){el.innerHTML='<div class="empty"><div class="empty-ico">🌱</div>還沒有紀錄<br>從今天開始寫第一篇</div>';return;}
+  const dn=['日','一','二','三','四','五','六'];
+  el.innerHTML=keys.map(dk=>{
+    const rec=gr[dk]||{};
+    const items=Array.isArray(rec)?rec:(rec.items||[]);
+    const energyTags=rec.energyTags||[];const energyCustom=rec.energyCustom||'';const selfMsg=rec.selfMsg||'';
+    const d=new Date(dk);
+    return`<div style="padding:16px 0;border-bottom:1px solid var(--bdr)">
+      <div style="font-size:13px;font-weight:700;color:var(--mut);margin-bottom:10px">${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}（週${dn[d.getDay()]}）</div>
+      ${items.map((it,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:7px"><span style="width:22px;height:22px;border-radius:50%;background:var(--sageL);color:var(--sageDk);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</span><div style="font-size:15px;color:var(--txt);line-height:1.6">${it}</div></div>`).join('')}
+      ${(energyTags.length||energyCustom)?`<div style="margin-top:8px;padding:10px 12px;background:var(--goldL);border-radius:10px;font-size:13px;color:var(--goldDk)"><strong>⚡ 能量留給了：</strong>${[...energyTags,energyCustom].filter(x=>x).join('・')}</div>`:''}
+      ${selfMsg?`<div style="margin-top:8px;padding:10px 12px;background:var(--lavL);border-radius:10px;font-size:14px;color:var(--lavDk);font-style:italic;font-family:'Noto Serif TC',serif">💜 ${selfMsg}</div>`:''}
+    </div>`;
+  }).join('');
 }
 
 init();
