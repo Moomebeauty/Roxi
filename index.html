@@ -1099,80 +1099,150 @@ function grRenderView(dk){
   grIsEditing=false;
   const content=document.getElementById('grDayContent');if(!content)return;
   const editBtn=document.getElementById('grEditBtn');if(editBtn){editBtn.textContent='✏️ 編輯';editBtn.onclick=()=>grToggleEdit();}
-  // 取今日任務（從 D.tasks）
+
+  // ── 收集所有資料 ──
   const td=D.tasks[dk]||{};
   const mainTask=td.mainTask||td.main||'';
   const sub1=td.s1||'',sub2=td.s2||'';
   const d1=td.d1||false,d2=td.d2||false;
-  // 取今日行程
   const evs=D.ev[dk]||[];
-  // 取感恩記錄
   const rec=D.gratitude[dk]||{};
-  const items=Array.isArray(rec)?rec:(rec.items||[]);
-  const energyTags=rec.energyTags||[], energyCustom=rec.energyCustom||'', selfMsg=rec.selfMsg||'';
-  const hasTasks=mainTask||sub1||sub2;
-  const hasEvs=evs.length>0;
-  const hasGr=items.length>0;
-  const hasEnergy=energyTags.length||energyCustom;
-  const hasSelf=selfMsg;
-  // 如果完全沒資料 → 進編輯
-  if(!hasTasks&&!hasEvs&&!hasGr&&!hasEnergy&&!hasSelf){grRenderEdit(dk);return;}
+  const grItems=Array.isArray(rec)?rec:(rec.items||[]);
+  const energyTags=rec.energyTags||[],energyCustom=rec.energyCustom||'',selfMsg=rec.selfMsg||'';
+  // 早晨儀式
+  const morning=D.morningState?.[dk]||{};
+  const avoidDone=AVOID_TAGS.filter(t=>morning.avoid?.[t.id]);
+  const doDone=DO_TAGS.filter(t=>morning.doIt?.[t.id]);
+  const customDone=(morning.custom||[]).filter(t=>morning.doIt?.[t.id]);
+  // 週計劃資料（該天所在週）
+  const weekRoles=D.weekRoles?.[dk]||[];
+  const weekSlots=D.weekSlots?.[dk]||{};
+  const hasSlots=Object.values(weekSlots).some(v=>v&&v.trim());
+  // 週能量補充（找該週的週一）
+  const dObj=new Date(dk);
+  const dow=dObj.getDay();const off=dow===0?-6:1-dow;
+  const monDt=new Date(dObj);monDt.setDate(dObj.getDate()+off);
+  const monKey=dateKey(monDt);
+  const weekEnergyState=D.weekEnergy?.[monKey]||{};
+  const weekEnergyDone=WEEK_ENERGY_LIST.filter(t=>weekEnergyState[t.id]);
+
+  // 如果什麼都沒有 → 進編輯
+  const hasAny=mainTask||sub1||sub2||evs.length||grItems.length||avoidDone.length||doDone.length||customDone.length||weekRoles.length||hasSlots;
+  if(!hasAny){grRenderEdit(dk);return;}
+
   let h='';
 
-  // ── 今日任務 ──
-  if(hasTasks){
-    h+=`<div style="margin-bottom:20px;padding:18px 20px;background:var(--sage-l);border-radius:14px;border:1px solid var(--border)">
-      <div style="font-size:15px;font-weight:700;color:var(--sage-d);margin-bottom:12px;letter-spacing:0.04em">🎯 今日主軸任務</div>`;
-    if(mainTask){
-      h+=`<div style="font-family:var(--serif);font-size:18px;font-weight:700;color:var(--txt);line-height:1.7;margin-bottom:10px">${mainTask}</div>`;
+  // ① 早晨儀式
+  if(avoidDone.length||doDone.length||customDone.length){
+    const totalDone=avoidDone.length+doDone.length+customDone.length;
+    const totalAll=AVOID_TAGS.length+DO_TAGS.length+(morning.custom||[]).length;
+    h+=`<div style="margin-bottom:18px;padding:16px 20px;background:linear-gradient(135deg,var(--gold-l),var(--warm-l));border-radius:14px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:15px;font-weight:700;color:var(--warm-d)">🌅 早晨啟動儀式</div>
+        <div style="font-size:13px;color:var(--warm-d);font-weight:600">${totalDone}/${totalAll} 完成</div>
+      </div>`;
+    if(avoidDone.length){
+      h+=`<div style="margin-bottom:8px"><span style="font-size:13px;font-weight:600;color:var(--rose-d)">❌ 成功避免：</span>
+        <span style="font-size:13px;color:var(--rose-d)">${avoidDone.map(t=>t.label).join('　')}</span></div>`;
     }
-    if(sub1||sub2){
-      h+=`<div style="font-size:14px;font-weight:600;color:var(--txt-m);margin-bottom:7px">次要任務</div>`;
-      if(sub1)h+=`<div style="display:flex;align-items:center;gap:10px;font-size:16px;color:${d1?'var(--txt-l)':'var(--txt)'};${d1?'text-decoration:line-through':''};margin-bottom:5px"><span style="width:20px;height:20px;border-radius:50%;${d1?'background:var(--sage);':'border:2px solid var(--border);'}display:flex;align-items:center;justify-content:center;font-size:12px;color:${d1?'#fff':'transparent'};flex-shrink:0">${d1?'✓':''}</span>${sub1}</div>`;
-      if(sub2)h+=`<div style="display:flex;align-items:center;gap:10px;font-size:16px;color:${d2?'var(--txt-l)':'var(--txt)'};${d2?'text-decoration:line-through':''};margin-bottom:5px"><span style="width:20px;height:20px;border-radius:50%;${d2?'background:var(--sage);':'border:2px solid var(--border);'}display:flex;align-items:center;justify-content:center;font-size:12px;color:${d2?'#fff':'transparent'};flex-shrink:0">${d2?'✓':''}</span>${sub2}</div>`;
+    if(doDone.length||customDone.length){
+      h+=`<div><span style="font-size:13px;font-weight:600;color:var(--sage-d)">✅ 今天做到：</span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">
+          ${[...doDone,...customDone].map(t=>`<span style="padding:4px 12px;border-radius:16px;background:var(--sage-d);color:#fff;font-size:13px;font-weight:600">${t.label}</span>`).join('')}
+        </div></div>`;
     }
     h+=`</div>`;
   }
 
-  // ── 當日行程 ──
-  if(hasEvs){
-    h+=`<div style="margin-bottom:20px;padding:18px 20px;background:var(--mocha-ll);border-radius:14px;border:1px solid var(--border)">
-      <div style="font-size:15px;font-weight:700;color:var(--mocha-d);margin-bottom:12px">🕐 當日行程</div>
-      ${evs.map(e=>`<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:16px"><span style="font-size:14px;color:var(--txt-m);min-width:44px;font-weight:600">${e.t||'--:--'}</span><div style="width:3px;height:22px;background:var(--mocha-l);border-radius:2px"></div><span style="color:var(--txt)">${e.tx}</span></div>`).join('')}
+  // ② 週角色標籤
+  if(weekRoles.length){
+    const roleOpts=weekRoles.map(k=>WEEK_ROLE_OPTIONS.find(r=>r.key===k)).filter(Boolean);
+    h+=`<div style="margin-bottom:16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <span style="font-size:14px;font-weight:700;color:var(--txt-m)">今日主軸：</span>
+      ${roleOpts.map(r=>`<span style="padding:5px 14px;border-radius:20px;font-size:14px;font-weight:600;background:${r.c};color:#fff">${r.label}</span>`).join('')}
     </div>`;
   }
 
-  // ── 感恩 3 件 ──
-  if(hasGr){
-    h+=`<div style="margin-bottom:20px">
-      <div style="font-size:15px;font-weight:700;color:var(--mocha-d);margin-bottom:12px">🙏 今日感恩</div>`;
-    items.forEach((it,i)=>{
-      h+=`<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:10px;padding:14px 18px;background:var(--card2);border-radius:12px;border:1px solid var(--border)">
-        <span style="width:26px;height:26px;border-radius:50%;background:var(--mocha-d);color:#F5EDE0;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
-        <div style="font-family:var(--serif);font-size:17px;color:var(--txt);line-height:1.7;padding-top:1px">${it}</div>
+  // ③ 主軸任務
+  if(mainTask||sub1||sub2){
+    h+=`<div style="margin-bottom:18px;padding:18px 20px;background:var(--sage-l);border-radius:14px;border:1px solid var(--border)">
+      <div style="font-size:15px;font-weight:700;color:var(--sage-d);margin-bottom:12px">🎯 今日主軸任務</div>`;
+    if(mainTask)h+=`<div style="font-family:var(--serif);font-size:19px;font-weight:700;color:var(--txt);line-height:1.7;margin-bottom:12px">${mainTask}</div>`;
+    if(sub1||sub2){
+      h+=`<div style="font-size:14px;font-weight:600;color:var(--txt-m);margin-bottom:8px">次要任務</div>`;
+      const subRow=(txt,done)=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <span style="width:22px;height:22px;border-radius:50%;${done?'background:var(--sage);':'border:2px solid var(--border);'}display:flex;align-items:center;justify-content:center;font-size:12px;color:${done?'#fff':'transparent'};flex-shrink:0">${done?'✓':''}</span>
+        <span style="font-size:16px;color:${done?'var(--txt-l)':'var(--txt)'};${done?'text-decoration:line-through':''}">${txt}</span>
       </div>`;
-    });
+      if(sub1)h+=subRow(sub1,d1);
+      if(sub2)h+=subRow(sub2,d2);
+    }
     h+=`</div>`;
   }
 
-  // ── 能量留給誰 ──
-  const allTags=[...energyTags,energyCustom].filter(x=>x);
-  if(allTags.length){
+  // ④ 行程
+  if(evs.length){
+    h+=`<div style="margin-bottom:18px;padding:16px 20px;background:var(--mocha-ll);border-radius:14px;border:1px solid var(--border)">
+      <div style="font-size:15px;font-weight:700;color:var(--mocha-d);margin-bottom:10px">🕐 當日行程</div>
+      ${evs.map(e=>`<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:14px;color:var(--txt-m);min-width:44px;font-weight:600">${e.t||'全天'}</span>
+        <div style="width:3px;height:20px;background:var(--mocha-l);border-radius:2px"></div>
+        <span style="font-size:15px;color:var(--txt)">${e.tx}</span>
+        ${e.gcal?'<span style="font-size:11px;padding:2px 8px;border-radius:8px;background:#EBF3FE;color:#4285F4;font-weight:600">Google</span>':''}
+      </div>`).join('')}
+    </div>`;
+  }
+
+  // ⑤ 週計劃時段記錄
+  if(hasSlots){
+    const SLOT_NAMES=['早晨','上午','下午','晚上'];
+    const SLOT_COLORS=['var(--gold-d)','var(--sage-d)','var(--lav-d)','var(--rose-d)'];
+    const SLOT_BG=['var(--gold-l)','var(--sage-l)','var(--lav-l)','var(--rose-l)'];
+    h+=`<div style="margin-bottom:18px;padding:16px 20px;border-radius:14px;border:1px solid var(--border);background:var(--card2)">
+      <div style="font-size:15px;font-weight:700;color:var(--txt-m);margin-bottom:12px">📅 週計劃記錄</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${[0,1,2,3].map(i=>{const v=weekSlots[`slot_${i}`]||'';return v?`<div style="padding:10px 14px;border-radius:10px;background:${SLOT_BG[i]}"><div style="font-size:12px;font-weight:700;color:${SLOT_COLORS[i]};margin-bottom:4px">${SLOT_NAMES[i]}</div><div style="font-size:14px;color:var(--txt);line-height:1.6">${v}</div></div>`:''}).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ⑥ 感恩日記
+  if(grItems.length){
+    h+=`<div style="margin-bottom:18px">
+      <div style="font-size:15px;font-weight:700;color:var(--mocha-d);margin-bottom:10px">🙏 今日感恩</div>
+      ${grItems.map((it,i)=>`<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;padding:14px 18px;background:var(--card2);border-radius:12px;border:1px solid var(--border)">
+        <span style="width:26px;height:26px;border-radius:50%;background:var(--mocha-d);color:#F5EDE0;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
+        <div style="font-family:var(--serif);font-size:17px;color:var(--txt);line-height:1.7">${it}</div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  // ⑦ 能量留給誰
+  const allETags=[...energyTags,energyCustom].filter(x=>x);
+  if(allETags.length){
     h+=`<div style="margin-bottom:16px;padding:16px 18px;background:var(--gold-l);border-radius:12px;border:1px solid var(--border)">
       <div style="font-size:15px;font-weight:700;color:var(--gold-d);margin-bottom:8px">⚡ 今天我把能量留給了</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px">${allTags.map(t=>`<span style="padding:6px 16px;border-radius:20px;background:var(--warm-l);color:var(--warm-d);font-size:15px;font-weight:600">${t}</span>`).join('')}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">${allETags.map(t=>`<span style="padding:6px 14px;border-radius:20px;background:var(--warm-l);color:var(--warm-d);font-size:14px;font-weight:600">${t}</span>`).join('')}</div>
     </div>`;
   }
 
-  // ── 感謝自己 ──
-  if(hasSelf){
+  // ⑧ 本週能量補充（只顯示有勾選的）
+  if(weekEnergyDone.length){
+    h+=`<div style="margin-bottom:16px;padding:16px 18px;background:var(--sage-l);border-radius:12px;border:1px solid var(--border)">
+      <div style="font-size:15px;font-weight:700;color:var(--sage-d);margin-bottom:8px">💚 本週能量補充</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px">${weekEnergyDone.map(t=>`<span style="padding:5px 12px;border-radius:16px;background:var(--sage-d);color:#fff;font-size:13px;font-weight:600">${t.label}</span>`).join('')}</div>
+    </div>`;
+  }
+
+  // ⑨ 對自己說
+  if(selfMsg){
     h+=`<div style="padding:18px 20px;background:var(--lav-l);border-radius:12px;border:1px solid var(--border)">
       <div style="font-size:15px;font-weight:700;color:var(--lav-d);margin-bottom:8px">💜 對自己說</div>
-      <div style="font-family:var(--serif);font-size:18px;color:var(--lav-d);font-style:italic;line-height:1.7">${selfMsg}</div>
+      <div style="font-family:var(--serif);font-size:18px;color:var(--lav-d);font-style:italic;line-height:1.8">${selfMsg}</div>
     </div>`;
   }
 
-  content.innerHTML=h;
+  content.innerHTML=h||'<div class="empty"><div class="empty-ico">🌱</div>這天還沒有記錄</div>';
 }
 
 // 編輯模式（完整版，包含任務讀取提示）
@@ -1304,58 +1374,87 @@ function deleteGrRecord(dk){
   delete D.gratitude[dk];sv();buildGrCal();grMonthlySummary();grRenderEdit(dk);toast('已清除感恩記錄');
 }
 
-// 月度摘要（整合任務 + 感恩 + 行程）
+// 月度摘要（整合所有資料）
 function grMonthlySummary(){
   const el=document.getElementById('grMonthlySummary');if(!el)return;
-  const gr=D.gratitude||{};const tasks=D.tasks||{};const evs=D.ev||{};
+  const gr=D.gratitude||{},tasks=D.tasks||{},evs=D.ev||{},morning=D.morningState||{};
   const prefix=`${grY}-${String(grM+1).padStart(2,'0')}-`;
   const total=new Date(grY,grM+1,0).getDate();
-  // 收集有任何資料的日期
+
+  // 收集所有有任何資料的日期
   const allKeys=new Set();
-  Object.keys(gr).filter(dk=>dk.startsWith(prefix)).forEach(dk=>allKeys.add(dk));
-  Object.keys(tasks).filter(dk=>dk.startsWith(prefix)&&(tasks[dk].mainTask||tasks[dk].main||tasks[dk].s1)).forEach(dk=>allKeys.add(dk));
-  Object.keys(evs).filter(dk=>dk.startsWith(prefix)&&evs[dk]&&evs[dk].length).forEach(dk=>allKeys.add(dk));
+  [gr,tasks,evs,morning].forEach(obj=>Object.keys(obj).filter(dk=>dk.startsWith(prefix)).forEach(dk=>allKeys.add(dk)));
   const keys=[...allKeys].sort().reverse();
+
   if(!keys.length){
     el.innerHTML=`<div class="empty"><div class="empty-ico">🌱</div><div style="font-size:16px">這個月還沒有任何記錄<br>點選日期開始寫吧</div></div>`;return;
   }
-  const grCount=Object.keys(gr).filter(dk=>dk.startsWith(prefix)&&(gr[dk].items||gr[dk]||[]).length).length;
+
+  // 統計
+  const grCount=Object.keys(gr).filter(dk=>dk.startsWith(prefix)).length;
+  const morningCount=Object.keys(morning).filter(dk=>{
+    if(!dk.startsWith(prefix))return false;
+    const m=morning[dk]||{};
+    return Object.values(m.avoid||{}).some(v=>v)||Object.values(m.doIt||{}).some(v=>v);
+  }).length;
+  const taskCount=Object.keys(tasks).filter(dk=>dk.startsWith(prefix)&&(tasks[dk].mainTask||tasks[dk].main)).length;
   const dn=['日','一','二','三','四','五','六'];
-  let h=`<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:16px 18px;background:var(--mocha-ll);border-radius:12px">
-    <div style="text-align:center;min-width:60px">
-      <div style="font-family:var(--serif);font-size:32px;font-weight:900;color:var(--mocha-d)">${keys.length}</div>
+
+  let h=`
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px">
+    <div style="padding:14px;background:var(--mocha-ll);border-radius:12px;text-align:center">
+      <div style="font-family:var(--serif);font-size:28px;font-weight:900;color:var(--mocha-d)">${keys.length}</div>
       <div style="font-size:12px;color:var(--txt-m)">天有記錄</div>
     </div>
-    <div style="flex:1">
-      <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--txt-m);margin-bottom:6px"><span>本月有記錄天數</span><span style="font-weight:700;color:var(--mocha-d)">${Math.round(keys.length/total*100)}%</span></div>
-      <div class="pb" style="height:8px"><div class="pf" style="width:${Math.round(keys.length/total*100)}%;height:8px"></div></div>
-      <div style="font-size:12px;color:var(--txt-l);margin-top:5px">其中 ${grCount} 天有感恩紀錄</div>
+    <div style="padding:14px;background:var(--sage-l);border-radius:12px;text-align:center">
+      <div style="font-family:var(--serif);font-size:28px;font-weight:900;color:var(--sage-d)">${taskCount}</div>
+      <div style="font-size:12px;color:var(--txt-m)">天有主軸任務</div>
+    </div>
+    <div style="padding:14px;background:var(--gold-l);border-radius:12px;text-align:center">
+      <div style="font-family:var(--serif);font-size:28px;font-weight:900;color:var(--gold-d)">${morningCount}</div>
+      <div style="font-size:12px;color:var(--txt-m)">天完成早晨儀式</div>
+    </div>
+    <div style="padding:14px;background:var(--lav-l);border-radius:12px;text-align:center">
+      <div style="font-family:var(--serif);font-size:28px;font-weight:900;color:var(--lav-d)">${grCount}</div>
+      <div style="font-size:12px;color:var(--txt-m)">天有感恩記錄</div>
     </div>
   </div>
-  <div style="font-size:15px;font-weight:700;color:var(--txt-m);margin-bottom:12px;letter-spacing:0.04em">所有日記</div>`;
+  <div style="height:6px;background:var(--bg2);border-radius:4px;margin-bottom:20px;overflow:hidden">
+    <div style="height:100%;width:${Math.round(keys.length/total*100)}%;background:linear-gradient(90deg,var(--mocha-l),var(--warm));border-radius:4px"></div>
+  </div>
+  <div style="font-size:15px;font-weight:700;color:var(--txt-m);margin-bottom:12px">所有日記（點選查看）</div>`;
+
   keys.forEach(dk=>{
     const rec=gr[dk]||{};
     const grItems=Array.isArray(rec)?rec:(rec.items||[]);
-    const tags=[...(rec.energyTags||[]),(rec.energyCustom||'')].filter(x=>x);
-    const td=tasks[dk]||{};
-    const mainTask=td.mainTask||td.main||'';
+    const td2=tasks[dk]||{};const mainTask=td2.mainTask||td2.main||'';
     const dayEvs=evs[dk]||[];
-    const d=new Date(dk);
-    const isT=dk===TODAY;
-    h+=`<div onclick="grSelDay('${dk}')" style="padding:16px 18px;border-radius:14px;margin-bottom:10px;border:1.5px solid ${isT?'var(--mocha-d)':'var(--border)'};cursor:pointer;background:${isT?'var(--mocha-ll)':'var(--card)'};transition:.15s" onmouseover="this.style.background='var(--mocha-ll)'" onmouseout="this.style.background='${isT?'var(--mocha-ll)':'var(--card)'}'">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:16px;font-weight:700;color:var(--mocha-d)">${d.getMonth()+1} / ${d.getDate()}（週${dn[d.getDay()]}）</div>
-        ${isT?'<span class="bdg bdg-mocha">今天</span>':''}
+    const m=morning[dk]||{};
+    const doDoneCount=DO_TAGS.filter(t=>m.doIt?.[t.id]).length+(m.custom||[]).filter(t=>m.doIt?.[t.id]).length;
+    const avoidDoneCount=AVOID_TAGS.filter(t=>m.avoid?.[t.id]).length;
+    const roles=(D.weekRoles?.[dk]||[]).map(k=>WEEK_ROLE_OPTIONS.find(r=>r.key===k)).filter(Boolean);
+    const d=new Date(dk);const isT=dk===TODAY;
+
+    // 有什麼資料就顯示哪些圖標
+    const badges=[];
+    if(mainTask)badges.push(`<span style="font-size:11px;padding:2px 8px;border-radius:8px;background:var(--sage-l);color:var(--sage-d);font-weight:600">🎯 任務</span>`);
+    if(dayEvs.length)badges.push(`<span style="font-size:11px;padding:2px 8px;border-radius:8px;background:var(--mocha-ll);color:var(--mocha-d);font-weight:600">🕐 ×${dayEvs.length}</span>`);
+    if(doDoneCount>0)badges.push(`<span style="font-size:11px;padding:2px 8px;border-radius:8px;background:var(--warm-l);color:var(--warm-d);font-weight:600">🌅 ×${doDoneCount}</span>`);
+    if(grItems.length)badges.push(`<span style="font-size:11px;padding:2px 8px;border-radius:8px;background:var(--lav-l);color:var(--lav-d);font-weight:600">🙏 感恩</span>`);
+
+    h+=`<div onclick="grSelDay('${dk}')" style="padding:14px 16px;border-radius:14px;margin-bottom:10px;border:1.5px solid ${isT?'var(--mocha-d)':'var(--border)'};cursor:pointer;background:${isT?'var(--mocha-ll)':'var(--card)'};transition:.15s" onmouseover="this.style.background='var(--mocha-ll)'" onmouseout="this.style.background='${isT?'var(--mocha-ll)':'var(--card)'}'">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+        <div style="font-size:16px;font-weight:700;color:var(--mocha-d)">${d.getMonth()+1} / ${d.getDate()}（週${dn[d.getDay()]}）${isT?'　· 今天':''}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">${badges.join('')}</div>
       </div>
-      ${mainTask?`<div style="font-size:15px;color:var(--txt);margin-bottom:7px;display:flex;align-items:flex-start;gap:8px"><span style="color:var(--sage-d);font-weight:700;flex-shrink:0">🎯</span><span style="font-family:var(--serif)">${mainTask}</span></div>`:''}
-      ${dayEvs.length?`<div style="font-size:13px;color:var(--txt-m);margin-bottom:7px">🕐 ${dayEvs.slice(0,3).map(e=>(e.t?e.t.slice(0,5)+' ':'')+e.tx).join('　')}</div>`:''}
-      ${grItems.length?`<div style="font-size:14px;color:var(--txt-m);margin-bottom:6px">🌿 ${grItems.slice(0,2).join('　·　')}${grItems.length>2?'...':''}</div>`:''}
-      ${tags.length?`<div style="display:flex;flex-wrap:wrap;gap:5px">${tags.map(t=>`<span style="font-size:12px;padding:2px 10px;border-radius:12px;background:var(--gold-l);color:var(--gold-d)">${t}</span>`).join('')}</div>`:''}
+      ${roles.length?`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">${roles.map(r=>`<span style="font-size:11px;padding:2px 8px;border-radius:8px;background:${r.bg};color:${r.c};font-weight:600">${r.label}</span>`).join('')}</div>`:''}
+      ${mainTask?`<div style="font-size:14px;font-family:var(--serif);color:var(--txt);margin-bottom:4px;line-height:1.5">🎯 ${mainTask}</div>`:''}
+      ${dayEvs.length?`<div style="font-size:13px;color:var(--txt-m)">🕐 ${dayEvs.slice(0,2).map(e=>(e.t?e.t.slice(0,5)+' ':'')+e.tx).join('　')}${dayEvs.length>2?'…':''}</div>`:''}
+      ${grItems.length?`<div style="font-size:13px;color:var(--txt-m);margin-top:3px">🙏 ${grItems[0].slice(0,30)}${grItems[0].length>30?'…':''}</div>`:''}
     </div>`;
   });
   el.innerHTML=h;
 }
-
 function generateGrCard(){
   const cs=document.getElementById('grCardSection');
   if(cs)cs.style.display='block';
