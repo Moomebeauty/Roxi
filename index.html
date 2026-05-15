@@ -1400,56 +1400,100 @@ function saveGratitude(dk){
 }
 
 async function grAIAnalyze(dk,items,energyTags,energyCustom,selfMsg){
-  // 先顯示 loading 畫面
   const content=document.getElementById('grDayContent');
   if(content){
     content.innerHTML=`
     <div style="text-align:center;padding:40px 20px">
       <div style="font-size:36px;margin-bottom:16px;animation:pulse 1.5s infinite">🌿</div>
       <div style="font-family:var(--serif);font-size:17px;color:var(--mocha-d);margin-bottom:8px">正在分析你的感恩記錄...</div>
-      <div style="font-size:14px;color:var(--txt-l)">讓我看看這些事情背後的正向意義</div>
+      <div style="font-size:14px;color:var(--txt-l)">看見這些事情背後的正向意義</div>
     </div>`;
   }
+  await new Promise(r=>setTimeout(r,1200));
   const allEnergy=[...energyTags,energyCustom].filter(x=>x);
-  const prompt=`你是珞熙的能量分析師，風格溫柔、有洞察力、像一個懂她的摯友。
+  const analysis=grLocalAnalyze(items,allEnergy,selfMsg);
+  if(D.gratitude[dk])D.gratitude[dk].aiAnalysis=analysis;
+  sv();
+  grRenderView(dk);
+}
 
-珞熙今天的感恩記錄：
-${items.map((it,i)=>`${i+1}. ${it}`).join('\n')}
-${allEnergy.length?`\n今天的能量給了：${allEnergy.join('、')}`:''}
-${selfMsg?`\n她對自己說：${selfMsg}`:''}
+function grLocalAnalyze(items,energyTags,selfMsg){
+  const patterns=[
+    {keys:['客人','顧客','預約','服務','做臉','美容','睫毛'],
+     r:(t)=>`「${t}」\n你今天被人選擇、被人信任，這本身就是一種肯定。你的存在對他們來說不只是技術，而是一個讓他們願意回來的地方。這種信任，是你長期用心累積出來的。`},
+    {keys:['女兒','孩子','小孩','接送','陪伴','學校'],
+     r:(t)=>`「${t}」\n陪伴孩子的每一個當下，都是她長大後會記得的溫度。你不需要做很多，你在場本身，就已經是她最大的安全感。這也提醒你，你的能量有多珍貴。`},
+    {keys:['媽媽','爸爸','家人','父母','兄弟','姊妹'],
+     r:(t)=>`「${t}」\n家人之間的連結是最深的根。你願意感恩這一刻，說明你的心是敞開的。這種感受能力，是你最珍貴的特質之一。`},
+    {keys:['男友','伴侶','另一半','對方','他陪','他說','愛我'],
+     r:(t)=>`「${t}」\n被愛、被記得、被在乎，都是值得好好收進心裡的事。你感受得到這份溫暖，說明你允許自己被愛，這比你想像的更不容易。`},
+    {keys:['完成','做完','拍完','剪完','發文','影片','創作','內容','拍片'],
+     r:(t)=>`「${t}」\n完成一件事的滿足感，不只來自結果，而是你在過程中克服了拖延、疲憊或懷疑的那個自己。今天你做到了，這就夠了。`},
+    {keys:['休息','睡覺','放鬆','泡澡','散步','安靜','喘息','回充','不工作'],
+     r:(t)=>`「${t}」\n你願意停下來休息，是一種成熟。很多人把休息當罪惡感，但你開始明白：充飽電的自己，才能給出最好的能量。這是智慧。`},
+    {keys:['光線','陽光','天空','自然','空氣','風','花','植物','海'],
+     r:(t)=>`「${t}」\n你的靈魂對美很敏感，這是禮物。一道光、一片天空就能讓你平靜，說明你不需要很多，就能找回自己。這份敏銳，也是你創作力的來源。`},
+    {keys:['咖啡','食物','早餐','餐廳','吃到','喝到','甜點','好吃'],
+     r:(t)=>`「${t}」\n生活裡的小確幸，往往才是真正補充能量的地方。你願意注意到這些細節，說明你正在學習用溫柔的方式照顧自己。`},
+    {keys:['傳來','說了','分享','告訴我','想到我','記得我','好友','朋友'],
+     r:(t)=>`「${t}」\n有人想到你、主動聯繫你，是因為你在對方心裡有位置。你不需要一直努力刷存在感，你本來就被記得、被在意著。`},
+    {keys:['學到','學習','成長','發現','看見','明白','懂了','體悟','意識到'],
+     r:(t)=>`「${t}」\n每一個領悟都是你的養分。你願意停下來看見自己的成長，而不只是看見還不夠的地方，這本身就是一種轉變的開始。`},
+    {keys:['自己','我做到','我完成','我堅持','我選擇','我允許'],
+     r:(t)=>`「${t}」\n你感謝自己，這很珍貴。很多人一輩子都很難真的看見自己的努力。今天你做到了，而且你值得這份肯定。`},
+    {keys:['空間','環境','整理','乾淨','舒服','美感','好看','佈置'],
+     r:(t)=>`「${t}」\n你的能量跟環境頻率高度連動。一個讓你舒服的空間不只是好看，而是在幫你的靈魂充電。你在照顧自己的能量場。`},
+    {keys:['平靜','穩定','安心','踏實','放下','釋懷','輕鬆'],
+     r:(t)=>`「${t}」\n那種平靜的感覺，是你的能量回到自己身上的訊號。你越來越懂得不被外在的混亂帶著走，這是真正的強大。`},
+  ];
 
-請用繁體中文，為每一條感恩做分析，幫她看見背後的正向意義與值得珍視的地方。
+  const defaults=[
+    (t)=>`「${t}」\n你能注意到這件事，說明你的心是開著的。感恩不是因為一切都好，而是你選擇看見那個好的部分。這份選擇，就是你能量的來源。`,
+    (t)=>`「${t}」\n這件事出現在你的感恩裡，不是偶然。你願意感謝它，說明你在累積屬於自己的溫柔。這些細小的美好，正在慢慢改變你的頻率。`,
+    (t)=>`「${t}」\n把這件事放進感恩裡，你其實是在告訴自己：今天有值得珍惜的事。這個習慣，會讓你越來越容易看見生命裡的光。`,
+  ];
 
-格式要求：
-- 逐條回應，每條分析 2-3 句，溫柔但有深度
-- 最後給一句整體的「今日能量洞察」，點出今天她能量的核心主題
-- 語氣：像一個真正了解她的人說話，不要公式化，要真實有溫度
-- 不要用標題「第一條」「第二條」，直接用她的感恩內容開頭回應
-- 整體不超過 300 字`;
+  // 逐條分析
+  const analyses=items.map((item,i)=>{
+    const lower=item;
+    const matched=patterns.find(p=>p.keys.some(k=>lower.includes(k)));
+    return matched?matched.r(item):defaults[i%defaults.length](item);
+  });
 
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:600,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    const data=await res.json();
-    const aiText=data.content?.find(b=>b.type==='text')?.text||'';
-    if(aiText){
-      // 儲存 AI 分析到資料
-      if(D.gratitude[dk])D.gratitude[dk].aiAnalysis=aiText;
-      sv();
-    }
-    grRenderView(dk);
-  }catch(err){
-    console.error('AI 分析失敗',err);
-    grRenderView(dk);
-    toast('⚠️ AI 分析暫時無法使用，記錄已儲存');
+  // 能量標籤洞察
+  let energyLine='';
+  if(energyTags.length){
+    const hasKid=energyTags.some(t=>t.includes('女兒')||t.includes('家人')||t.includes('陪伴'));
+    const hasClient=energyTags.some(t=>t.includes('客人')||t.includes('服務'));
+    const hasCreate=energyTags.some(t=>t.includes('創作')||t.includes('拍攝'));
+    const hasRest=energyTags.some(t=>t.includes('休息')||t.includes('自我')||t.includes('照顧'));
+    const parts=[];
+    if(hasKid)parts.push('把愛留給了家人');
+    if(hasClient)parts.push('把專業留給了客人');
+    if(hasCreate)parts.push('把熱情留給了創作');
+    if(hasRest)parts.push('把溫柔留給了自己');
+    if(parts.length)energyLine='\n今天你 '+parts.join('、')+'，能量流動得很真實。';
   }
+
+  // 對自己說
+  let selfLine='';
+  if(selfMsg)selfLine='\n\n你對自己說：「'+selfMsg+'」\n請讓這句話真的進來。你不是在安慰自己，你是在說實話。';
+
+  // 今日洞察
+  const insights=[
+    '今天你感恩的這些事，有一個共同的核心：你值得被好好對待，而且已經有人在這樣對你了。',
+    '今天的記錄讓我看見，你的能量補充來自真實的連結，不是表演給別人看的生活。這種真實，才是你最強的磁場。',
+    '你今天感恩的，都是生活裡很具體的瞬間。這說明你越來越懂得活在當下，而不是一直活在「還不夠」的焦慮裡。',
+    '今天這些感恩拼在一起，是一幅你正在慢慢建立的生活。不完美，但有溫度，有你自己的樣子。',
+    '你今天能感受到這些，說明你的感知力很強。這份敏銳讓你有時候容易受傷，但也讓你比大多數人更能感受到生命的美。',
+  ];
+  const insight=insights[items.join('').length%insights.length];
+
+  let result=analyses.join('\n\n');
+  if(energyLine)result+='\n'+energyLine;
+  result+=selfLine;
+  result+='\n\n────\n\n✨ 今日能量洞察\n\n'+insight;
+  return result;
 }
 
 function grReAnalyze(dk){
