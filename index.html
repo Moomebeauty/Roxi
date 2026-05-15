@@ -259,9 +259,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
   </div>
   <div class="sb-sec">每日</div>
   <div class="sb-item active" onclick="nav('today',this)"><span class="ico">🏠</span><span>今日能量</span></div>
-  <div class="sb-item" onclick="nav('cal',this)"><span class="ico">🗓️</span><span>月曆行程</span></div>
+  <div class="sb-item" onclick="nav('cal',this)"><span class="ico">🗓️</span><span>月計劃</span></div>
   <div class="sb-sec">規劃</div>
-  <div class="sb-item" onclick="nav('week',this)"><span class="ico">📅</span><span>本週概覽</span></div>
+  <div class="sb-item" onclick="nav('week',this)"><span class="ico">📅</span><span>週計劃</span></div>
   <div class="sb-item" onclick="nav('goals',this)"><span class="ico">🎯</span><span>目標追蹤</span></div>
   <div class="sb-sec">能量</div>
   <div class="sb-item" onclick="nav('energy',this)"><span class="ico">✨</span><span>能量管理</span></div>
@@ -277,13 +277,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
       <span class="sync-dot" id="syncDot"></span>
       <span class="sync-txt" id="syncTxt">載入中...</span>
       <button class="btn btn-s btn-sm" onclick="saveAll()">☁️ 同步</button>
-      <button class="btn btn-s btn-sm" onclick="syncGoogleCal()" id="gcalBtn" style="background:var(--sage-l);color:var(--sage-d);border-color:var(--sage)">📅 同步Google行事曆</button>
     </div>
   </div>
   <div class="content">
 
 <!-- ══ 今日能量 ══ -->
 <div class="pg active" id="pg-today">
+
+  <!-- 日期語錄橫幅 -->
   <div class="today-hero">
     <div class="hero-date" id="heroDate"></div>
     <div class="hero-quote" id="heroQuote"></div>
@@ -294,38 +295,76 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
   <!-- 7天五行穿衣 -->
   <div class="wx-7day">
     <div class="wx-7day-head">
-      <div class="wx-7day-title">✨ 近7天五行穿衣建議</div>
+      <div class="wx-7day-title">✨ 近8天五行穿衣建議</div>
       <span style="font-size:14px;color:var(--gold-d)" id="wxHeadDate"></span>
     </div>
     <div class="wx-7day-scroll" id="wx7dayRow"></div>
   </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
-    <!-- 左：主軸任務 + 行程 -->
+
+    <!-- 左欄 -->
     <div>
+
+      <!-- 早晨啟動儀式 -->
+      <div class="card">
+        <div class="card-hd">
+          <span class="card-ttl">🌅 早晨啟動儀式</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span style="font-size:13px;color:var(--txt-l)" id="morningProgress"></span>
+            <button class="btn btn-s btn-sm" onclick="resetMorning()">重置</button>
+          </div>
+        </div>
+        <div class="card-bd">
+          <!-- 進度條 -->
+          <div style="margin-bottom:18px">
+            <div class="pb" style="height:8px"><div class="pf" id="morningBar" style="width:0%;height:8px"></div></div>
+          </div>
+
+          <!-- ❌ 今天不做的 -->
+          <div style="margin-bottom:18px">
+            <div style="font-size:14px;font-weight:700;color:var(--rose-d);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+              <span style="padding:3px 12px;border-radius:16px;background:var(--rose-l);font-size:13px">❌ 今天避免</span>
+              <span style="font-size:12px;color:var(--txt-l);font-weight:400">勾選＝已成功避免</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px" id="avoidTags"></div>
+          </div>
+
+          <!-- ✅ 今天要做的 -->
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--sage-d);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+              <span style="padding:3px 12px;border-radius:16px;background:var(--sage-l);font-size:13px">✅ 今天做到</span>
+              <span style="font-size:12px;color:var(--txt-l);font-weight:400">勾選＝已完成</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px" id="doTags"></div>
+            <!-- 自訂新增 -->
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <input type="text" id="customMorningInput" class="inp" placeholder="手動輸入新增..." style="font-size:14px">
+              <button class="btn btn-s btn-sm" onclick="addCustomMorning()">＋ 新增</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主軸任務 -->
       <div class="card">
         <div class="card-hd"><span class="card-ttl">🎯 今日主軸任務</span></div>
         <div class="card-bd">
-          <!-- 反問區塊 -->
           <div class="task-q">
             <div class="task-q-lbl">今天哪一件事最值得我投入能量？</div>
-            <div class="task-q-hint">點選快速填入，或自己打：</div>
             <div class="task-q-tags" id="mainTaskTags">
-              <div class="task-q-tag" onclick="setMainTask('拍一支重要影片')">🎬 拍一支重要影片</div>
-              <div class="task-q-tag" onclick="setMainTask('完成課程內容')">📚 完成課程內容</div>
-              <div class="task-q-tag" onclick="setMainTask('集中服務客人')">💆‍♀️ 集中服務客人</div>
-              <div class="task-q-tag" onclick="setMainTask('規劃品牌方向')">💼 規劃品牌方向</div>
-              <div class="task-q-tag" onclick="setMainTask('陪伴女兒的重要行程')">👧 陪伴女兒的重要行程</div>
+              <div class="task-q-tag" onclick="setMainTask(this,'拍一支重要影片')">🎬 拍一支重要影片</div>
+              <div class="task-q-tag" onclick="setMainTask(this,'完成課程內容')">📚 完成課程內容</div>
+              <div class="task-q-tag" onclick="setMainTask(this,'集中服務客人')">💆‍♀️ 集中服務客人</div>
+              <div class="task-q-tag" onclick="setMainTask(this,'規劃品牌方向')">💼 規劃品牌方向</div>
+              <div class="task-q-tag" onclick="setMainTask(this,'陪伴女兒的重要行程')">👧 陪伴女兒的重要行程</div>
             </div>
             <textarea class="task-area" id="mainTask" placeholder="今天最重要的一件事..." rows="2" oninput="saveTasks()"></textarea>
             <div class="task-success">✅ 一天只要完成這件，你就算成功。</div>
           </div>
-          <!-- 次要任務 -->
           <div class="sub-section">
-            <div class="sub-lbl-row">
-              <span class="sub-lbl">② 次要任務（維持運轉，最多2件）</span>
-            </div>
-            <div style="font-size:14px;color:var(--txt-l);margin-bottom:12px;line-height:1.6">必要但不需要耗掉全部精神，例如：回重要訊息、發限動、整理環境、處理行政</div>
+            <div class="sub-lbl-row"><span class="sub-lbl">② 次要任務（最多2件）</span></div>
+            <div style="font-size:13px;color:var(--txt-l);margin-bottom:12px">必要但不需要耗掉全部精神</div>
             <div class="sub-row">
               <div class="chk" id="c1" onclick="tSub(1)"></div>
               <input class="sub-in" id="s1" placeholder="次要任務 1" oninput="saveTasks()">
@@ -335,19 +374,24 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
               <input class="sub-in" id="s2" placeholder="次要任務 2" oninput="saveTasks()">
             </div>
           </div>
-          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-            <div style="font-size:13px;color:var(--txt-l)">任務輸入後自動儲存</div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:flex-end">
             <button class="btn btn-s btn-sm" onclick="saveTasksManual()" style="background:var(--sage-l);color:var(--sage-d);border-color:var(--sage)">💾 儲存任務</button>
           </div>
         </div>
       </div>
+    </div>
 
+    <!-- 右欄 -->
+    <div>
+
+      <!-- 今日行程（來自週/月計劃同步） -->
       <div class="card">
         <div class="card-hd">
           <span class="card-ttl">🕐 今日行程</span>
           <button class="btn btn-s btn-sm" onclick="toggleForm('addEvWrap')">＋ 新增</button>
         </div>
         <div class="card-bd">
+          <div style="font-size:13px;color:var(--txt-l);margin-bottom:12px">來自週計劃 & 月計劃的安排，可針對今日能量增減</div>
           <div class="add-wrap" id="addEvWrap">
             <div class="fx">
               <input type="time" class="inp-t" id="evTime">
@@ -358,10 +402,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
           <div id="evList" class="ev-list"></div>
         </div>
       </div>
-    </div>
 
-    <!-- 右：能量節奏 -->
-    <div>
+      <!-- 能量節奏 -->
       <div class="card">
         <div class="card-hd"><span class="card-ttl">⚡ 今日能量節奏</span></div>
         <div class="card-bd">
@@ -369,127 +411,147 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
             <div class="eb" style="background:var(--gold-l);color:var(--gold-d)">
               <div class="eb-ico">🌅</div>
               <div class="eb-name">早晨｜能量建立</div>
-              <div class="eb-tips">起床不滑手機<br>喝水・曬太陽<br>安靜10分鐘<br>寫今日主軸任務</div>
+              <div class="eb-tips">不碰手機<br>喝水・曬太陽・安靜<br>寫今日主軸</div>
             </div>
             <div class="eb" style="background:var(--sage-l);color:var(--sage-d)">
               <div class="eb-ico">☀️</div>
               <div class="eb-name">上午｜黃金時段</div>
-              <div class="eb-tips">最重要的一件事<br>創作・拍片・深思<br>❌ 不要拿去回訊息</div>
+              <div class="eb-tips">最重要的一件事<br>創作・拍片・深思<br>❌ 不拿去回訊息</div>
             </div>
             <div class="eb" style="background:var(--lav-l);color:var(--lav-d)">
               <div class="eb-ico">🌤</div>
               <div class="eb-name">下午｜執行服務</div>
-              <div class="eb-tips">客人服務・行政<br>批次固定回訊息<br>❌ 不讓雜事入侵上午</div>
+              <div class="eb-tips">客人・行政<br>批次固定回訊息<br>❌ 不讓雜事入侵</div>
             </div>
             <div class="eb" style="background:var(--rose-l);color:var(--rose-d)">
               <div class="eb-ico">🌙</div>
               <div class="eb-name">晚上｜回充收工</div>
-              <div class="eb-tips">散步・泡澡・放音樂<br>大腦需要真正關機<br>❌ 不剪片到半夜</div>
-            </div>
-          </div>
-          <div style="margin-top:18px;background:var(--mocha-ll);border-radius:12px;padding:16px 18px;border:1.5px solid var(--border)">
-            <div style="font-size:16px;font-weight:700;color:var(--mocha-d);margin-bottom:8px">🔋 今日能量保護</div>
-            <div style="font-size:15px;color:var(--mocha-d);line-height:1.8">
-              <div style="margin-bottom:6px">🚫 <strong>停止漏水：</strong>避免承接別人情緒、過度回訊息、硬撐不喜歡的關係</div>
-              <div>✅ <strong>今日充電：</strong>香氛・音樂・整潔空間・接觸自然・真實表達</div>
+              <div class="eb-tips">散步・泡澡<br>大腦真正關機<br>❌ 不剪片到半夜</div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>
 
-<!-- ══ 月曆行程 ══ -->
+<!-- ══ 月計劃 ══ -->
 <div class="pg" id="pg-cal">
-  <div class="pg-ttl">月曆行程</div>
-  <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
-    <div>
-      <div class="card">
-        <div class="card-bd">
-          <div class="cal-nav">
-            <button class="cal-arr" onclick="chM(-1)">‹</button>
-            <span class="cal-title" id="calTitle"></span>
-            <button class="cal-arr" onclick="chM(1)">›</button>
-          </div>
-          <div class="cal-grid" id="calGrid"></div>
-          <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--txt-m);font-weight:700">
-            <span>🌸 珞熙特殊日</span>
-            <span style="color:var(--rose-d)">● 假日</span>
-            <span style="color:var(--mocha-l)">● 有行程</span>
-          </div>
-        </div>
-        <div class="day-panel" id="dayPanel">
-          <div class="dp-head">
-            <div><div class="dp-title" id="dpTitle"></div><div class="dp-wx" id="dpWx"></div></div>
-            <button class="dp-close" onclick="closeDP()">✕</button>
-          </div>
-          <div class="dp-add">
-            <input type="time" id="dpTime" style="border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:15px;width:116px;flex-shrink:0;background:var(--bg);">
-            <input type="text" id="dpText" placeholder="新增行程..." style="flex:1;border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;font-size:15px;background:var(--bg);">
-            <button class="btn btn-p btn-sm" onclick="addDP()">✓ 新增</button>
-          </div>
-          <div class="dp-body" id="dpBody"></div>
-        </div>
-      </div>
+  <div class="pg-ttl">月計劃</div>
+
+  <!-- 月份切換 -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="cal-arr" onclick="chMF(-1)">‹</button>
+      <span style="font-family:var(--serif);font-size:24px;font-weight:700;color:var(--mocha-d)" id="monthPlanTitle"></span>
+      <button class="cal-arr" onclick="chMF(1)">›</button>
     </div>
-    <div>
-      <div class="card">
-        <div class="card-hd"><span class="card-ttl">🌸 本月特殊日</span></div>
-        <div class="card-bd" id="roxiMonthList"></div>
-      </div>
-      <div class="card">
-        <div class="card-hd">
-          <span class="card-ttl">🌙 明日行程</span>
-          <button class="btn btn-s btn-sm" onclick="toggleForm('addEvMWrap')">＋</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--txt-m)">
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:var(--mocha-d);display:inline-block"></span>今天</span>
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:var(--sage);display:inline-block"></span>有主軸任務</span>
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:var(--warm);display:inline-block"></span>珞熙特殊日</span>
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:var(--rose);display:inline-block"></span>假日</span>
+    </div>
+  </div>
+
+  <!-- 月計劃格子 -->
+  <div class="card">
+    <div class="card-bd" style="padding:0;overflow:auto">
+      <table id="monthPlanTable" style="width:100%;border-collapse:collapse;min-width:700px"></table>
+    </div>
+  </div>
+
+  <!-- 點選日期面板 -->
+  <div id="monthDayPanel" style="display:none">
+    <div class="card">
+      <div class="card-hd" style="background:linear-gradient(135deg,var(--mocha-d),var(--warm-d));border-radius:17px 17px 0 0">
+        <div>
+          <div style="font-family:var(--serif);font-size:18px;font-weight:700;color:#F5EDE0" id="mdpTitle"></div>
+          <div style="font-size:13px;color:rgba(245,237,224,0.65);margin-top:3px" id="mdpWx"></div>
         </div>
-        <div class="card-bd">
-          <div class="add-wrap" id="addEvMWrap">
-            <div class="fx">
-              <input type="time" class="inp-t" id="evTimeM">
-              <input type="text" class="inp" id="evTextM" placeholder="明日行程...">
-              <button class="btn btn-p btn-sm" onclick="addEvM()">新增</button>
-            </div>
+        <button onclick="closeMonthDayPanel()" style="background:none;border:none;color:rgba(245,237,224,0.7);font-size:20px;cursor:pointer">✕</button>
+      </div>
+      <div class="card-bd">
+        <div style="margin-bottom:16px">
+          <div style="font-size:15px;font-weight:700;color:var(--sage-d);margin-bottom:8px">🎯 這天的主軸任務</div>
+          <input type="text" id="mdpMain" class="inp" placeholder="這天最重要的一件事..." style="width:100%;font-size:16px">
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:15px;font-weight:700;color:var(--txt-m);margin-bottom:8px">📋 行程 / 備注</div>
+          <div id="mdpEvList" class="ev-list" style="margin-bottom:10px"></div>
+          <div class="fx">
+            <input type="time" class="inp-t" id="mdpEvTime">
+            <input type="text" class="inp" id="mdpEvText" placeholder="新增行程...">
+            <button class="btn btn-p btn-sm" onclick="addMdpEv()">＋</button>
           </div>
-          <div id="evListM" class="ev-list"></div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn btn-s" onclick="closeMonthDayPanel()">關閉</button>
+          <button class="btn btn-p" onclick="saveMdpMain()">💾 儲存</button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- 本月目標 -->
+  <div class="card">
+    <div class="card-hd"><span class="card-ttl">📌 本月目標</span><button class="btn btn-s btn-sm" onclick="toggleForm('addMGWrap')">＋ 新增</button></div>
+    <div class="card-bd">
+      <div class="add-wrap" id="addMGWrap"><div class="fx"><input type="text" class="inp" id="mgTxt" placeholder="本月想達成..."><button class="btn btn-p" onclick="addMG()">新增</button></div></div>
+      <div id="mgList"></div>
+    </div>
+  </div>
 </div>
 
-<!-- ══ 本週概覽 ══ -->
+<!-- ══ 週計劃 ══ -->
 <div class="pg" id="pg-week">
-  <div class="pg-ttl">本週概覽</div>
+  <div class="pg-ttl">週計劃</div>
   <div class="pg-sub" id="weekRangeLabel"></div>
 
-  <!-- 每週建議提示 -->
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px">
-    <div class="week-tip-box">
-      <div class="wtb-title">💤 固定一個低社交日</div>
-      <div class="wtb-desc">每週一天「不用照顧任何人」。散步・整理空間・按摩・安靜創作。重點是：不讓別人的能量進入。</div>
+  <div style="display:grid;grid-template-columns:1fr 260px;gap:20px;align-items:start">
+    <!-- 週計劃主表 -->
+    <div>
+      <div class="card">
+        <div class="card-hd">
+          <span class="card-ttl">📅 本週行程表</span>
+          <div style="display:flex;gap:8px">
+            <button class="cal-arr" onclick="chWeek(-1)" style="padding:5px 12px;font-size:14px">‹ 上週</button>
+            <button class="cal-arr" onclick="chWeek(0)" style="padding:5px 12px;font-size:14px">本週</button>
+            <button class="cal-arr" onclick="chWeek(1)" style="padding:5px 12px;font-size:14px">下週 ›</button>
+          </div>
+        </div>
+        <div class="card-bd" style="padding:0;overflow:auto">
+          <div id="weekPlanGrid"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-ttl">🎯 本週目標</span><button class="btn btn-s btn-sm" onclick="toggleForm('addWGWrap')">＋ 新增</button></div>
+        <div class="card-bd">
+          <div class="add-wrap" id="addWGWrap"><div class="fx"><input type="text" class="inp" id="wgTxt" placeholder="本週想達成..."><button class="btn btn-p" onclick="addWG()">新增</button></div></div>
+          <div id="wgList"></div>
+        </div>
+      </div>
     </div>
-    <div class="week-tip-box">
-      <div class="wtb-title">🎬 安排內容集中日</div>
-      <div class="wtb-desc">固定半天集中拍片・發想・寫文。平常不切換，省很多精神能量。</div>
-    </div>
-    <div class="week-tip-box">
-      <div class="wtb-title">🌿 安排身體流動日</div>
-      <div class="wtb-desc">你的能量很怕卡住。每週需要：流汗・按摩・瑜伽・曬太陽。水和陽光很補你。</div>
-    </div>
-    <div class="week-tip-box">
-      <div class="wtb-title">🌙 真正放空時間</div>
-      <div class="wtb-desc">不是滑手機。而是：發呆・看天空・散步不聽東西・坐著喝咖啡。你的靈魂很需要留白。</div>
-    </div>
-  </div>
 
-  <div id="weekDays"></div>
+    <!-- 右側：能量補充標籤 -->
+    <div>
+      <div class="card">
+        <div class="card-hd"><span class="card-ttl">💚 本週能量補充</span></div>
+        <div class="card-bd">
+          <div style="font-size:13px;color:var(--txt-l);margin-bottom:14px;line-height:1.6">這週安排哪些事補充自己？勾選完成的：</div>
+          <div id="weekEnergyTags" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        </div>
+      </div>
 
-  <div class="card">
-    <div class="card-hd"><span class="card-ttl">🎯 本週目標</span><button class="btn btn-s btn-sm" onclick="toggleForm('addWGWrap')">＋ 新增</button></div>
-    <div class="card-bd">
-      <div class="add-wrap" id="addWGWrap"><div class="fx"><input type="text" class="inp" id="wgTxt" placeholder="本週想達成..."><button class="btn btn-p" onclick="addWG()">新增</button></div></div>
-      <div id="wgList"></div>
+      <!-- 週角色標籤 -->
+      <div class="card">
+        <div class="card-hd"><span class="card-ttl">🗓️ 每天的主軸</span></div>
+        <div class="card-bd">
+          <div style="font-size:13px;color:var(--txt-l);margin-bottom:12px">點選設定每天的角色</div>
+          <div id="weekRoleList"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -679,8 +741,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
 firebase.initializeApp({apiKey:"AIzaSyCHwiIOKswq613NuRclWaLFbWO8lgpN0IY",authDomain:"roxi-planner.firebaseapp.com",projectId:"roxi-planner",storageBucket:"roxi-planner.firebasestorage.app",messagingSenderId:"988384927354",appId:"1:988384927354:web:40b403d40060d7195725c3"});
 const db=firebase.firestore(),DOC='roxi_v12',SK='roxi_v12';
 let D=df(),syncT=null;
-function df(){return{ev:{},wg:[],mg:[],yg:[],tasks:{},ec:{},ideas:[],gratitude:{},weekRoles:{}};}
-function ek(o){['wg','mg','yg','ideas'].forEach(k=>{if(!Array.isArray(o[k]))o[k]=[];});['ev','tasks','ec','gratitude','weekRoles'].forEach(k=>{if(!o[k]||typeof o[k]!=='object'||Array.isArray(o[k]))o[k]={};});return o;}
+function df(){return{ev:{},wg:[],mg:[],yg:[],tasks:{},ec:{},ideas:[],gratitude:{},weekRoles:{},weekSlots:{},weekEnergy:{},morningState:{}};}
+function ek(o){['wg','mg','yg','ideas'].forEach(k=>{if(!Array.isArray(o[k]))o[k]=[];});['ev','tasks','ec','gratitude','weekRoles','weekSlots','weekEnergy','morningState'].forEach(k=>{if(!o[k]||typeof o[k]!=='object'||Array.isArray(o[k]))o[k]={};});return o;}
 function ss(m){const e=document.getElementById('syncTxt');if(e)e.textContent=m;const d=document.getElementById('syncDot');if(d)d.className='sync-dot'+(m.includes('⟳')?' syncing':'');}
 function sl(){try{return ek(JSON.parse(localStorage.getItem(SK))||df());}catch{return df();}}
 function svl(){try{localStorage.setItem(SK,JSON.stringify(D));}catch{}}
@@ -714,7 +776,7 @@ const WEEK_ROLE_OPTIONS=[
   {key:'recharge',label:'🌙 低社交回充日',sub:'安靜、整理、休息、補能量',c:'#5A4480',bg:'#EDE8F5',bc:'#C8C0E8'},
 ];
 
-const PAGE_TITLES={'today':'今日能量','cal':'月曆行程','week':'本週概覽','goals':'目標追蹤','energy':'能量管理','ideas':'素材庫','gratitude':'每日日誌'};
+const PAGE_TITLES={'today':'今日能量','cal':'月計劃','week':'週計劃','goals':'目標追蹤','energy':'能量管理','ideas':'素材庫','gratitude':'每日日誌'};
 const NOW=new Date(),TODAY=NOW.toISOString().slice(0,10);
 const TMR=new Date(NOW);TMR.setDate(NOW.getDate()+1);const TOMORROW=TMR.toISOString().slice(0,10);
 let calY=NOW.getFullYear(),calM=NOW.getMonth(),selDay=null,moId=null,moDk=null;
@@ -751,12 +813,15 @@ function nav(id,el){
   if(el)el.classList.add('active');
   document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';
   if(id==='gratitude'){grY=NOW.getFullYear();grM=NOW.getMonth();buildGrCal();grMonthlySummary();initGrThemes();}
+  if(id==='cal'){rMonthPlan();}
+  if(id==='week'){rWeekPlan();}
+  if(id==='today'){rMorning();}
 }
 function toggleForm(id){const el=document.getElementById(id);if(!el)return;const open=el.style.display==='block';el.style.display=open?'none':'block';if(!open){const i=el.querySelector('input[type=text],input[type=time],textarea');if(i)setTimeout(()=>i.focus(),50);}}
 function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function rAll(){rWX7();rRoxiSpecial();rTasks();rEv();rEvM();rCal();rWeek();rGoals();rEC();rIdeas();buildGrCal();grMonthlySummary();}
+function rAll(){rWX7();rRoxiSpecial();rTasks();rEv();rMorning();rMonthPlan();rWeekPlan();rGoals();rEC();rIdeas();buildGrCal();grMonthlySummary();}
 
 // ── 7天五行 ──
 function rWX7(){
@@ -847,7 +912,7 @@ function buildCal(){
   document.getElementById('calGrid').innerHTML=h;
   rRoxiMonth();
 }
-function rCal(){buildCal();}
+function rCal(){rMonthPlan();}
 function chM(d){calM+=d;if(calM<0){calM=11;calY--;}if(calM>11){calM=0;calY++;}rCal();}
 function selD(dk,day,y,m){
   selDay=dk;rCal();
@@ -872,7 +937,7 @@ function rRoxiMonth(){
 }
 
 // ── 彈性本週概覽 ──
-function rWeek(){
+function rWeekOld(){
   const mon=getMon(NOW),dN=['一','二','三','四','五','六','日'],order=[1,2,3,4,5,6,0];
   const dates=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
   const rl2=document.getElementById('weekRangeLabel');if(rl2)rl2.textContent=dates[0].toLocaleDateString('zh-TW',{month:'short',day:'numeric'})+' – '+dates[6].toLocaleDateString('zh-TW',{month:'short',day:'numeric'});
@@ -1336,68 +1401,380 @@ function downloadGrCard(){const canvas=document.getElementById('grCanvas');if(!c
 function rGrHistory(){buildGrCal();grMonthlySummary();}
 
 
-// ── Google Calendar 同步 ──
-async function syncGoogleCal(){
-  const btn=document.getElementById('gcalBtn');
-  if(btn){btn.textContent='⟳ 同步中...';btn.disabled=true;}
-  try{
-    // 計算未來14天範圍
-    const start=new Date();start.setHours(0,0,0,0);
-    const end=new Date(start);end.setDate(start.getDate()+14);
-    const fmt=d=>d.toISOString().slice(0,10);
-    const startISO=start.toISOString();
-    const endISO=end.toISOString();
 
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:'你是一個 Google Calendar 資料提取助手。使用 list_events 工具取得行事曆事件，然後只輸出純 JSON，格式如下，不要有其他文字：{"events":[{"date":"YYYY-MM-DD","time":"HH:MM","name":"事件名稱"}]}。全天事件的 time 填 ""。',
-        messages:[{role:'user',content:`請取得 ${startISO} 到 ${endISO} 之間所有 Google Calendar 事件，時區 Asia/Taipei，輸出 JSON。`}],
-        mcp_servers:[{type:'url',url:'https://calendarmcp.googleapis.com/mcp/v1',name:'google-calendar'}]
-      })
-    });
-    const data=await res.json();
-    // 解析回應
-    const textBlocks=data.content?.filter(b=>b.type==='text')||[];
-    const fullText=textBlocks.map(b=>b.text).join('');
-    let parsed=null;
-    try{
-      const match=fullText.match(/\{[\s\S]*\}/);
-      if(match)parsed=JSON.parse(match[0]);
-    }catch(e){console.error('parse err',e,fullText);}
+// ── Google Calendar 資料（由 Claude 定期更新）──
+// 說明：因瀏覽器跨域限制，Google Calendar 無法在網頁直接連線。
+// 使用方式：在 Claude 說「幫我更新 Google 行事曆」，Claude 會自動抓取最新資料寫進這裡。
 
-    if(parsed&&parsed.events&&parsed.events.length){
-      let added=0;
-      parsed.events.forEach(ev=>{
-        if(!ev.date||!ev.name)return;
-        const dk=ev.date;
-        if(!D.ev[dk])D.ev[dk]=[];
-        // 避免重複：檢查是否已存在同名事件
-        const already=D.ev[dk].some(e=>e.tx===ev.name&&e.gcal);
-        if(!already){
-          D.ev[dk].push({t:ev.time||'',tx:ev.name,id:Date.now()+Math.random(),gcal:true});
-          D.ev[dk].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
-          added++;
-        }
-      });
-      sv();rAll();
-      if(btn){btn.textContent='📅 Google行事曆';btn.disabled=false;}
-      toast(`✅ 已同步 ${parsed.events.length} 筆，新增 ${added} 筆 Google 行事曆！`);
-    }else{
-      if(btn){btn.textContent='📅 Google行事曆';btn.disabled=false;}
-      toast('📅 Google行事曆已是最新，無新事件');
-    }
-  }catch(err){
-    console.error('gcal sync error',err);
-    if(btn){btn.textContent='📅 Google行事曆';btn.disabled=false;}
-    toast('⚠️ Google行事曆同步失敗，請稍後再試');
+// ── 早晨儀式資料 ──
+const AVOID_TAGS=[
+  {id:'phone',label:'📵 滑手機'},
+  {id:'msg',label:'💬 回訊息'},
+  {id:'social',label:'📱 看社群'},
+  {id:'work',label:'💼 進工作模式'},
+  {id:'info',label:'📰 接收大量資訊'},
+  {id:'rush',label:'🏃 急急忙忙'},
+];
+const DO_TAGS=[
+  {id:'noPhone',label:'🙅 起床不碰手機'},
+  {id:'water',label:'💧 喝水＋益生菌'},
+  {id:'window',label:'🪟 打開窗戶'},
+  {id:'sun',label:'☀️ 曬太陽'},
+  {id:'air',label:'🌬 呼吸空氣'},
+  {id:'tidy',label:'🧹 整理環境'},
+  {id:'bed',label:'🛏 整理床鋪'},
+  {id:'desk',label:'📋 清桌面'},
+  {id:'mini',label:'✨ 小範圍整理'},
+  {id:'quiet',label:'🔇 安靜10分鐘'},
+  {id:'daze',label:'😶 發呆'},
+  {id:'med',label:'🧘 冥想'},
+  {id:'write',label:'✍️ 寫字'},
+  {id:'music',label:'🎵 聽音樂'},
+  {id:'coffee',label:'☕ 泡咖啡'},
+  {id:'sky',label:'🌤 看天空'},
+  {id:'axis',label:'🎯 寫今天的主軸'},
+  {id:'walk',label:'🚶 散步'},
+  {id:'stretch',label:'🧘 拉筋／瑜伽'},
+  {id:'grD',label:'🙏 寫感恩日記'},
+  {id:'bfst',label:'🍳 早餐儀式'},
+];
+
+function rMorning(){
+  const mk=TODAY;
+  const state=D.morningState?.[mk]||{avoid:{},doIt:{},custom:[]};
+  // avoid tags
+  const avoidEl=document.getElementById('avoidTags');
+  if(avoidEl){
+    avoidEl.innerHTML=AVOID_TAGS.map(t=>{
+      const done=state.avoid[t.id]||false;
+      return `<div onclick="toggleMorningTag('avoid','${t.id}')" style="padding:8px 16px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;user-select:none;border:2px solid;transition:.2s;
+        ${done?'background:var(--rose-d);color:#fff;border-color:var(--rose-d)':'background:var(--rose-l);color:var(--rose-d);border-color:var(--rose-l)'}">${t.label}</div>`;
+    }).join('');
   }
+  // do tags + custom
+  const doEl=document.getElementById('doTags');
+  if(doEl){
+    const customTags=(state.custom||[]).map(t=>{
+      const done=state.doIt[t.id]||false;
+      return `<div onclick="toggleMorningTag('doIt','${t.id}')" style="padding:8px 16px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;user-select:none;border:2px solid;transition:.2s;position:relative;
+        ${done?'background:var(--mocha-d);color:#fff;border-color:var(--mocha-d)':'background:var(--mocha-ll);color:var(--mocha-d);border-color:var(--border)'}">${t.label}</div>`;
+    });
+    const baseTags=DO_TAGS.map(t=>{
+      const done=state.doIt[t.id]||false;
+      return `<div onclick="toggleMorningTag('doIt','${t.id}')" style="padding:8px 16px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;user-select:none;border:2px solid;transition:.2s;
+        ${done?'background:var(--sage-d);color:#fff;border-color:var(--sage-d)':'background:var(--sage-l);color:var(--sage-d);border-color:var(--sage-l)'}">${t.label}</div>`;
+    });
+    doEl.innerHTML=[...baseTags,...customTags].join('');
+  }
+  // progress
+  const avoidDone=AVOID_TAGS.filter(t=>state.avoid[t.id]).length;
+  const doDone=DO_TAGS.filter(t=>state.doIt[t.id]).length+(state.custom||[]).filter(t=>state.doIt[t.id]).length;
+  const total=AVOID_TAGS.length+DO_TAGS.length+(state.custom||[]).length;
+  const done=avoidDone+doDone;
+  const pct=total?Math.round(done/total*100):0;
+  const bar=document.getElementById('morningBar');if(bar)bar.style.width=pct+'%';
+  const prog=document.getElementById('morningProgress');if(prog)prog.textContent=`${done}/${total} 完成 ${pct}%`;
+}
+function toggleMorningTag(type,id){
+  const mk=TODAY;
+  if(!D.morningState)D.morningState={};
+  if(!D.morningState[mk])D.morningState[mk]={avoid:{},doIt:{},custom:[]};
+  D.morningState[mk][type][id]=!D.morningState[mk][type][id];
+  sv();rMorning();
+}
+function addCustomMorning(){
+  const inp=document.getElementById('customMorningInput');if(!inp||!inp.value.trim())return;
+  const mk=TODAY;
+  if(!D.morningState)D.morningState={};
+  if(!D.morningState[mk])D.morningState[mk]={avoid:{},doIt:{},custom:[]};
+  const cid='c_'+Date.now();
+  D.morningState[mk].custom.push({id:cid,label:'🌟 '+inp.value.trim()});
+  inp.value='';sv();rMorning();toast('已新增！');
+}
+function resetMorning(){
+  const mk=TODAY;
+  if(!D.morningState)D.morningState={};
+  D.morningState[mk]={avoid:{},doIt:{},custom:[]};
+  sv();rMorning();toast('已重置早晨儀式');
 }
 
+// ── 月計劃格子 ──
+let calFY=NOW.getFullYear(), calFM=NOW.getMonth();
+let mdpSelDk=null;
+
+function chMF(d){calFM+=d;if(calFM<0){calFM=11;calFY--;}if(calFM>11){calFM=0;calFY++;}rMonthPlan();}
+function rMonthPlan(){
+  const mn=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const titleEl=document.getElementById('monthPlanTitle');
+  if(titleEl)titleEl.textContent=calFY+'年 '+mn[calFM];
+  const firstDow=new Date(calFY,calFM,1).getDay(); // 0=Sun
+  const total=new Date(calFY,calFM+1,0).getDate();
+  const firstOff=firstDow===0?0:firstDow; // Sun=0 already
+  // 按 Sun,Mon,Tue,Wed,Thu,Fri,Sat 排列
+  const DAYS=['日','一','二','三','四','五','六'];
+  let h=`<table style="width:100%;border-collapse:collapse">`;
+  // header
+  h+=`<tr>`;
+  DAYS.forEach((d,i)=>{
+    const color=i===0?'color:var(--rose-d)':i===6?'color:#2563EB':'color:var(--txt-m)';
+    h+=`<th style="padding:10px 4px;font-size:13px;font-weight:700;${color};text-align:center;border-bottom:2px solid var(--border);background:var(--bg2)">${d}</th>`;
+  });
+  h+=`</tr>`;
+  // 補前面空格
+  let dayCount=0;
+  h+=`<tr>`;
+  for(let i=0;i<firstOff;i++){h+=`<td style="border:1px solid var(--border);height:90px;background:var(--bg2);opacity:.3"></td>`;dayCount++;}
+  for(let d=1;d<=total;d++){
+    const dow=(firstOff+d-1)%7;
+    if(dow===0&&d>1){h+=`</tr><tr>`;}
+    const dk=`${calFY}-${String(calFM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isT=dk===TODAY;
+    const isSat=dow===6,isSun=dow===0,isHol=!!HOL[dk];
+    const mk=String(calFM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const rd=ROXI[dk]||'';
+    const td=D.tasks[dk]||{};const mainTask=td.mainTask||td.main||'';
+    const evs=D.ev[dk]||[];
+    const rInfo=rd?getRoxiInfo(rd):null;
+    const dayColor=isT?'#fff':isSun||isHol?'var(--rose-d)':isSat?'#2563EB':'var(--txt)';
+    const bgColor=isT?'var(--mocha-d)':isHol?'var(--rose-l)':isSat?'rgba(37,99,235,0.04)':isSun?'rgba(196,120,120,0.04)':'var(--card)';
+    h+=`<td onclick="openMonthDay('${dk}')" style="border:1px solid var(--border);height:90px;vertical-align:top;padding:6px 8px;cursor:pointer;background:${bgColor};transition:background .15s" onmouseover="this.style.background='var(--mocha-ll)'" onmouseout="this.style.background='${bgColor}'">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:15px;font-weight:700;color:${dayColor};${isT?'width:24px;height:24px;border-radius:50%;background:var(--mocha-d);display:flex;align-items:center;justify-content:center;font-size:14px':''}">${d}</span>
+        ${rInfo?`<span style="font-size:11px;color:${rInfo.c};font-weight:700">${rInfo.ic}</span>`:''}
+      </div>
+      ${mainTask?`<div style="font-size:11px;color:var(--sage-d);font-weight:600;line-height:1.4;margin-bottom:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">🎯 ${mainTask}</div>`:''}
+      ${evs.slice(0,2).map(e=>`<div style="font-size:10px;color:var(--txt-m);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${e.t?e.t.slice(0,5)+' ':''}${e.tx}</div>`).join('')}
+      ${HOL[dk]?`<div style="font-size:9px;color:var(--rose-d);font-weight:600">${HOL[dk]}</div>`:''}
+    </td>`;
+    dayCount++;
+  }
+  // 補後面空格
+  const rem=(7-((firstOff+total)%7))%7;
+  for(let i=0;i<rem;i++)h+=`<td style="border:1px solid var(--border);height:90px;background:var(--bg2);opacity:.3"></td>`;
+  h+=`</tr></table>`;
+  const table=document.getElementById('monthPlanTable');if(table)table.outerHTML='<div id="monthPlanTable">'+h+'</div>';
+  // 用 div 包讓它可以被 scrollable
+  const wrap=document.getElementById('monthPlanTable');if(wrap)wrap.innerHTML=h;
+}
+function openMonthDay(dk){
+  mdpSelDk=dk;
+  const panel=document.getElementById('monthDayPanel');if(panel)panel.style.display='block';
+  setTimeout(()=>panel?.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  const d=new Date(dk);
+  const dn=['日','一','二','三','四','五','六'];
+  const mk=String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const rd=ROXI[dk]||'',hol=HOL[dk]?` 【${HOL[dk]}】`:'';
+  const titleEl=document.getElementById('mdpTitle');
+  if(titleEl)titleEl.textContent=`${d.getFullYear()} / ${d.getMonth()+1} / ${d.getDate()}（週${dn[d.getDay()]}）${hol}`;
+  const wEl=WX[mk];const wxEl=document.getElementById('mdpWx');
+  if(wxEl){let wx='';if(rd){const ri=getRoxiInfo(rd);wx+=`${ri.ic} ${rd.replace(/^[^\s]*\s/,'')}　`;}if(wEl)wx+=`五行：${wEl.join('・')}　宜穿 ${wEl.map(e=>EL[e].c[0]).join('/')}`;wxEl.textContent=wx;}
+  const mainInp=document.getElementById('mdpMain');
+  const td=D.tasks[dk]||{};if(mainInp)mainInp.value=td.mainTask||td.main||'';
+  // 行程
+  const evList=document.getElementById('mdpEvList');
+  const evs=D.ev[dk]||[];
+  if(evList)evList.innerHTML=evs.length?evs.map(e=>`<div class="ev-row" onclick="openEvMo(${e.id},'${dk}')"><span class="ev-time">${e.t||'全天'}</span><div class="ev-bar"></div><span class="ev-name">${e.tx}</span><span class="ev-edit">✏️</span></div>`).join(''):'<div style="font-size:14px;color:var(--txt-l);padding:8px 0">還沒有行程</div>';
+  setTimeout(()=>mainInp?.focus(),100);
+}
+function closeMonthDayPanel(){
+  const panel=document.getElementById('monthDayPanel');if(panel)panel.style.display='none';
+  mdpSelDk=null;rMonthPlan();
+}
+function saveMdpMain(){
+  if(!mdpSelDk)return;
+  const mainInp=document.getElementById('mdpMain');
+  if(!D.tasks[mdpSelDk])D.tasks[mdpSelDk]={};
+  D.tasks[mdpSelDk].mainTask=mainInp?mainInp.value.trim():'';
+  sv();rMonthPlan();
+  if(mdpSelDk===TODAY)rTasks();
+  toast('💾 已儲存！');
+}
+function addMdpEv(){
+  if(!mdpSelDk)return;
+  const t=document.getElementById('mdpEvTime').value;
+  const tx=document.getElementById('mdpEvText').value.trim();
+  if(!tx){toast('請輸入行程名稱');return;}
+  if(!D.ev[mdpSelDk])D.ev[mdpSelDk]=[];
+  D.ev[mdpSelDk].push({t,tx,id:Date.now()});
+  D.ev[mdpSelDk].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+  document.getElementById('mdpEvText').value='';document.getElementById('mdpEvTime').value='';
+  openMonthDay(mdpSelDk);rMonthPlan();
+  if(mdpSelDk===TODAY)rEv();
+  sv();toast('行程已新增 ✅');
+}
+
+// ── 週計劃格子 ──
+let weekOffset=0;
+const WEEK_ENERGY_LIST=[
+  {id:'cafe',label:'☕ 一個人去咖啡廳'},
+  {id:'shop',label:'🛍 逛生活選物'},
+  {id:'flower',label:'🌸 花市'},
+  {id:'beach',label:'🌊 海邊'},
+  {id:'quality',label:'✨ 有質感的地方'},
+  {id:'sweat',label:'💪 流汗'},
+  {id:'stretch2',label:'🧘 拉筋'},
+  {id:'massage',label:'💆 按摩'},
+  {id:'walkw',label:'🚶 散步'},
+  {id:'sunw',label:'☀️ 曬太陽'},
+  {id:'bath',label:'🛁 泡澡'},
+  {id:'swim',label:'🏊 游泳'},
+  {id:'aroma',label:'🕯 芳療'},
+  {id:'silent',label:'🔇 不聽任何東西'},
+  {id:'dazew',label:'😶 發呆'},
+  {id:'skyw',label:'🌤 看天空'},
+  {id:'coffeeW',label:'☕ 坐著喝咖啡'},
+  {id:'nophone',label:'📵 不滑手機'},
+];
+function chWeek(d){
+  if(d===0)weekOffset=0;else weekOffset+=d;
+  rWeekPlan();
+}
+function getWeekDates(offset){
+  const mon=getMon(NOW);
+  const base=new Date(mon);base.setDate(mon.getDate()+offset*7);
+  return Array.from({length:7},(_,i)=>{const d=new Date(base);d.setDate(base.getDate()+i);return d;});
+}
+function rWeekPlan(){
+  const dates=getWeekDates(weekOffset);
+  const rlabel=document.getElementById('weekRangeLabel');
+  if(rlabel)rlabel.textContent=dates[0].toLocaleDateString('zh-TW',{month:'short',day:'numeric'})+' – '+dates[6].toLocaleDateString('zh-TW',{month:'short',day:'numeric'});
+  const dN=['一','二','三','四','五','六','日'];
+  const ORDER=[1,2,3,4,5,6,0]; // Mon first
+  const el=document.getElementById('weekPlanGrid');if(!el)return;
+  // 時段
+  const TIME_SLOTS=['早晨','上午','下午','晚上'];
+  const TIME_BG=['var(--gold-l)','var(--sage-l)','var(--lav-l)','var(--rose-l)'];
+  const TIME_C=['var(--gold-d)','var(--sage-d)','var(--lav-d)','var(--rose-d)'];
+  let h=`<table style="width:100%;border-collapse:collapse;min-width:650px">`;
+  // 日期 header
+  h+=`<tr><th style="width:60px;border:1px solid var(--border);background:var(--bg2);padding:8px 4px;font-size:12px;color:var(--txt-l)">時段</th>`;
+  ORDER.forEach((dow,i)=>{
+    const d=dates[i],dk=dateKey(d);
+    const isT=dk===TODAY,isSat=dow===6,isSun=dow===0,isHol=!!HOL[dk];
+    const rd=ROXI[dk]||'';const rInfo=rd?getRoxiInfo(rd):null;
+    const savedRoles=D.weekRoles?.[dk]||[];
+    const roleOpt=WEEK_ROLE_OPTIONS.find(r=>savedRoles.includes(r.key));
+    const tc=isT?'var(--mocha-d)':isSun||isHol?'var(--rose-d)':isSat?'#2563EB':'var(--txt)';
+    h+=`<th style="border:1px solid var(--border);padding:8px 4px;text-align:center;background:${isT?'var(--mocha-ll)':'var(--bg2)'};min-width:90px">
+      <div style="font-size:13px;font-weight:700;color:${tc}">週${dN[dow]}</div>
+      <div style="font-size:12px;color:${tc};opacity:.8">${d.getMonth()+1}/${d.getDate()}${isT?' ●':''}</div>
+      ${rInfo?`<div style="font-size:10px;color:${rInfo.c};font-weight:700">${rInfo.ic}</div>`:''}
+      ${roleOpt?`<div style="font-size:10px;font-weight:600;color:${roleOpt.c};padding:2px 6px;border-radius:8px;background:${roleOpt.bg};margin-top:2px">${roleOpt.label.slice(0,6)}</div>`:''}
+    </th>`;
+  });
+  h+=`</tr>`;
+  // 行程行
+  h+=`<tr><td style="border:1px solid var(--border);padding:6px;font-size:11px;color:var(--txt-l);text-align:center;background:var(--bg2)">行程</td>`;
+  ORDER.forEach((dow,i)=>{
+    const d=dates[i],dk=dateKey(d),isT=dk===TODAY;
+    const evs=D.ev[dk]||[];
+    const td2=D.tasks[dk]||{};const mainTask=td2.mainTask||td2.main||'';
+    h+=`<td style="border:1px solid var(--border);padding:6px;vertical-align:top;background:${isT?'rgba(74,60,46,0.04)':'var(--card)'};cursor:pointer" onclick="openMonthDay('${dk}')">
+      ${mainTask?`<div style="font-size:11px;font-weight:700;color:var(--sage-d);margin-bottom:3px;line-height:1.4">🎯 ${mainTask}</div>`:''}
+      ${evs.slice(0,3).map(e=>`<div style="font-size:11px;color:var(--txt-m);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.t?e.t.slice(0,5)+' ':''}${e.tx}</div>`).join('')}
+      ${!mainTask&&!evs.length?`<div style="font-size:11px;color:var(--border);text-align:center;padding:4px">＋</div>`:''}
+    </td>`;
+  });
+  h+=`</tr>`;
+  // 時段格
+  TIME_SLOTS.forEach((slot,si)=>{
+    h+=`<tr><td style="border:1px solid var(--border);padding:6px 4px;font-size:11px;font-weight:700;text-align:center;background:${TIME_BG[si]};color:${TIME_C[si]};writing-mode:horizontal-tb">${slot}</td>`;
+    ORDER.forEach((dow,i)=>{
+      const d=dates[i],dk=dateKey(d),isT=dk===TODAY;
+      const slotKey=`slot_${si}`;
+      const slotData=D.weekSlots?.[dk]?.[slotKey]||'';
+      h+=`<td style="border:1px solid var(--border);padding:4px;vertical-align:top;background:${isT?'rgba(74,60,46,0.03)':'var(--card)'}">
+        <textarea onblur="saveWeekSlot('${dk}','${slotKey}',this.value)" style="width:100%;min-height:60px;border:none;outline:none;font-size:11px;font-family:var(--font);color:var(--txt);resize:none;background:transparent;line-height:1.6" placeholder="...">${slotData}</textarea>
+      </td>`;
+    });
+    h+=`</tr>`;
+  });
+  // 週角色行
+  h+=`<tr><td style="border:1px solid var(--border);padding:6px 4px;font-size:11px;font-weight:700;text-align:center;background:var(--mocha-ll);color:var(--mocha-d)">主軸</td>`;
+  ORDER.forEach((dow,i)=>{
+    const d=dates[i],dk=dateKey(d),isT=dk===TODAY;
+    const savedRoles=D.weekRoles?.[dk]||[];
+    h+=`<td style="border:1px solid var(--border);padding:6px;vertical-align:top;background:${isT?'var(--mocha-ll)':'var(--card)'}">
+      <div style="display:flex;flex-wrap:wrap;gap:4px">
+        ${WEEK_ROLE_OPTIONS.map(r=>{
+          const on=savedRoles.includes(r.key);
+          return `<div onclick="toggleWeekRole('${dk}','${r.key}',this)" style="padding:3px 8px;border-radius:10px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid ${r.bc};background:${on?r.c:'transparent'};color:${on?'#fff':r.c};transition:.15s">${r.label.slice(r.label.indexOf(' ')+1,r.label.indexOf(' ')+4)}</div>`;
+        }).join('')}
+      </div>
+    </td>`;
+  });
+  h+=`</tr></table>`;
+  el.innerHTML=h;
+
+  // 週角色 side list
+  const roleList=document.getElementById('weekRoleList');
+  if(roleList){
+    const allDates=ORDER.map((dow,i)=>dates[i]);
+    roleList.innerHTML=allDates.map(d=>{
+      const dk=dateKey(d),isT=dk===TODAY;
+      const saved=D.weekRoles?.[dk]||[];
+      const dN2=['一','二','三','四','五','六','日'];
+      const dow=d.getDay();const dow2=dow===0?6:dow-1;
+      return `<div style="margin-bottom:10px;padding:10px 14px;border-radius:12px;border:1.5px solid ${isT?'var(--mocha-d)':'var(--border)'};background:${isT?'var(--mocha-ll)':'var(--card)'}">
+        <div style="font-size:14px;font-weight:700;color:${isT?'var(--mocha-d)':'var(--txt)'};margin-bottom:8px">週${dN2[dow2]} ${d.getDate()}日${isT?' · 今天':''}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">
+          ${WEEK_ROLE_OPTIONS.map(r=>{const on=saved.includes(r.key);return `<div onclick="toggleWeekRole('${dk}','${r.key}',this)" style="padding:4px 10px;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid ${r.bc};background:${on?r.c:'transparent'};color:${on?'#fff':r.c};transition:.15s">${r.label}</div>`;}).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // 能量補充標籤
+  rWeekEnergy();
+}
+
+function saveWeekSlot(dk,slotKey,val){
+  if(!D.weekSlots)D.weekSlots={};
+  if(!D.weekSlots[dk])D.weekSlots[dk]={};
+  D.weekSlots[dk][slotKey]=val;sv();
+}
+
+function rWeekEnergy(){
+  const el=document.getElementById('weekEnergyTags');if(!el)return;
+  const wk=getWeekDates(weekOffset)[0];
+  const wkKey=dateKey(wk);
+  const state=D.weekEnergy?.[wkKey]||{};
+  el.innerHTML=WEEK_ENERGY_LIST.map(t=>{
+    const done=state[t.id]||false;
+    return `<div onclick="toggleWeekEnergy('${wkKey}','${t.id}')" style="padding:7px 14px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;user-select:none;border:2px solid;transition:.2s;
+      ${done?'background:var(--sage-d);color:#fff;border-color:var(--sage-d)':'background:var(--sage-l);color:var(--sage-d);border-color:var(--sage-l)'}">${t.label}</div>`;
+  }).join('');
+}
+function toggleWeekEnergy(wkKey,id){
+  if(!D.weekEnergy)D.weekEnergy={};
+  if(!D.weekEnergy[wkKey])D.weekEnergy[wkKey]={};
+  D.weekEnergy[wkKey][id]=!D.weekEnergy[wkKey][id];
+  sv();rWeekEnergy();
+}
+
+function injectGCalEvents(){
+  const gcalEvents = [
+    {date:'2026-05-17', time:'', name:'黃教練開幕'},
+    {date:'2026-05-31', time:'11:30', name:'久細審美・美睫嫁接 $1400 VIP'},
+  ];
+  let added=0;
+  gcalEvents.forEach(ev=>{
+    const dk=ev.date;
+    if(!D.ev[dk])D.ev[dk]=[];
+    const already=D.ev[dk].some(e=>e.tx===ev.name&&e.gcal);
+    if(!already){
+      D.ev[dk].push({t:ev.time,tx:ev.name,id:Date.now()+Math.random(),gcal:true});
+      D.ev[dk].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+      added++;
+    }
+  });
+  if(added>0){sv();rAll();}
+}
+
+
 init();
+setTimeout(injectGCalEvents, 1500);
+
 </script>
 </body>
 </html>
