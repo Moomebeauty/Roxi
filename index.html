@@ -277,6 +277,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
       <span class="sync-dot" id="syncDot"></span>
       <span class="sync-txt" id="syncTxt">載入中...</span>
       <button class="btn btn-s btn-sm" onclick="saveAll()">☁️ 同步</button>
+      <button class="btn btn-s btn-sm" onclick="syncGoogleCal()" id="gcalBtn" style="background:var(--sage-l);color:var(--sage-d);border-color:var(--sage)">📅 同步Google行事曆</button>
     </div>
   </div>
   <div class="content">
@@ -333,6 +334,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);font-size:18p
               <div class="chk" id="c2" onclick="tSub(2)"></div>
               <input class="sub-in" id="s2" placeholder="次要任務 2" oninput="saveTasks()">
             </div>
+          </div>
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <div style="font-size:13px;color:var(--txt-l)">任務輸入後自動儲存</div>
+            <button class="btn btn-s btn-sm" onclick="saveTasksManual()" style="background:var(--sage-l);color:var(--sage-d);border-color:var(--sage)">💾 儲存任務</button>
           </div>
         </div>
       </div>
@@ -786,7 +791,7 @@ function rRoxiSpecial(){
 }
 
 // ── 主軸任務 ──
-function setMainTask(txt){const el=document.getElementById('mainTask');if(el){el.value=txt;saveTasks();}}
+function setMainTask(txt){const el=document.getElementById('mainTask');if(el){el.value=txt;saveTasks();toast('🎯 已設定主軸任務');}}
 function rTasks(){
   const td=D.tasks[TODAY]||{};
   ['mainTask','s1','s2'].forEach(id=>{const el=document.getElementById(id);if(el&&document.activeElement!==el)el.value=td[id]||'';});
@@ -794,10 +799,18 @@ function rTasks(){
 }
 function uChk(n,done){const c=document.getElementById('c'+n),s=document.getElementById('s'+n);if(c){c.className='chk'+(done?' on':'');c.textContent=done?'✓':'';}if(s)s.className='sub-in'+(done?' done':'');}
 function tSub(n){if(!D.tasks[TODAY])D.tasks[TODAY]={};D.tasks[TODAY]['d'+n]=!D.tasks[TODAY]['d'+n];uChk(n,D.tasks[TODAY]['d'+n]);sv();}
-function saveTasks(){if(!D.tasks[TODAY])D.tasks[TODAY]={};['mainTask','s1','s2'].forEach(id=>{const el=document.getElementById(id);if(el)D.tasks[TODAY][id]=el.value;});sv();}
+function saveTasks(){
+  if(!D.tasks[TODAY])D.tasks[TODAY]={};
+  ['mainTask','s1','s2'].forEach(id=>{const el=document.getElementById(id);if(el)D.tasks[TODAY][id]=el.value;});
+  sv();
+}
+function saveTasksManual(){
+  saveTasks();
+  toast('✅ 任務已儲存！在「每日日誌」可以看到今天的完整記錄。');
+}
 
 // ── 行程 ──
-function evHtml(evs,dk){return evs.map(e=>`<div class="ev-row" onclick="openEvMo(${e.id},'${dk}')"><span class="ev-time">${e.t||'--:--'}</span><div class="ev-bar"></div><span class="ev-name">${e.tx}</span><span class="ev-edit">✏️</span></div>`).join('');}
+function evHtml(evs,dk){return evs.map(e=>`<div class="ev-row" onclick="openEvMo(${e.id},'${dk}')"><span class="ev-time">${e.t||'全天'}</span><div class="ev-bar" style="${e.gcal?'background:#4285F4':''}"></div><span class="ev-name">${e.tx}</span>${e.gcal?'<span style="font-size:11px;padding:2px 8px;border-radius:8px;background:#EBF3FE;color:#4285F4;font-weight:600;flex-shrink:0">Google</span>':''}<span class="ev-edit">✏️</span></div>`).join('');}
 function addEv(){const t=document.getElementById('evTime').value,tx=document.getElementById('evText').value.trim();if(!tx)return;if(!D.ev[TODAY])D.ev[TODAY]=[];D.ev[TODAY].push({t,tx,id:Date.now()});D.ev[TODAY].sort((a,b)=>(a.t||'').localeCompare(b.t||''));document.getElementById('evText').value='';document.getElementById('evTime').value='';toggleForm('addEvWrap');rEv();sv();toast('行程已新增 🌿');}
 function addEvM(){const t=document.getElementById('evTimeM').value,tx=document.getElementById('evTextM').value.trim();if(!tx)return;if(!D.ev[TOMORROW])D.ev[TOMORROW]=[];D.ev[TOMORROW].push({t,tx,id:Date.now()});D.ev[TOMORROW].sort((a,b)=>(a.t||'').localeCompare(b.t||''));document.getElementById('evTextM').value='';document.getElementById('evTimeM').value='';toggleForm('addEvMWrap');rEvM();sv();toast('明日行程已新增 🌙');}
 function rEv(){const el=document.getElementById('evList');if(!el)return;const evs=D.ev[TODAY]||[];el.innerHTML=evs.length?evHtml(evs,TODAY):'<div class="empty"><div class="empty-ico">🕐</div>今日還沒有行程</div>';}
@@ -1118,7 +1131,14 @@ function grRenderEdit(dk){
 
   // 如果是今天，提示任務區已自動帶入
   if(isToday&&savedMain){
-    h+=`<div style="font-size:14px;background:var(--sage-l);border-radius:10px;padding:12px 16px;margin-bottom:16px;color:var(--sage-d)">✅ 今日任務已自動記錄（${savedMain}）。在下方補充感恩記錄。</div>`;
+    h+=`<div style="font-size:14px;background:var(--sage-l);border-radius:10px;padding:12px 16px;margin-bottom:16px;color:var(--sage-d);display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:18px;flex-shrink:0">✅</span>
+      <div><strong>今日任務已自動記錄</strong><br>主軸：${savedMain}${(savedS1||savedS2)?`<br>次要：${[savedS1,savedS2].filter(x=>x).join('・')}`:''}
+      </div>
+    </div>`;
+  }
+  if(isToday&&!savedMain){
+    h+=`<div style="font-size:14px;background:var(--mocha-ll);border-radius:10px;padding:12px 16px;margin-bottom:16px;color:var(--mocha-d)">💡 請先在「今日能量」頁面填寫今日主軸任務，再點「💾 儲存任務」，這裡就會自動顯示。</div>`;
   }
 
   // 若不是今天，顯示任務輸入區
@@ -1315,6 +1335,67 @@ function wrapText(ctx,text,maxW){const lines=[];let line='';for(let i=0;i<text.l
 function downloadGrCard(){const canvas=document.getElementById('grCanvas');if(!canvas)return;const a=document.createElement('a');a.download='珞熙感恩日記_'+(grSelDk||TODAY)+'.png';a.href=canvas.toDataURL('image/png');a.click();toast('🎉 圖片已下載！');}
 function rGrHistory(){buildGrCal();grMonthlySummary();}
 
+
+// ── Google Calendar 同步 ──
+async function syncGoogleCal(){
+  const btn=document.getElementById('gcalBtn');
+  if(btn){btn.textContent='⟳ 同步中...';btn.disabled=true;}
+  try{
+    // 計算未來14天範圍
+    const start=new Date();start.setHours(0,0,0,0);
+    const end=new Date(start);end.setDate(start.getDate()+14);
+    const fmt=d=>d.toISOString().slice(0,10);
+    const startISO=start.toISOString();
+    const endISO=end.toISOString();
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'你是一個 Google Calendar 資料提取助手。使用 list_events 工具取得行事曆事件，然後只輸出純 JSON，格式如下，不要有其他文字：{"events":[{"date":"YYYY-MM-DD","time":"HH:MM","name":"事件名稱"}]}。全天事件的 time 填 ""。',
+        messages:[{role:'user',content:`請取得 ${startISO} 到 ${endISO} 之間所有 Google Calendar 事件，時區 Asia/Taipei，輸出 JSON。`}],
+        mcp_servers:[{type:'url',url:'https://calendarmcp.googleapis.com/mcp/v1',name:'google-calendar'}]
+      })
+    });
+    const data=await res.json();
+    // 解析回應
+    const textBlocks=data.content?.filter(b=>b.type==='text')||[];
+    const fullText=textBlocks.map(b=>b.text).join('');
+    let parsed=null;
+    try{
+      const match=fullText.match(/\{[\s\S]*\}/);
+      if(match)parsed=JSON.parse(match[0]);
+    }catch(e){console.error('parse err',e,fullText);}
+
+    if(parsed&&parsed.events&&parsed.events.length){
+      let added=0;
+      parsed.events.forEach(ev=>{
+        if(!ev.date||!ev.name)return;
+        const dk=ev.date;
+        if(!D.ev[dk])D.ev[dk]=[];
+        // 避免重複：檢查是否已存在同名事件
+        const already=D.ev[dk].some(e=>e.tx===ev.name&&e.gcal);
+        if(!already){
+          D.ev[dk].push({t:ev.time||'',tx:ev.name,id:Date.now()+Math.random(),gcal:true});
+          D.ev[dk].sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+          added++;
+        }
+      });
+      sv();rAll();
+      if(btn){btn.textContent='📅 Google行事曆';btn.disabled=false;}
+      toast(`✅ 已同步 ${parsed.events.length} 筆，新增 ${added} 筆 Google 行事曆！`);
+    }else{
+      if(btn){btn.textContent='📅 Google行事曆';btn.disabled=false;}
+      toast('📅 Google行事曆已是最新，無新事件');
+    }
+  }catch(err){
+    console.error('gcal sync error',err);
+    if(btn){btn.textContent='📅 Google行事曆';btn.disabled=false;}
+    toast('⚠️ Google行事曆同步失敗，請稍後再試');
+  }
+}
 
 init();
 </script>
