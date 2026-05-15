@@ -1236,9 +1236,32 @@ function grRenderView(dk){
 
   // ⑨ 對自己說
   if(selfMsg){
-    h+=`<div style="padding:18px 20px;background:var(--lav-l);border-radius:12px;border:1px solid var(--border)">
+    h+=`<div style="margin-bottom:18px;padding:18px 20px;background:var(--lav-l);border-radius:12px;border:1px solid var(--border)">
       <div style="font-size:15px;font-weight:700;color:var(--lav-d);margin-bottom:8px">💜 對自己說</div>
       <div style="font-family:var(--serif);font-size:18px;color:var(--lav-d);font-style:italic;line-height:1.8">${selfMsg}</div>
+    </div>`;
+  }
+
+  // ⑩ AI 能量分析（如果有的話）
+  const aiText=rec.aiAnalysis||'';
+  if(aiText){
+    h+=`<div style="padding:22px 24px;background:linear-gradient(135deg,#F5F0E8,#EDE6DC);border-radius:16px;border:1.5px solid var(--border);position:relative;overflow:hidden">
+      <div style="position:absolute;top:-20px;right:-20px;font-size:80px;opacity:0.06">🌿</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--mocha-d);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🌿</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--mocha-d)">能量分析師的回應</div>
+          <div style="font-size:12px;color:var(--txt-l)">看見你感恩背後的正向意義</div>
+        </div>
+        <button onclick="grReAnalyze('${dk}')" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:12px;color:var(--txt-m);cursor:pointer;font-family:var(--font)">🔄 重新分析</button>
+      </div>
+      <div style="font-family:var(--serif);font-size:16px;color:var(--mocha-d);line-height:1.9;white-space:pre-wrap">${aiText}</div>
+    </div>`;
+  } else if(grItems.length) {
+    h+=`<div style="padding:18px 20px;border-radius:14px;border:2px dashed var(--border);text-align:center;cursor:pointer" onclick="grReAnalyze('${dk}')">
+      <div style="font-size:22px;margin-bottom:8px">🌿</div>
+      <div style="font-size:15px;font-weight:600;color:var(--mocha-d);margin-bottom:4px">取得今日能量分析</div>
+      <div style="font-size:13px;color:var(--txt-l)">讓 AI 幫你看見感恩背後的正向意義</div>
     </div>`;
   }
 
@@ -1348,14 +1371,14 @@ function grLivePreview(){
 
 function saveGratitude(dk){
   const d=dk||grSelDk;if(!d){toast('請先點選日期');return;}
-  // 儲存感恩記錄
   const items=['grE1','grE2','grE3'].map(id=>{const el=document.getElementById(id);return el?el.value.trim():'';}).filter(x=>x);
   const ec=document.getElementById('grECustom');const sm=document.getElementById('grESelf');
   if(!D.gratitude)D.gratitude={};
-  if(items.length||grCurTags.length||(ec&&ec.value.trim())||(sm&&sm.value.trim())){
-    D.gratitude[d]={items,energyTags:[...grCurTags],energyCustom:ec?ec.value.trim():'',selfMsg:sm?sm.value.trim():''};
+  const energyCustomVal=ec?ec.value.trim():'';
+  const selfMsgVal=sm?sm.value.trim():'';
+  if(items.length||grCurTags.length||energyCustomVal||selfMsgVal){
+    D.gratitude[d]={items,energyTags:[...grCurTags],energyCustom:energyCustomVal,selfMsg:selfMsgVal};
   }
-  // 若不是今天，也儲存任務
   if(d!==TODAY){
     const mainEl=document.getElementById('grEMain');
     const s1El=document.getElementById('grES1');const s2El=document.getElementById('grES2');
@@ -1366,9 +1389,77 @@ function saveGratitude(dk){
       if(s2El)D.tasks[d].s2=s2El.value.trim();
     }
   }
-  sv();buildGrCal();grMonthlySummary();grRenderView(d);
-  toast('💚 已儲存！');
+  sv();buildGrCal();grMonthlySummary();
+  toast('💚 已儲存，正在分析...');
+  // 如果有感恩內容，呼叫 AI 分析
+  if(items.length){
+    grAIAnalyze(d,items,grCurTags,energyCustomVal,selfMsgVal);
+  }else{
+    grRenderView(d);
+  }
 }
+
+async function grAIAnalyze(dk,items,energyTags,energyCustom,selfMsg){
+  // 先顯示 loading 畫面
+  const content=document.getElementById('grDayContent');
+  if(content){
+    content.innerHTML=`
+    <div style="text-align:center;padding:40px 20px">
+      <div style="font-size:36px;margin-bottom:16px;animation:pulse 1.5s infinite">🌿</div>
+      <div style="font-family:var(--serif);font-size:17px;color:var(--mocha-d);margin-bottom:8px">正在分析你的感恩記錄...</div>
+      <div style="font-size:14px;color:var(--txt-l)">讓我看看這些事情背後的正向意義</div>
+    </div>`;
+  }
+  const allEnergy=[...energyTags,energyCustom].filter(x=>x);
+  const prompt=`你是珞熙的能量分析師，風格溫柔、有洞察力、像一個懂她的摯友。
+
+珞熙今天的感恩記錄：
+${items.map((it,i)=>`${i+1}. ${it}`).join('\n')}
+${allEnergy.length?`\n今天的能量給了：${allEnergy.join('、')}`:''}
+${selfMsg?`\n她對自己說：${selfMsg}`:''}
+
+請用繁體中文，為每一條感恩做分析，幫她看見背後的正向意義與值得珍視的地方。
+
+格式要求：
+- 逐條回應，每條分析 2-3 句，溫柔但有深度
+- 最後給一句整體的「今日能量洞察」，點出今天她能量的核心主題
+- 語氣：像一個真正了解她的人說話，不要公式化，要真實有溫度
+- 不要用標題「第一條」「第二條」，直接用她的感恩內容開頭回應
+- 整體不超過 300 字`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await res.json();
+    const aiText=data.content?.find(b=>b.type==='text')?.text||'';
+    if(aiText){
+      // 儲存 AI 分析到資料
+      if(D.gratitude[dk])D.gratitude[dk].aiAnalysis=aiText;
+      sv();
+    }
+    grRenderView(dk);
+  }catch(err){
+    console.error('AI 分析失敗',err);
+    grRenderView(dk);
+    toast('⚠️ AI 分析暫時無法使用，記錄已儲存');
+  }
+}
+
+function grReAnalyze(dk){
+  const rec=D.gratitude[dk]||{};
+  const items=Array.isArray(rec)?rec:(rec.items||[]);
+  if(!items.length){toast('沒有感恩記錄可以分析');return;}
+  const energyTags=rec.energyTags||[],energyCustom=rec.energyCustom||'',selfMsg=rec.selfMsg||'';
+  grAIAnalyze(dk,items,energyTags,energyCustom,selfMsg);
+}
+
 function deleteGrRecord(dk){
   if(!confirm('確定要清除這天的感恩記錄嗎？'))return;
   delete D.gratitude[dk];sv();buildGrCal();grMonthlySummary();grRenderEdit(dk);toast('已清除感恩記錄');
