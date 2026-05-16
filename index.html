@@ -856,7 +856,7 @@ function rRoxiSpecial(){
 }
 
 // ── 主軸任務 ──
-function setMainTask(txt){const el=document.getElementById('mainTask');if(el){el.value=txt;saveTasks();toast('🎯 已設定主軸任務');}}
+function setMainTask(el,txt){const inp=document.getElementById('mainTask');if(inp){inp.value=txt;saveTasks();toast('🎯 已設定主軸任務');}}
 function rTasks(){
   const td=D.tasks[TODAY]||{};
   ['mainTask','s1','s2'].forEach(id=>{const el=document.getElementById(id);if(el&&document.activeElement!==el)el.value=td[id]||'';});
