@@ -904,6 +904,25 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
       </div>
     </div></div>
 
+    <!-- 沐蜜事業狀態指引 -->
+    <div class="card">
+      <div class="ch"><span class="ct-ttl">🌸 沐蜜事業狀態指引</span></div>
+      <div class="cb" style="padding:12px 16px">
+        <div style="font-size:13px;color:var(--inkM);margin-bottom:14px;line-height:1.7;padding:12px 15px;background:var(--milk);border-radius:10px;border:1px solid var(--mist)">
+          你不是「不會選」——是「看得太清楚每條路的全貌」。這個能力是禮物，不是阻礙。學會「策略性整合」。
+        </div>
+        <!-- 服務優先順位 -->
+        <div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:10px;letter-spacing:.05em">服務優先順位・命盤適配度</div>
+        <div id="moomeServices"></div>
+        <!-- 雙軸品牌策略 -->
+        <div style="margin-top:16px;font-size:12px;font-weight:600;color:var(--bark);margin-bottom:10px;letter-spacing:.05em">🎯 雙軸品牌策略</div>
+        <div id="moomeStrategy"></div>
+        <!-- 3條內容線 -->
+        <div style="margin-top:16px;font-size:12px;font-weight:600;color:var(--bark);margin-bottom:10px;letter-spacing:.05em">✍️ 3條內容線（不講療效）</div>
+        <div id="moomeContent"></div>
+      </div>
+    </div>
+
     <!-- 累世業力 -->
     <div class="card"><div class="ch"><span class="ct-ttl">🌀 累世業力主題</span></div><div class="cb">
       <div style="display:flex;flex-direction:column;gap:9px">
@@ -1142,7 +1161,7 @@ function getMon(d){const dt=new Date(d),dow=dt.getDay(),off=dow===0?-6:1-dow;dt.
 function getWkDates(off){const mon=getMon(NOW);const b=new Date(mon);b.setDate(mon.getDate()+off*7);return Array.from({length:7},(_,i)=>{const d=new Date(b);d.setDate(b.getDate()+i);return d;});}
 
 const PAGE_TITLES={'today':'日計劃','week':'週計劃','month':'月計劃','goals':'目標追蹤','journal':'每日日誌','book':'讀書日記','stock':'股票交易日記','service':'服務觀察筆記','ideas':'素材庫','destiny':'事業天命','now':'現在 → 2026.8 行動導覽'};
-function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rWX();rRoxi();rDayTimeline();rBizList();rTasks();rEv();setMode(tlMode);}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();rSelfCheck();loadMoReview();}if(id==='journal'){initJournalForm();rJournals();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){rDestTimeline();}if(id==='now'){rNowPage();}}
+function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rWX();rRoxi();rDayTimeline();rBizList();rTasks();rEv();setMode(tlMode);}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();rSelfCheck();loadMoReview();}if(id==='journal'){initJournalForm();rJournals();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){rDestTimeline();rMoomeGuidance();}if(id==='now'){rNowPage();}}
 function tf(id){const el=document.getElementById(id);if(!el)return;const op=el.style.display==='block';el.style.display=op?'none':'block';if(!op){const i=el.querySelector('input[type=text],input[type=time],textarea');if(i)setTimeout(()=>i.focus(),50);}}
 function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');moId=null;moDk2=null;}
@@ -1669,6 +1688,263 @@ function rIdeas(){const el=document.getElementById('ideaList');if(!el)return;con
 function rIdeas2(){const el=document.getElementById('ideaList2');if(!el)return;const ideas=D.ideas||[];el.innerHTML=ideas.length?ideas.slice(0,30).map(i=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px;padding:3px 10px;border-radius:8px;background:var(--mossL);color:var(--mossD);flex-shrink:0;font-weight:700">${i.cat}</span><div style="flex:1"><div style="font-size:14px;color:var(--ink);line-height:1.5">${i.tx}</div><div style="font-size:11px;color:var(--inkL);margin-top:2px">${i.date}</div></div><button class="btn-del" onclick="dIdea(${i.id})">✕</button></div>`).join(''):'<div style="text-align:center;padding:20px;color:var(--inkL)">把靈感・故事・拍攝想法記錄在這裡</div>';}
 
 
+
+
+// ────────────────────────────────
+// 沐蜜事業狀態指引
+// ────────────────────────────────
+const MOOME_SERVICES = [
+  {
+    rank:'🏆 第一',name:'做臉 Facial',score:'★★★★★ 10/10',type:'top',
+    color:'var(--amberD)',bg:'var(--amberL)',bdr:'var(--amber)',
+    summary:'命盤天命級服務。Pushya滋養＋月亮入旺金牛＋金星入旺——三重命盤直接對應。',
+    details:`✓ 手感天賦：Pushya上升（滋養型工作）× 月亮入旺金牛（管臉部頸部）× Hasta星宿（手的精準工藝）
+✓ 美學天命：金星在Meena Revati入旺，直接管皮膚、美容、面容、女性外在美
+✓ 客人感受最深：你的Pushya+月亮入旺氣場在做臉時100%釋放
+✓ 升級空間最大：可→美學儀式→產品線→教學→出書→課程
+
+⚠️ 定價你嚴重低估了：
+現在 1800-4000 = 「技術換錢」的定價
+應該定位 4000-8000 = 「儀式型體驗」的定價
+不是因為「比別人貴」——是你提供的本來就是儀式體驗。
+
+短期升級建議：
+• 加入儀式感：迎賓茶、香氛、燈光、音樂
+• 每位客人5分鐘「肌膚對話」
+• 逐步調價到 3000-4500
+• 拍攝「你做臉時的氣質照片」
+
+中期（2027-2028）：
+• 發展「沐蜜獨家流程」有名字的儀式
+  （例：「沐光療癒90分鐘」「蜜養儀式120分鐘」）
+• 定價提升到 4500-6500
+• 記錄「皮膚觀察筆記」作為內容素材`,
+  },
+  {
+    rank:'🥈 第二',name:'美體按摩',score:'★★★★ 8/10',type:'good',
+    color:'var(--mossD)',bg:'var(--mossL)',bdr:'var(--moss)',
+    summary:'次強天命。Pushya+月亮入旺+Hasta手感完美對應，但要注意身體耗損。',
+    details:`✓ 手感天賦完美對應（按摩比做臉更需要手的力量與感受力）
+✓ 月亮入旺金牛 = 對全身感官的敏感度
+✓ 你的滋養氣場在按摩時會被放大
+
+⚠️ 兩個注意點：
+1. 身體耗損：比做臉耗身體更多，不能單獨靠按摩維生
+2. 你還在「思考要不要進修」= 還未完全發展這條線
+
+✓ 進修建議（選「療癒型」，不是「商業型」）：
+• 能量按摩 / 靈氣按摩（對應Pushya+D20靈性軸）
+• 女性療癒按摩 / 產後護理（對應金星+月亮女性軸）
+• 臉部+頭部按摩（對應你最強的金星臉部軸）
+• 芳香療法+按摩整合（金星美學軸）
+
+升級路徑：
+短期：整合進「做臉+頭部能量按摩」套組
+中期：發展沐蜜獨家按摩流程，定價2500-4500
+長期：成為美學儀式的一部分，不做主力`,
+  },
+  {
+    rank:'🥉 第三',name:'霧眉霧唇',score:'★★★ 6/10',type:'mid',
+    color:'var(--hazeD)',bg:'var(--hazeL)',bdr:'var(--haze)',
+    summary:'高單價入口服務。Rahu Dasha帶你進入此領域，保留但不做主力。現在是衝刺累積期。',
+    details:`現在（Rahu末期）最佳策略：大量練習衝刺
+• 接10-20個案密集練習，把作品累積到自信程度
+• 不要計較收入，計較作品品質
+
+保留理由：
+• 已投入學習和設備
+• 高單價（8800-10800）是好的收入補充
+• 可以當「品牌入口」：霧眉吸引新客→介紹做臉
+
+⚠️ 不做主力的理由：
+• 命盤天命不在這裡（金星天命是全方位美學）
+• Rahu Dasha結束後（2026.8後）熱潮會降
+• 你內心「不完全自信」——這份能量客人感受得到
+
+建議：
+• 月接4-6個霧眉霧唇案就好
+• 不要為了它推掉做臉時段
+• 別再花大錢學新流派，把現有的做到精
+• 2027年後重新評估是否繼續`,
+  },
+  {
+    rank:'⚠️ 第四',name:'除毛',score:'★★ 4/10',type:'low',
+    color:'var(--inkM)',bg:'var(--bg2)',bdr:'var(--bdr)',
+    summary:'命盤適配度低。除毛的快速物理性能量與你的滋養型命格不合，且無升級空間。',
+    details:`為什麼不合：
+• 除毛：快速、物理性、即時結果、客人不需要能量交流
+• 你的命格：慢、深、滋養型、能量場型
+
+三個選項：
+A. 保留但不主推（最安全）——只服務老客戶的延伸需求，不行銷
+B. 逐步淡出（最符合3.0）——半年內不接新除毛客，轉移到做臉/按摩
+C. 完全脫離（最徹底）——直接停掉，時間留給升級
+
+命盤建議選項B：給自己半年到一年，順順把它「過渡掉」。
+Jupiter Dasha 16年的能量是「精煉、深化、垂直」，不是「多元擴張」。`,
+  },
+  {
+    rank:'❌ 不建議',name:'美睫',score:'★ 3/10',type:'no',
+    color:'var(--blushD)',bg:'var(--blushL)',bdr:'var(--blush)',
+    summary:'命盤不合，且有健康風險。極度精細靜止操作傷眼傷頸，投資報酬比低，無升級空間。',
+    details:`為什麼不建議：
+• 美睫：極度精細長時間靜止（不是你的命格強項）
+• 你的命格：能量場型、滋養型、儀式型
+
+健康風險：
+• 長時間低頭、近距離、強光——傷眼傷頸傷肩
+• 你的D9月亮落陷+土星7宮 = 身體承受度有限
+
+無升級空間：
+• 美睫沒辦法升級成美學系統、教學、產品線
+
+建議：不要進修美睫
+把時間和學費投資在「做臉升級」或「療癒型按摩進修」，回報大很多倍。`,
+  },
+];
+
+const MOOME_STRATEGY_DATA = {
+  summary:'讓「霧眉霧唇」成為「品牌入口」，讓「做臉」成為「客戶深化」。兩者整合不衝突，反而互相加分。',
+  phases:[
+    {period:'短期 2026.5–2026.8（Rahu末期）',
+     items:['霧眉霧唇衝刺累積：接10-20個案密集練習','做臉開始品牌化（不講療效）：拍攝工作環境美學','建立1-2個社群平台：IG視覺主、Threads/部落格文字深度']},
+    {period:'中期 2026.8–2028（Jupiter啟動期）',
+     items:['霧眉霧唇穩定收費：累積50+個案後收滿單價','做臉升級為「美學儀式」：定價3500-5500','個人品牌深度建立：持續寫作，靠真誠連結累積認同你的人']},
+    {period:'長期 2028+（Jupiter主期）',
+     items:['做臉變成「主推美學儀式」','霧眉霧唇保留為「高單價補充」','內容輸出累積成「個人品牌」','開始：教學、產品、書、課程']},
+  ],
+  flow:[
+    {from:'霧眉霧唇',to:'吸引新客'},
+    {from:'吸引新客',to:'介紹做臉'},
+    {from:'做臉',to:'留住客戶'},
+    {from:'留住客戶',to:'變成內容素材'},
+    {from:'內容建立品牌',to:'客人主動找來'},
+  ]
+};
+
+const MOOME_CONTENT_LINES = [
+  {
+    name:'線1・美學日記',emoji:'📖',color:'var(--amberD)',bg:'var(--amberL)',bdr:'var(--amber)',
+    desc:'每週1-2篇短文，記錄工作中觀察到的「美的瞬間」。不講療效、不講服務、純粹分享。',
+    example:'「今天客人帶著一束玫瑰來，香氣讓整個空間變慢。」',
+    note:'✓ 不受法規限制・✓ 建立美學品牌形象'
+  },
+  {
+    name:'線2・肌膚智慧',emoji:'🧬',color:'var(--mossD)',bg:'var(--mossL)',bdr:'var(--moss)',
+    desc:'不講「我能改善」——講「皮膚的基本原理」。不講「來找我」——講「日常該怎麼做」。',
+    example:'季節保養觀念・心情與肌膚的關係・睡眠飲食皮膚的關聯・女性身心觀念',
+    note:'✓ 客人讀了會覺得「她真的懂」・✓ 不引發法規問題'
+  },
+  {
+    name:'線3・沐蜜哲學',emoji:'💭',color:'var(--hazeD)',bg:'var(--hazeL)',bdr:'var(--haze)',
+    desc:'你對「為什麼要保養」的看法・對「現代女性的疲憊」的觀察・對「美的本質」的思考。',
+    example:'你對美的看法・為什麼做這個行業・妳欣賞的人・妳的學習成長・妳的內在思考',
+    note:'✓ 建立個人品牌深度的核心・✓ 先讓人認識妳，再讓人想找妳'
+  },
+];
+
+const openServices = new Set();
+let strategyOpen = false;
+let contentOpen = false;
+
+function rMoomeServices(){
+  const el=document.getElementById('moomeServices');
+  if(!el)return;
+  el.innerHTML=MOOME_SERVICES.map((s,i)=>{
+    const isOpen=openServices.has(i);
+    const dotColor=s.type==='top'?'var(--amber)':s.type==='good'?'var(--moss)':s.type==='mid'?'var(--haze)':s.type==='low'?'var(--inkL)':'var(--blush)';
+    return`<div style="margin-bottom:8px;border-radius:12px;overflow:hidden;border:1.5px solid ${s.bdr}">
+      <div onclick="toggleService(${i})" style="display:flex;align-items:center;gap:12px;padding:12px 15px;background:${s.bg};cursor:pointer;user-select:none">
+        <div style="width:10px;height:10px;border-radius:50%;background:${dotColor};flex-shrink:0"></div>
+        <div style="flex:1">
+          <div style="font-size:11px;color:${s.color};font-weight:600;margin-bottom:2px">${s.rank} · ${s.score}</div>
+          <div style="font-family:var(--fs);font-size:14px;font-weight:600;color:var(--bark)">${s.name}</div>
+          <div style="font-size:12px;color:var(--inkM);margin-top:2px;line-height:1.5">${s.summary}</div>
+        </div>
+        <span style="font-size:13px;color:var(--inkL);transition:.2s;transform:${isOpen?'rotate(180deg)':'none'};display:block">▾</span>
+      </div>
+      ${isOpen?`<div style="padding:14px 16px;background:#fff;border-top:1px solid ${s.bdr}">
+        <div style="font-size:13px;color:var(--ink);line-height:1.9;white-space:pre-wrap">${s.details}</div>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleService(i){
+  if(openServices.has(i))openServices.delete(i);
+  else openServices.add(i);
+  rMoomeServices();
+}
+
+function rMoomeStrategy(){
+  const el=document.getElementById('moomeStrategy');
+  if(!el)return;
+  el.innerHTML=`<div style="border-radius:12px;overflow:hidden;border:1.5px solid var(--chai)">
+    <div onclick="toggleMoomeStrategy()" style="display:flex;align-items:center;gap:12px;padding:12px 15px;background:var(--milk);cursor:pointer;user-select:none">
+      <span style="font-size:18px">🎯</span>
+      <div style="flex:1">
+        <div style="font-size:13px;color:var(--inkM);line-height:1.5">${MOOME_STRATEGY_DATA.summary}</div>
+      </div>
+      <span style="font-size:13px;color:var(--inkL);transition:.2s;transform:${strategyOpen?'rotate(180deg)':'none'};display:block">▾</span>
+    </div>
+    ${strategyOpen?`<div style="padding:14px 16px;background:#fff;border-top:1px solid var(--mist)">
+      ${MOOME_STRATEGY_DATA.phases.map(p=>`<div style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:8px">${p.period}</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${p.items.map(item=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 11px;border-radius:8px;background:var(--bg2)">
+            <span style="color:var(--chai);font-weight:700;flex-shrink:0">✓</span>
+            <span style="font-size:13px;color:var(--ink);line-height:1.6">${item}</span>
+          </div>`).join('')}
+        </div>
+      </div>`).join('')}
+      <div style="margin-top:12px;padding:12px 14px;background:var(--milk);border-radius:10px;border:1px solid var(--mist)">
+        <div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:7px">客戶旅程閉環</div>
+        <div style="font-size:13px;color:var(--inkM);line-height:1.9">霧眉霧唇 → 吸引新客 → 介紹做臉 → 留住客戶 → 變成內容素材 → 內容建立品牌 → 客人主動找來</div>
+      </div>
+    </div>`:''}
+  </div>`;
+}
+
+function toggleMoomeStrategy(){
+  strategyOpen=!strategyOpen;
+  rMoomeStrategy();
+}
+
+function rMoomeContent(){
+  const el=document.getElementById('moomeContent');
+  if(!el)return;
+  el.innerHTML=`<div style="border-radius:12px;overflow:hidden;border:1px solid var(--bdr)">
+    <div onclick="toggleMoomeContent()" style="display:flex;align-items:center;gap:12px;padding:12px 15px;background:var(--card);cursor:pointer;user-select:none">
+      <span style="font-size:18px">✍️</span>
+      <div style="flex:1;font-size:13px;color:var(--inkM)">法規沒禁止的，全部都可以做。「寫我是誰、我看見什麼、我相信什麼。」</div>
+      <span style="font-size:13px;color:var(--inkL);transition:.2s;transform:${contentOpen?'rotate(180deg)':'none'};display:block">▾</span>
+    </div>
+    ${contentOpen?`<div style="background:#fff;border-top:1px solid var(--bdr)">
+      ${MOOME_CONTENT_LINES.map(line=>`<div style="padding:14px 16px;border-bottom:1px solid var(--bdr)">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+          <span style="font-size:20px">${line.emoji}</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:${line.color}">${line.name}</div>
+            <div style="font-size:11px;color:var(--inkL);margin-top:1px">${line.note}</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--inkM);line-height:1.7;margin-bottom:7px">${line.desc}</div>
+        <div style="font-size:12px;padding:8px 11px;background:${line.bg};border-radius:8px;color:${line.color};font-style:italic">例：${line.example}</div>
+      </div>`).join('')}
+    </div>`:''}
+  </div>`;
+}
+
+function toggleMoomeContent(){
+  contentOpen=!contentOpen;
+  rMoomeContent();
+}
+
+function rMoomeGuidance(){
+  rMoomeServices();
+  rMoomeStrategy();
+  rMoomeContent();
+}
 
 // ────────────────────────────────
 // 現在～2026.8 行動導覽
