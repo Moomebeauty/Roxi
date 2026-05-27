@@ -16,9 +16,9 @@
   --blush: #C4968A; --blushL:#F5EDEA; --blushD:#8A5A50;
   --amber: #C4A870; --amberL:#F5EEE0; --amberD:#7A6030;
   --haze:  #A098BC; --hazeL:#EEEAF5; --hazeD:#60508A;
-  --bg:#F8F3EE; --bg2:#EFE8DF; --bg3:#E4DAD0;
-  --card:#FDFAF7; --bdr:#E4D8CC; --bdr2:#D0C4B4;
-  --ink:#3A2E24; --inkM:#7A6858; --inkL:#B0A090;
+  --bg:#F7F2EC; --bg2:#EDE5DA; --bg3:#E0D5C8;
+  --card:#FDFAF7; --bdr:#DDD0C0; --bdr2:#C8B8A4;
+  --ink:#2A1E14; --inkM:#5A4838; --inkL:#9A8878;
   --s1:0 1px 4px rgba(93,74,58,.07),0 4px 16px rgba(93,74,58,.06);
   --s2:0 2px 8px rgba(93,74,58,.08),0 10px 32px rgba(93,74,58,.10);
   --s3:0 1px 3px rgba(93,74,58,.06);
@@ -26,7 +26,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:16px;}
-body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;min-height:100vh;font-weight:300;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;min-height:100vh;font-weight:400;-webkit-font-smoothing:antialiased;}
 
 .app{display:flex;min-height:100vh;}
 
@@ -59,7 +59,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 .sb-logo-n{font-family:var(--fs);font-size:16px;font-weight:500;color:var(--bark);letter-spacing:.14em;display:block;margin-bottom:3px;}
 .sb-logo-s{font-size:11px;color:var(--inkL);line-height:1.7;letter-spacing:.05em;}
 .sb-sec{padding:18px 24px 5px;font-size:10px;font-weight:500;color:var(--inkL);letter-spacing:.18em;text-transform:uppercase;}
-.sb-item{display:flex;align-items:center;gap:11px;padding:11px 18px;cursor:pointer;transition:all .2s;color:var(--inkM);font-size:14px;font-weight:300;border-left:3px solid transparent;user-select:none;}
+.sb-item{display:flex;align-items:center;gap:11px;padding:11px 18px;cursor:pointer;transition:all .2s;color:var(--inkM);font-size:14px;font-weight:400;border-left:3px solid transparent;user-select:none;}
 .sb-item:hover{background:var(--milk);color:var(--bark);}
 .sb-item.on{background:linear-gradient(90deg,var(--milk),transparent);color:var(--bark);border-left-color:var(--chai);font-weight:500;}
 .sb-item .i{font-size:16px;width:22px;text-align:center;flex-shrink:0;opacity:.85;}
@@ -72,17 +72,17 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 .sdot{width:7px;height:7px;border-radius:50%;background:var(--moss);flex-shrink:0;}
 .sdot.sy{background:var(--amber);animation:breathe 2s ease-in-out infinite;}
 @keyframes breathe{0%,100%{opacity:1}50%{opacity:.3}}
-.stxt{font-size:12px;color:var(--inkL);}
+.stxt{font-size:12px;color:var(--inkM);}
 .ct{padding:28px 36px;flex:1;}
 .pg{display:none;}.pg.on{display:block;animation:appear .22s ease;}
 @keyframes appear{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .pg-ttl{font-family:var(--fs);font-size:22px;font-weight:500;color:var(--bark);margin-bottom:3px;letter-spacing:.1em;}
-.pg-sub{font-size:13px;color:var(--inkL);margin-bottom:22px;line-height:1.8;}
+.pg-sub{font-size:13px;color:var(--inkM);margin-bottom:22px;line-height:1.8;}
 
 /* CARD */
 .card{background:var(--card);border-radius:var(--r);box-shadow:var(--s1);margin-bottom:16px;border:1px solid var(--bdr);overflow:hidden;transition:box-shadow .2s;}
 .ch{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--bdr);flex-wrap:wrap;gap:8px;}
-.ct-ttl{font-family:var(--fs);font-size:15px;font-weight:500;color:var(--bark);letter-spacing:.06em;}
+.ct-ttl{font-family:var(--fs);font-size:15px;font-weight:700;color:var(--bark);letter-spacing:.06em;}
 .cb{padding:18px 22px;}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
@@ -98,13 +98,13 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 .btn-del:hover{background:var(--blushL);color:var(--blushD);}
 
 /* INPUTS */
-.inp{border:1px solid var(--bdr);border-radius:9px;padding:10px 13px;font-size:14px;font-family:var(--f);font-weight:300;color:var(--ink);background:var(--bg);outline:none;transition:all .2s;width:100%;}
+.inp{border:1px solid var(--bdr);border-radius:9px;padding:10px 13px;font-size:14px;font-family:var(--f);font-weight:400;color:var(--ink);background:var(--bg);outline:none;transition:all .2s;width:100%;}
 .inp:focus{border-color:var(--chai);background:#fff;box-shadow:0 0 0 3px rgba(201,168,142,.12);}
 .inp-t{width:100px;flex-shrink:0;border:1px solid var(--bdr);border-radius:9px;padding:9px 10px;font-size:13px;font-family:var(--f);color:var(--ink);background:var(--bg);outline:none;}
-.ta{border:1px solid var(--bdr);border-radius:9px;padding:11px 13px;font-size:14px;font-family:var(--f);font-weight:300;color:var(--ink);background:var(--bg);outline:none;resize:none;line-height:1.8;transition:all .2s;width:100%;}
+.ta{border:1px solid var(--bdr);border-radius:9px;padding:11px 13px;font-size:14px;font-family:var(--f);font-weight:400;color:var(--ink);background:var(--bg);outline:none;resize:none;line-height:1.8;transition:all .2s;width:100%;}
 .ta:focus{border-color:var(--chai);background:#fff;box-shadow:0 0 0 3px rgba(201,168,142,.12);}
 .fgrp{display:flex;flex-direction:column;gap:6px;margin-bottom:13px;}
-.fgrp label{font-size:12px;font-weight:500;color:var(--bark);letter-spacing:.04em;}
+.fgrp label{font-size:13px;font-weight:600;color:var(--bark);letter-spacing:.04em;}
 .fx{display:flex;gap:9px;}
 .add-wrap{display:none;background:var(--bg2);border-radius:11px;padding:15px 17px;margin-bottom:14px;border:1px solid var(--bdr);}
 
@@ -126,7 +126,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 .hp-chk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--bdr2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:.18s;margin-top:2px;}
 .hab-pill.on .hp-chk{background:var(--bark);border-color:var(--bark);color:var(--milk);}
 .hab-pill.stop.on .hp-chk{background:var(--blushD);border-color:var(--blushD);color:#fff;}
-.hp-tip{font-size:11px;color:var(--inkL);margin-left:auto;padding-left:8px;text-align:right;line-height:1.4;max-width:130px;}
+.hp-tip{font-size:12px;color:var(--inkM);margin-left:auto;padding-left:8px;text-align:right;line-height:1.4;max-width:130px;}
 
 /* HTAG (time slot inline tag) */
 .ts{border-radius:13px;margin-bottom:10px;border:1px solid var(--bdr);background:var(--card);overflow:hidden;}
@@ -134,9 +134,9 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 .ts-hd:hover{background:var(--milk);}
 .ts-body{display:none;padding:0 18px 16px;border-top:1px solid var(--bdr);}
 .ts-open>.ts-body{display:block;}
-.ts-name{font-family:var(--fs);font-size:15px;font-weight:500;flex:1;}
-.ts-sub{font-size:11px;color:var(--inkL);margin-top:2px;}
-.ts-cnt{font-size:12px;padding:3px 10px;border-radius:14px;background:var(--bg2);color:var(--inkM);font-weight:500;}
+.ts-name{font-family:var(--fs);font-size:15px;font-weight:600;flex:1;}
+.ts-sub{font-size:12px;color:var(--inkM);margin-top:2px;}
+.ts-cnt{font-size:12px;padding:3px 10px;border-radius:14px;background:var(--bg2);color:var(--bark);font-weight:600;}
 .ts-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
 .tt{padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;border:1px solid var(--bdr);transition:all .18s;user-select:none;background:var(--bg2);color:var(--inkM);font-weight:300;}
 .tt:hover{border-color:var(--chai);color:var(--bark);background:var(--milk);}
@@ -149,7 +149,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 .mgr-hd{display:flex;align-items:center;gap:11px;margin-bottom:13px;}
 .mgr-name{font-family:var(--fs);font-size:14px;font-weight:500;color:var(--bark);}
 .mgr-role{font-size:11px;color:var(--inkL);margin-top:2px;}
-.mgr-msg{font-family:var(--fs);font-size:14px;color:var(--inkM);line-height:1.95;white-space:pre-wrap;letter-spacing:.01em;}
+.mgr-msg{font-family:var(--fs);font-size:14px;color:var(--ink);line-height:1.95;white-space:pre-wrap;letter-spacing:.01em;}
 
 /* QUOTE BOX (light version) */
 .qbox{background:linear-gradient(150deg,#F5EDE3 0%,#EFE4D6 100%);border-radius:15px;padding:24px 28px;color:var(--bark);margin-bottom:18px;border:1px solid var(--mist);box-shadow:var(--s1);position:relative;overflow:hidden;}
@@ -166,17 +166,17 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 /* EVENTS */
 .ev-row{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:9px;cursor:pointer;transition:.15s;}
 .ev-row:hover{background:var(--milk);}
-.ev-t{font-size:12px;color:var(--inkL);min-width:38px;font-weight:500;}
+.ev-t{font-size:13px;color:var(--inkM);min-width:38px;font-weight:600;}
 .ev-bar{width:2px;height:18px;background:var(--chai);border-radius:2px;flex-shrink:0;}
-.ev-n{flex:1;font-size:14px;}
+.ev-n{flex:1;font-size:14px;color:var(--ink);font-weight:400;}
 
 /* CALENDAR */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .cal-arr{background:transparent;border:1px solid var(--bdr);border-radius:8px;padding:6px 14px;font-size:16px;cursor:pointer;color:var(--inkM);transition:all .18s;}
 .cal-arr:hover{background:var(--milk);border-color:var(--chai);color:var(--bark);}
-.cal-ttl{font-family:var(--fs);font-size:18px;font-weight:500;color:var(--ink);}
+.cal-ttl{font-family:var(--fs);font-size:18px;font-weight:700;color:var(--bark);}
 .mo-grid{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid var(--bdr);border-top:1px solid var(--bdr);border-radius:12px;overflow:hidden;}
-.mg-hd{padding:8px 4px;text-align:center;font-size:11px;font-weight:500;color:var(--inkL);border-right:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:var(--bg2);letter-spacing:.05em;}
+.mg-hd{padding:8px 4px;text-align:center;font-size:12px;font-weight:600;color:var(--inkM);border-right:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:var(--bg2);letter-spacing:.05em;}
 .mc{border-right:1px solid var(--bdr);border-bottom:1px solid var(--bdr);min-height:86px;padding:6px;cursor:pointer;transition:background .15s;background:var(--card);}
 .mc:hover{background:var(--milk);}
 .mc.today{background:linear-gradient(145deg,#F5EDE3,#F8EFE5);}
@@ -206,7 +206,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 .jnl-row{padding:14px 16px;border-radius:11px;border:1px solid var(--bdr);background:var(--card);margin-bottom:9px;cursor:pointer;transition:all .18s;}
 .jnl-row:hover{border-color:var(--chai);box-shadow:var(--s3);}
 .jnl-date{font-size:12px;font-weight:500;color:var(--bark);margin-bottom:4px;letter-spacing:.04em;}
-.jnl-preview{font-size:13px;color:var(--inkM);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.jnl-preview{font-size:13px;color:var(--ink);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
 
 /* MODAL */
 .mo{position:fixed;inset:0;background:rgba(58,46,36,.4);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s;backdrop-filter:blur(6px);}
@@ -239,7 +239,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 .tl-row.done-row{opacity:.7;}
 .tl-time{width:56px;flex-shrink:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--inkM);border-right:1px solid var(--bdr);padding:8px 4px;text-align:center;line-height:1.3;}
 .tl-content{flex:1;padding:10px 14px;display:flex;align-items:center;gap:10px;}
-.tl-label{flex:1;font-size:14px;color:var(--ink);line-height:1.5;}
+.tl-label{flex:1;font-size:14px;color:var(--ink);font-weight:400;line-height:1.5;}
 .tl-label.done-text{text-decoration:line-through;color:var(--inkL);}
 .tl-chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--bdr2);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:transparent;transition:.18s;}
 .tl-chk.done{background:var(--mossD);border-color:var(--mossD);color:#fff;}
@@ -273,7 +273,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 /* DESTINY SECTION */
 .dest-block{border-radius:13px;padding:20px 22px;margin-bottom:14px;border:1px solid var(--mist);}
 .dest-ttl{font-family:var(--fs);font-size:15px;font-weight:500;color:var(--bark);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.dest-body{font-size:14px;color:var(--inkM);line-height:1.85;white-space:pre-wrap;}
+.dest-body{font-size:14px;color:var(--ink);line-height:1.85;white-space:pre-wrap;}
 .dest-timeline{display:flex;flex-direction:column;gap:6px;margin-top:12px;}
 .tl-phase{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-radius:10px;border:1px solid var(--bdr);background:var(--card);}
 .tl-phase.golden{border-color:var(--amber);background:var(--amberL);}
@@ -384,15 +384,6 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
       </div>
     </div>
 
-    <!-- 沐蜜事業 -->
-    <div class="card">
-      <div class="ch"><span class="ct-ttl">🌸 沐蜜事業・今日</span></div>
-      <div class="cb">
-        <div style="font-size:12px;color:var(--inkL);margin-bottom:12px">點選今天做了什麼，可以加備注</div>
-        <div id="bizList"></div>
-      </div>
-    </div>
-
     <!-- 核心任務 -->
     <div class="card">
       <div class="ch"><span class="ct-ttl">🎯 今日核心一件事</span><button class="btn btn-s btn-sm" onclick="saveTasksM()">儲存</button></div>
@@ -429,17 +420,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 我會在你完成規劃後，給你今日的能量建議。</div>
     </div>
 
-    <!-- 今日行程 -->
-    <div class="card">
-      <div class="ch"><span class="ct-ttl">🕐 今日行程</span><button class="btn btn-s btn-sm" onclick="tf('addEvW')">＋</button></div>
-      <div class="cb">
-        <div class="add-wrap" id="addEvW"><div class="fx"><input type="time" class="inp-t" id="evTime"><input type="text" class="inp" id="evText" placeholder="行程名稱..." style="font-size:14px"><button class="btn btn-p btn-sm" onclick="addEv()">新增</button></div></div>
-        <div id="evList"></div>
-      </div>
-    </div>
 
-    <!-- 五行穿衣今日詳情 -->
-    <div class="card"><div class="ch"><span class="ct-ttl">✨ 今日五行詳情</span></div><div class="cb" id="wxTodayCard"></div></div>
   </div>
   </div>
 </div>
@@ -463,12 +444,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
     <div class="card"><div class="ch"><span class="ct-ttl">● 事業・每週</span></div><div class="cb" id="wkBizList"></div></div>
     <div class="card"><div class="ch"><span class="ct-ttl">◉ 財富・每週</span></div><div class="cb" id="wkMonList"></div></div>
     <div class="card"><div class="ch"><span class="ct-ttl">✿ 健康・每週</span></div><div class="cb" id="wkHthList"></div></div>
-    <div class="card"><div class="ch"><span class="ct-ttl">🎯 本週目標</span><button class="btn btn-s btn-sm" onclick="tf('addWGW')">＋</button></div><div class="cb"><div class="add-wrap" id="addWGW"><div class="fx"><input type="text" class="inp" id="wgTxt" placeholder="本週想達成..."><button class="btn btn-p btn-sm" onclick="addWG()">新增</button></div></div><div id="wgList"></div></div></div>
-  </div>
-  <div>
-    <div class="mgr-box"><div class="mgr-hd"><div class="mgr-av">🌿</div><div style="flex:1"><div class="mgr-name">複利管家・週</div><div class="mgr-role">本週能量規劃建議</div></div><button class="btn btn-s btn-sm" onclick="runMgrWk()">分析本週</button></div><div class="mgr-msg" id="mgrMsgWk">點「分析本週」查看本週狀況與建議。</div></div>
-    <div class="card"><div class="ch"><span class="ct-ttl">💚 本週能量補充</span></div><div class="cb"><div style="font-size:12px;color:var(--inkL);margin-bottom:12px">這週安排了哪些補充自己的事？</div><div id="wkEnergyList"></div></div></div>
-    <div class="card"><div class="ch"><span class="ct-ttl">🗓️ 每天主軸設定</span></div><div class="cb" id="wkRoleList"></div></div>
+    
   </div>
   </div>
 </div>
@@ -522,8 +498,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
     <div class="card"><div class="ch"><span class="ct-ttl">● 事業・每月</span></div><div class="cb" id="moBizList"></div></div>
     <div class="card"><div class="ch"><span class="ct-ttl">◉ 財富・每月</span></div><div class="cb" id="moMonList"></div></div>
     <div class="card"><div class="ch"><span class="ct-ttl">✿ 健康・每月</span></div><div class="cb" id="moHthList"></div></div>
-    <div class="card"><div class="ch"><span class="ct-ttl">📌 本月目標</span><button class="btn btn-s btn-sm" onclick="tf('addMGW')">＋</button></div><div class="cb"><div class="add-wrap" id="addMGW"><div class="fx"><input type="text" class="inp" id="mgTxt" placeholder="本月想達成..."><button class="btn btn-p btn-sm" onclick="addMG()">新增</button></div></div><div id="mgList"></div></div></div>
-  </div>
+      </div>
   </div>
 </div>
 
@@ -556,23 +531,98 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 <!-- ══ 每日日誌 ══ -->
 <div class="pg" id="pg-journal">
   <div class="pg-ttl">每日日誌</div>
-  <div class="pg-sub">點選日期，看那天的完整記錄。讓每個日子都被好好記住。</div>
+  <div class="pg-sub">🌙 晚上 20:30 寫日誌・好好結束一天，明天才有新的開始</div>
   <div class="g2">
+  <!-- 左欄：新增表單 -->
   <div>
-    <div class="card"><div class="cb">
-      <div class="cal-nav"><button class="cal-arr" onclick="grChM(-1)">‹</button><span class="cal-ttl" id="grCalTtl"></span><button class="cal-arr" onclick="grChM(1)">›</button></div>
-      <div class="mo-grid" id="grGrid"></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--inkL)"><span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--mossD);display:inline-block"></span>有記錄</span><span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--bark);display:inline-block"></span>今天</span></div>
-    </div></div>
-    <div class="card"><div class="ch"><span class="ct-ttl">📊 本月摘要</span></div><div class="cb" id="grSum"></div></div>
-  </div>
-  <div>
-    <div class="card" id="grDayCard">
-      <div class="ch" style="background:linear-gradient(135deg,var(--bark),#7A5C48);border-radius:13px 13px 0 0">
-        <div><div style="font-family:var(--fs);font-size:16px;font-weight:500;color:var(--milk)" id="grDayTtl">點選左邊月曆的日期</div><div style="font-size:11px;color:rgba(245,237,227,.6);margin-top:2px" id="grDayWx"></div></div>
-        <div style="display:flex;gap:7px"><button id="grEditBtn" class="btn btn-s btn-sm" onclick="grTogEdit()" style="background:rgba(245,237,227,.15);color:var(--milk);border-color:rgba(245,237,227,.3);display:none;font-size:12px">✏️ 編輯</button></div>
+    <div class="card">
+      <div class="ch"><span class="ct-ttl">✍️ 今天的記錄</span></div>
+      <div class="cb">
+
+        <div class="fgrp">
+          <label>日期</label>
+          <input type="date" class="inp" id="jnlDate">
+        </div>
+
+        <!-- 復盤引導 -->
+        <div style="background:var(--milk);border-radius:11px;padding:15px 17px;border:1px solid var(--mist);margin-bottom:14px">
+          <div style="font-size:13px;font-weight:600;color:var(--bark);margin-bottom:12px;letter-spacing:.04em">🌙 自我復盤</div>
+          <div class="fgrp">
+            <label>今天讓我有感覺的事</label>
+            <textarea class="ta" id="jnl_q1" rows="2" placeholder="一件讓你心動、感動、或困擾的事..."></textarea>
+          </div>
+          <div class="fgrp">
+            <label>今天我學到什麼</label>
+            <textarea class="ta" id="jnl_q2" rows="2" placeholder="任何一個小發現、新認識、或確認..."></textarea>
+          </div>
+          <div class="fgrp">
+            <label>今天有為自己做什麼嗎</label>
+            <textarea class="ta" id="jnl_q3" rows="2" placeholder="再小的事都算——為自己泡杯茶、說一句「不」..."></textarea>
+          </div>
+          <div class="fgrp">
+            <label>今天有沒有踩到自己的界線</label>
+            <textarea class="ta" id="jnl_q4" rows="2" placeholder="有沒有答應了不該答應的？被情緒帶走了嗎？"></textarea>
+          </div>
+          <div class="fgrp" style="margin-bottom:0">
+            <label>服務筆記：哪位客人有感覺？技術細節？閃過的想法？</label>
+            <textarea class="ta" id="jnl_q5" rows="2" placeholder="哪個客人讓你印象深刻？哪個技術值得記下？"></textarea>
+          </div>
+        </div>
+
+        <!-- 身體掃描 -->
+        <div class="fgrp">
+          <label>🫀 身體掃描 1 分鐘（從頭到腳，哪裡緊？哪裡需要照顧？）</label>
+          <textarea class="ta" id="jnl_body" rows="2" placeholder="肩膀緊？胃不舒服？腳冷？..."></textarea>
+        </div>
+
+        <!-- 感恩日記 -->
+        <div style="background:var(--amberL);border-radius:11px;padding:15px 17px;border:1px solid var(--amber);margin-bottom:14px">
+          <div style="font-size:13px;font-weight:600;color:var(--amberD);margin-bottom:12px">🙏 感恩日記</div>
+          <div class="fgrp">
+            <label>感恩 1</label>
+            <textarea class="ta" id="jnl_g1" rows="2" placeholder="感恩今天...（越具體越有力量）"></textarea>
+          </div>
+          <div class="fgrp">
+            <label>感恩 2</label>
+            <textarea class="ta" id="jnl_g2" rows="2" placeholder="感恩今天..."></textarea>
+          </div>
+          <div class="fgrp" style="margin-bottom:0">
+            <label>感恩 3</label>
+            <textarea class="ta" id="jnl_g3" rows="2" placeholder="感恩今天..."></textarea>
+          </div>
+        </div>
+
+        <!-- 今天能量 -->
+        <div class="fgrp">
+          <label>⚡ 今天我把能量留給了什麼</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="jnlETagList"></div>
+          <input type="text" class="inp" id="jnl_energy_custom" placeholder="或自己填寫...">
+        </div>
+
+        <!-- 對自己說 -->
+        <div class="fgrp">
+          <label>💜 今天，我想對自己說一句話</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="jnlSelfList"></div>
+          <textarea class="ta" id="jnl_self" rows="2" placeholder="或用自己的話..."></textarea>
+        </div>
+
+        <button class="btn btn-p" onclick="addJournal()" style="width:100%">💾 儲存今天的日誌</button>
       </div>
-      <div class="cb" id="grDayCt"><div style="text-align:center;padding:36px 20px"><div style="font-size:36px;margin-bottom:10px">🗓️</div><div style="font-size:13px;color:var(--inkL)">點選左邊月曆的日期<br>查看那天的完整記錄</div></div></div>
+    </div>
+  </div>
+
+  <!-- 右欄：記錄清單 -->
+  <div>
+    <div class="card">
+      <div class="ch">
+        <span class="ct-ttl">📖 日誌記錄</span>
+        <div class="tabs" style="margin-bottom:0">
+          <div class="tab on" onclick="filterJnl('all',this)">全部</div>
+          <div class="tab" onclick="filterJnl('hasGratitude',this)">有感恩</div>
+          <div class="tab" onclick="filterJnl('hasInsight',this)">有感觸</div>
+        </div>
+      </div>
+      <div class="cb" id="jnlList"></div>
     </div>
   </div>
   </div>
@@ -862,8 +912,8 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 firebase.initializeApp({apiKey:"AIzaSyCHwiIOKswq613NuRclWaLFbWO8lgpN0IY",authDomain:"roxi-planner.firebaseapp.com",projectId:"roxi-planner",storageBucket:"roxi-planner.firebasestorage.app",messagingSenderId:"988384927354",appId:"1:988384927354:web:40b403d40060d7195725c3"});
 const db=firebase.firestore(),DOC='roxi_v13',SK='roxi_v13';
 let D=df(),syncT=null;
-function df(){return{ev:{},wg:[],mg:[],yg:[],tasks:{},ideas:[],gratitude:{},weekRoles:{},weekSlots:{},weekEnergy:{},habits:{},todaySlots:{},books:[],stocks:[],services:[],dayPlan:{},bizDaily:{},selfCheck:{},moReview:{}};}
-function ek(o){['wg','mg','yg','ideas','books','stocks','services'].forEach(k=>{if(!Array.isArray(o[k]))o[k]=[];});['ev','tasks','gratitude','weekRoles','weekSlots','weekEnergy','habits','todaySlots','dayPlan','bizDaily','selfCheck','moReview'].forEach(k=>{if(!o[k]||typeof o[k]!=='object'||Array.isArray(o[k]))o[k]={};});return o;}
+function df(){return{ev:{},wg:[],mg:[],yg:[],tasks:{},ideas:[],gratitude:{},weekRoles:{},weekSlots:{},weekEnergy:{},habits:{},todaySlots:{},books:[],stocks:[],services:[],dayPlan:{},bizDaily:{},selfCheck:{},moReview:{},journals:[]};}
+function ek(o){['wg','mg','yg','ideas','books','stocks','services','journals'].forEach(k=>{if(!Array.isArray(o[k]))o[k]=[];});['ev','tasks','gratitude','weekRoles','weekSlots','weekEnergy','habits','todaySlots','dayPlan','bizDaily','selfCheck','moReview'].forEach(k=>{if(!o[k]||typeof o[k]!=='object'||Array.isArray(o[k]))o[k]={};});return o;}
 function ss(m){const e=document.getElementById('stxt');if(e)e.textContent=m;const d=document.getElementById('sdot');if(d)d.className='sdot'+(m.includes('⟳')?' sy':'');}
 function sll(){try{return ek(JSON.parse(localStorage.getItem(SK))||df());}catch{return df();}}
 function svl(){try{localStorage.setItem(SK,JSON.stringify(D));}catch{}}
@@ -974,12 +1024,12 @@ function getMon(d){const dt=new Date(d),dow=dt.getDay(),off=dow===0?-6:1-dow;dt.
 function getWkDates(off){const mon=getMon(NOW);const b=new Date(mon);b.setDate(mon.getDate()+off*7);return Array.from({length:7},(_,i)=>{const d=new Date(b);d.setDate(b.getDate()+i);return d;});}
 
 const PAGE_TITLES={'today':'日計劃','week':'週計劃','month':'月計劃','goals':'目標追蹤','journal':'每日日誌','book':'讀書日記','stock':'股票交易日記','service':'服務觀察筆記','ideas':'素材庫','destiny':'事業天命'};
-function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rTodaySlots();rTasks();rEv();rWX();}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();}if(id==='journal'){grY=NOW.getFullYear();grM=NOW.getMonth();buildGrCal();grSum2();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){rDestTimeline();}if(id==='today'){rDayTimeline();rBizList();setMode(tlMode);}}
+function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rWX();rRoxi();rDayTimeline();rBizList();rTasks();rEv();setMode(tlMode);}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();rSelfCheck();loadMoReview();}if(id==='journal'){initJournalForm();rJournals();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){rDestTimeline();}}
 function tf(id){const el=document.getElementById(id);if(!el)return;const op=el.style.display==='block';el.style.display=op?'none':'block';if(!op){const i=el.querySelector('input[type=text],input[type=time],textarea');if(i)setTimeout(()=>i.focus(),50);}}
 function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');moId=null;moDk2=null;}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function rAll(){rWX();rRoxi();rTasks();rEv();rDayTimeline();rBizList();rMoPlan();rWeekPlan();rGoals();rMoHabs();rBooks();rStocks();rStockStat();rSvcs();buildGrCal();grSum2();rIdeas();rIdeas2();rSelfCheck();loadMoReview();}
+function rAll(){rWX();rRoxi();rTasks();rEv();rDayTimeline();rBizList();rMoPlan();rWeekPlan();rGoals();rMoHabs();rBooks();rStocks();rStockStat();rSvcs();rJournals();rIdeas();rIdeas2();rSelfCheck();loadMoReview();}
 
 // ── 五行 ──
 function rWX(){
@@ -1675,6 +1725,153 @@ function togglePhase(i){
   if(openPhases.has(i)) openPhases.delete(i);
   else openPhases.add(i);
   rDestTimeline();
+}
+
+
+// ────────────────────────────────
+// 每日日誌
+// ────────────────────────────────
+const JNL_ETAGS=[
+  {t:'陪伴女兒',e:'👧'},{t:'服務客人',e:'💆‍♀️'},{t:'創作拍攝',e:'🎬'},
+  {t:'好好休息',e:'🌙'},{t:'自我照顧',e:'🌸'},{t:'學習成長',e:'📚'},
+  {t:'家人陪伴',e:'🏠'},{t:'運動身體',e:'🏃‍♀️'},{t:'財務整理',e:'💰'},{t:'品牌思考',e:'💼'}
+];
+const JNL_SELF=[
+  '我今天其實已經很努力了。','我今天做到了自己能做的。',
+  '我今天允許自己不夠完美。','我今天選擇了對的事。','我值得被好好對待。'
+];
+let jnlETagSel=[], jnlSelfSel='', jnlFilter='all';
+
+function initJournalForm(){
+  const dateEl=document.getElementById('jnlDate');
+  if(dateEl&&!dateEl.value) dateEl.value=TODAY;
+  // 能量標籤
+  const etEl=document.getElementById('jnlETagList');
+  if(etEl) etEl.innerHTML=JNL_ETAGS.map(({t,e})=>`<div onclick="togJnlETag(this,'${t}')" class="dtag">${e} ${t}</div>`).join('');
+  // 對自己說
+  const slEl=document.getElementById('jnlSelfList');
+  if(slEl) slEl.innerHTML=JNL_SELF.map(s=>`<div onclick="setJnlSelf(this,'${s}')" class="dtag" style="font-family:var(--fs)">${s}</div>`).join('');
+  // reset
+  jnlETagSel=[]; jnlSelfSel='';
+}
+function togJnlETag(el,tag){
+  if(jnlETagSel.includes(tag)){
+    jnlETagSel=jnlETagSel.filter(t=>t!==tag);
+    el.style.background='';el.style.color='';el.style.borderColor='';
+  }else{
+    jnlETagSel.push(tag);
+    el.style.background='var(--bark)';el.style.color='var(--milk)';el.style.borderColor='var(--bark)';
+  }
+}
+function setJnlSelf(el,msg){
+  document.querySelectorAll('#jnlSelfList .dtag').forEach(t=>{t.style.background='';t.style.color='';t.style.borderColor='';});
+  jnlSelfSel=msg;
+  el.style.background='var(--haze)';el.style.color='#fff';el.style.borderColor='var(--haze)';
+  const ta=document.getElementById('jnl_self');
+  if(ta) ta.value=msg;
+}
+
+function addJournal(){
+  const date=document.getElementById('jnlDate')?.value||TODAY;
+  const q1=document.getElementById('jnl_q1')?.value.trim()||'';
+  const q2=document.getElementById('jnl_q2')?.value.trim()||'';
+  const q3=document.getElementById('jnl_q3')?.value.trim()||'';
+  const q4=document.getElementById('jnl_q4')?.value.trim()||'';
+  const q5=document.getElementById('jnl_q5')?.value.trim()||'';
+  const body=document.getElementById('jnl_body')?.value.trim()||'';
+  const g1=document.getElementById('jnl_g1')?.value.trim()||'';
+  const g2=document.getElementById('jnl_g2')?.value.trim()||'';
+  const g3=document.getElementById('jnl_g3')?.value.trim()||'';
+  const eCustom=document.getElementById('jnl_energy_custom')?.value.trim()||'';
+  const self=document.getElementById('jnl_self')?.value.trim()||'';
+
+  if(!q1&&!g1&&!body){toast('請至少填寫一個欄位');return;}
+
+  if(!D.journals) D.journals=[];
+  // 若同日期已有記錄則更新
+  const existing=D.journals.findIndex(j=>j.date===date);
+  const entry={
+    id:existing>=0?D.journals[existing].id:Date.now(),
+    date,q1,q2,q3,q4,q5,body,
+    gratitude:[g1,g2,g3].filter(x=>x),
+    energyTags:[...jnlETagSel],energyCustom:eCustom,
+    selfMsg:self
+  };
+  if(existing>=0) D.journals[existing]=entry;
+  else D.journals.unshift(entry);
+
+  // 清空表單
+  ['jnl_q1','jnl_q2','jnl_q3','jnl_q4','jnl_q5','jnl_body','jnl_g1','jnl_g2','jnl_g3','jnl_energy_custom','jnl_self'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('jnlDate').value=TODAY;
+  initJournalForm();
+  sv(); rJournals(); toast('💚 日誌已儲存！');
+}
+
+function filterJnl(f,el){
+  jnlFilter=f;
+  document.querySelectorAll('#pg-journal .tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  rJournals();
+}
+
+function delJournal(id){
+  D.journals=(D.journals||[]).filter(j=>j.id!==id);
+  sv();rJournals();toast('已刪除');
+}
+
+function editJournal(id){
+  const j=(D.journals||[]).find(j=>j.id===id);
+  if(!j)return;
+  // 填回表單
+  const map={jnl_q1:'q1',jnl_q2:'q2',jnl_q3:'q3',jnl_q4:'q4',jnl_q5:'q5',jnl_body:'body',jnl_energy_custom:'energyCustom',jnl_self:'selfMsg'};
+  Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el)el.value=j[key]||'';});
+  if(document.getElementById('jnlDate')) document.getElementById('jnlDate').value=j.date;
+  const gItems=j.gratitude||[];
+  ['jnl_g1','jnl_g2','jnl_g3'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.value=gItems[i]||'';});
+  jnlETagSel=[...(j.energyTags||[])];
+  // 更新標籤顏色
+  document.querySelectorAll('#jnlETagList .dtag').forEach(el=>{
+    const tag=el.textContent.replace(/^[^\s]+\s/,'');
+    if(jnlETagSel.includes(tag)){el.style.background='var(--bark)';el.style.color='var(--milk)';el.style.borderColor='var(--bark)';}
+    else{el.style.background='';el.style.color='';el.style.borderColor='';}
+  });
+  // 先刪除再儲存時會更新
+  window.scrollTo({top:0,behavior:'smooth'});
+  toast('已載入，修改後按儲存即可更新');
+}
+
+function rJournals(){
+  const el=document.getElementById('jnlList');
+  if(!el)return;
+  if(!D.journals)D.journals=[];
+  let list=[...D.journals].sort((a,b)=>b.date.localeCompare(a.date));
+  if(jnlFilter==='hasGratitude') list=list.filter(j=>j.gratitude&&j.gratitude.length);
+  if(jnlFilter==='hasInsight') list=list.filter(j=>j.q1&&j.q1.trim());
+  if(!list.length){
+    el.innerHTML=`<div style="text-align:center;padding:40px 20px"><div style="font-size:36px;margin-bottom:12px">🌙</div><div style="font-size:14px;color:var(--inkM)">還沒有日誌記錄<br>今晚就開始寫第一篇吧</div></div>`;
+    return;
+  }
+  el.innerHTML=list.map(j=>{
+    const gr=j.gratitude||[];
+    const etags=[...(j.energyTags||[]),j.energyCustom].filter(x=>x);
+    return`<div class="jnl-row">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div class="jnl-date">${j.date}</div>
+          ${etags.length?`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px">${etags.map(t=>`<span style="padding:2px 9px;border-radius:12px;font-size:11px;background:var(--milk);border:1px solid var(--mist);color:var(--bark)">${t}</span>`).join('')}</div>`:''}
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-s btn-sm" onclick="editJournal(${j.id})" style="font-size:12px">✏️ 編輯</button>
+          <button class="btn-del" onclick="delJournal(${j.id})">✕</button>
+        </div>
+      </div>
+      ${j.q1?`<div style="margin-bottom:8px"><div style="font-size:11px;font-weight:500;color:var(--inkL);margin-bottom:3px">今天讓我有感覺的事</div><div style="font-size:14px;color:var(--ink);line-height:1.7;font-family:var(--fs)">${j.q1}</div></div>`:''}
+      ${j.q2?`<div style="margin-bottom:8px"><div style="font-size:11px;font-weight:500;color:var(--inkL);margin-bottom:3px">今天我學到</div><div style="font-size:14px;color:var(--ink);line-height:1.7">${j.q2}</div></div>`:''}
+      ${j.body?`<div style="margin-bottom:8px;padding:8px 12px;background:var(--milk);border-radius:8px;border:1px solid var(--mist)"><div style="font-size:11px;font-weight:500;color:var(--inkL);margin-bottom:2px">🫀 身體掃描</div><div style="font-size:13px;color:var(--inkM)">${j.body}</div></div>`:''}
+      ${gr.length?`<div style="margin-bottom:6px"><div style="font-size:11px;font-weight:500;color:var(--inkL);margin-bottom:5px">🙏 感恩</div>${gr.map((g,i)=>`<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:5px"><span style="width:18px;height:18px;border-radius:50%;background:var(--amber);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span><div style="font-size:13px;color:var(--ink);line-height:1.6;font-family:var(--fs)">${g}</div></div>`).join('')}</div>`:''}
+      ${j.selfMsg?`<div style="padding:8px 12px;background:var(--hazeL);border-radius:8px;border:1px solid var(--haze)"><div style="font-size:13px;color:var(--hazeD);font-family:var(--fs);font-style:italic">${j.selfMsg}</div></div>`:''}
+    </div>`;
+  }).join('');
 }
 
 // ────────────────────────────────
