@@ -314,6 +314,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
   <div class="sb-item" onclick="nav('ideas',this)"><span class="i">💡</span><span>素材庫</span></div>
   <div class="sb-sec">靈魂指引</div>
   <div class="sb-item" onclick="nav('destiny',this)"><span class="i">✨</span><span>事業天命</span></div>
+  <div class="sb-item" onclick="nav('now',this)"><span class="i">🧭</span><span>現在～8月</span></div>
 </div>
 
 <div class="main">
@@ -697,6 +698,123 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
   </div>
 </div>
 
+<!-- ══ 現在～2026.8 行動導覽 ══ -->
+<div class="pg" id="pg-now">
+  <div class="pg-ttl">現在 → 2026.8 行動導覽</div>
+  <div class="pg-sub">這3個月是「結帳期＋準備期」，不是擴張期。核心策略只有一個字：守。</div>
+
+  <!-- 總覽語錄 -->
+  <div style="background:linear-gradient(145deg,#F5EDE3,#EFE4D8);border-radius:15px;padding:22px 26px;margin-bottom:20px;border:1px solid var(--mist)">
+    <div style="font-family:var(--fs);font-size:16px;color:var(--bark);line-height:2;margin-bottom:14px">
+      你正在 Rahu Dasha 18 年的最後 3 個月。<br>
+      宇宙在「清掃」、在「結帳」、在「給你最後一次邊界練習」<br>
+      ——然後才會把你交給 Jupiter Dasha 的 16 年。
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div style="padding:12px;background:rgba(93,74,58,.06);border-radius:10px;text-align:center"><div style="font-size:22px;margin-bottom:5px">🛡️</div><div style="font-size:13px;font-weight:600;color:var(--bark)">守</div><div style="font-size:12px;color:var(--inkM);margin-top:3px">守住核心<br>不要擴張</div></div>
+      <div style="padding:12px;background:rgba(93,74,58,.06);border-radius:10px;text-align:center"><div style="font-size:22px;margin-bottom:5px">🧹</div><div style="font-size:13px;font-weight:600;color:var(--bark)">清</div><div style="font-size:12px;color:var(--inkM);margin-top:3px">清理舊帳<br>放下未完</div></div>
+      <div style="padding:12px;background:rgba(93,74,58,.06);border-radius:10px;text-align:center"><div style="font-size:22px;margin-bottom:5px">🌱</div><div style="font-size:13px;font-weight:600;color:var(--bark)">備</div><div style="font-size:12px;color:var(--inkM);margin-top:3px">準備好自己<br>等待啟動</div></div>
+    </div>
+  </div>
+
+  <div class="g2">
+  <!-- 左欄 -->
+  <div>
+
+    <!-- 月份能量地圖 -->
+    <div class="card">
+      <div class="ch"><span class="ct-ttl">📅 月份能量地圖</span></div>
+      <div class="cb" style="padding:14px 18px">
+        <div id="nowMonthMap"></div>
+      </div>
+    </div>
+
+    <!-- 5大面向（折疊式）-->
+    <div class="card">
+      <div class="ch"><span class="ct-ttl">🎯 5大面向・具體行動</span></div>
+      <div class="cb" style="padding:12px 16px">
+        <div id="nowActions"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 右欄 -->
+  <div>
+
+    <!-- 必做5件事 -->
+    <div class="card">
+      <div class="ch"><span class="ct-ttl">⭐ 必做5件事（做到就100分）</span></div>
+      <div class="cb">
+        <div style="font-size:13px;color:var(--inkM);margin-bottom:14px;line-height:1.7">如果這份指南讓你覺得很多——請至少做到這5件。</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="padding:13px 16px;border-radius:11px;border:1.5px solid var(--chai);background:var(--milk);display:flex;align-items:center;gap:12px">
+            <span style="font-size:20px">🏥</span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--bark)">完整健康檢查 1 次</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">截止：7月底前</div></div>
+            <span style="font-size:12px;padding:3px 10px;border-radius:12px;background:var(--blushL);color:var(--blushD);font-weight:600">最優先</span>
+          </div>
+          <div style="padding:13px 16px;border-radius:11px;border:1px solid var(--bdr);background:var(--card);display:flex;align-items:center;gap:12px">
+            <span style="font-size:20px">🌙</span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--bark)">守住 21:30 睡、5:30 起作息</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">截止：每天</div></div>
+          </div>
+          <div style="padding:13px 16px;border-radius:11px;border:1px solid var(--bdr);background:var(--card);display:flex;align-items:center;gap:12px">
+            <span style="font-size:20px">🔒</span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--bark)">前夫家邊界守住 + 諮詢律師</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">截止：6月底前</div></div>
+            <span style="font-size:12px;padding:3px 10px;border-radius:12px;background:var(--blushL);color:var(--blushD);font-weight:600">重要</span>
+          </div>
+          <div style="padding:13px 16px;border-radius:11px;border:1px solid var(--bdr);background:var(--card);display:flex;align-items:center;gap:12px">
+            <span style="font-size:20px">🚫</span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--bark)">不做任何重大新承諾</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">截止：8月底前</div></div>
+          </div>
+          <div style="padding:13px 16px;border-radius:11px;border:1px solid var(--bdr);background:var(--card);display:flex;align-items:center;gap:12px">
+            <span style="font-size:20px">✍️</span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--bark)">每週寫一段公開內容</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">截止：每週</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 絕對不要做 -->
+    <div class="card">
+      <div class="ch"><span class="ct-ttl">🚫 這3個月絕對不要做</span></div>
+      <div class="cb">
+        <div style="font-size:12px;font-weight:600;color:var(--blushD);margin-bottom:10px;letter-spacing:.04em">重大決定</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">
+          <div style="display:flex;flex-wrap:wrap;gap:7px">
+            <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 結婚/同居升級</span>
+            <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 生育</span>
+            <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 營業登記</span>
+            <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 簽長租約</span>
+            <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 大筆投資</span>
+            <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 借錢給人</span>
+            <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 跟伴侶共開帳戶</span>
+            <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 答應前夫家越界要求</span>
+          </div>
+        </div>
+        <div style="font-size:12px;font-weight:600;color:var(--blushD);margin-bottom:10px;letter-spacing:.04em">行為</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px">
+          <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 熬夜超過23:00</span>
+          <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 為了不讓人失望而答應</span>
+          <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 衝動消費</span>
+          <span style="padding:6px 13px;border-radius:18px;background:var(--blushL);border:1px solid var(--blush);font-size:13px;color:var(--blushD)">✗ 進入不必要的衝突</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 送給你的話 -->
+    <div style="background:linear-gradient(145deg,#F5EDE3,#EFE4D8);border-radius:14px;padding:22px 24px;border:1px solid var(--mist)">
+      <div style="font-family:var(--fs);font-size:16px;color:var(--bark);line-height:2.1;text-align:center">
+        「這 3 個月不是要妳衝。<br>
+        是要妳穩。<br>
+        <strong>穩住的人，才能在 8 月之後真正起飛。</strong>」
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+
 <!-- ══ 素材庫 ══ -->
 <div class="pg" id="pg-ideas">
   <div class="pg-ttl">素材庫</div>
@@ -1023,8 +1141,8 @@ function mks(d){return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDa
 function getMon(d){const dt=new Date(d),dow=dt.getDay(),off=dow===0?-6:1-dow;dt.setDate(dt.getDate()+off);return dt;}
 function getWkDates(off){const mon=getMon(NOW);const b=new Date(mon);b.setDate(mon.getDate()+off*7);return Array.from({length:7},(_,i)=>{const d=new Date(b);d.setDate(b.getDate()+i);return d;});}
 
-const PAGE_TITLES={'today':'日計劃','week':'週計劃','month':'月計劃','goals':'目標追蹤','journal':'每日日誌','book':'讀書日記','stock':'股票交易日記','service':'服務觀察筆記','ideas':'素材庫','destiny':'事業天命'};
-function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rWX();rRoxi();rDayTimeline();rBizList();rTasks();rEv();setMode(tlMode);}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();rSelfCheck();loadMoReview();}if(id==='journal'){initJournalForm();rJournals();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){rDestTimeline();}}
+const PAGE_TITLES={'today':'日計劃','week':'週計劃','month':'月計劃','goals':'目標追蹤','journal':'每日日誌','book':'讀書日記','stock':'股票交易日記','service':'服務觀察筆記','ideas':'素材庫','destiny':'事業天命','now':'現在 → 2026.8 行動導覽'};
+function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rWX();rRoxi();rDayTimeline();rBizList();rTasks();rEv();setMode(tlMode);}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();rSelfCheck();loadMoReview();}if(id==='journal'){initJournalForm();rJournals();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){rDestTimeline();}if(id==='now'){rNowPage();}}
 function tf(id){const el=document.getElementById(id);if(!el)return;const op=el.style.display==='block';el.style.display=op?'none':'block';if(!op){const i=el.querySelector('input[type=text],input[type=time],textarea');if(i)setTimeout(()=>i.focus(),50);}}
 function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');moId=null;moDk2=null;}
@@ -1045,11 +1163,11 @@ function rWX(){
     const outfit=elems.map(e=>EL_OUTFIT[e]||e).join('・');
     const colors=elems.map(e=>EL_COLOR[e]||e).join('/');
     h+=`<div class="wx-day ${isT?'wx-t':''}">
-      <div style="font-size:12px;font-weight:700;color:${isT?'var(--amberD)':'var(--txtM)'};margin-bottom:3px">${isT?'今天 ':'週'+dn[d.getDay()]+' '}${d.getMonth()+1}/${d.getDate()}</div>
-      <div style="display:flex;gap:3px;margin-bottom:6px">${elemIcos||'—'}<span style="font-size:11px;color:var(--txtM);margin-left:2px">${elems.join('・')}</span></div>
+      <div style="font-size:12px;font-weight:700;color:${isT?'var(--amberD)':'var(--inkM)'};margin-bottom:3px">${isT?'今天 ':'週'+dn[d.getDay()]+' '}${d.getMonth()+1}/${d.getDate()}</div>
+      <div style="display:flex;gap:3px;margin-bottom:6px">${elemIcos||'—'}<span style="font-size:11px;color:var(--inkM);margin-left:2px">${elems.join('・')}</span></div>
       <div style="font-size:11px;font-weight:700;color:var(--bark);margin-bottom:3px">宜穿</div>
-      <div style="font-size:11px;color:var(--txtM);line-height:1.5">${colors}</div>
-      <div style="font-size:10px;color:var(--txtL);margin-top:4px;line-height:1.5;border-top:1px solid var(--bdr);padding-top:4px">${outfit||'暫無資料'}</div>
+      <div style="font-size:11px;color:var(--inkM);line-height:1.5">${colors}</div>
+      <div style="font-size:10px;color:var(--inkL);margin-top:4px;line-height:1.5;border-top:1px solid var(--bdr);padding-top:4px">${outfit||'暫無資料'}</div>
     </div>`;
   }
   strip.innerHTML=h;
@@ -1147,7 +1265,7 @@ function saveTasksM(){saveTasks();toast('✅ 任務已儲存！');}
 document.addEventListener('input',e=>{if(['mainTask','s1','s2'].includes(e.target.id))saveTasks();});
 
 // ── 行程 ──
-function evH(evs,dkk){return evs.length?evs.map(e=>`<div class="ev-row" onclick="openEM(${e.id},'${dkk}')"><span class="ev-t">${e.t||'全天'}</span><div class="ev-bar"></div><span class="ev-n">${e.tx}</span><span style="font-size:13px;color:var(--txtL)">✏️</span></div>`).join(''):'<div style="font-size:13px;color:var(--txtL);padding:8px 0">還沒有行程</div>';}
+function evH(evs,dkk){return evs.length?evs.map(e=>`<div class="ev-row" onclick="openEM(${e.id},'${dkk}')"><span class="ev-t">${e.t||'全天'}</span><div class="ev-bar"></div><span class="ev-n">${e.tx}</span><span style="font-size:13px;color:var(--inkL)">✏️</span></div>`).join(''):'<div style="font-size:13px;color:var(--inkL);padding:8px 0">還沒有行程</div>';}
 function addEv(){const t=document.getElementById('evTime').value,tx=document.getElementById('evText').value.trim();if(!tx)return;if(!D.ev[TODAY])D.ev[TODAY]=[];D.ev[TODAY].push({t,tx,id:Date.now()});D.ev[TODAY].sort((a,b)=>(a.t||'').localeCompare(b.t||''));document.getElementById('evText').value='';document.getElementById('evTime').value='';tf('addEvW');rEv();sv();toast('行程已新增');}
 function rEv(){const el=document.getElementById('evList');if(el)el.innerHTML=evH(D.ev[TODAY]||[],TODAY);}
 function openEM(id,dkk){const ev=(D.ev[dkk]||[]).find(e=>e.id===id);if(!ev)return;moId=id;moDk2=dkk;document.getElementById('moTime').value=ev.t||'';document.getElementById('moText').value=ev.tx||'';document.getElementById('moDate').value=dkk;openMo('evMo');}
@@ -1217,19 +1335,19 @@ function rWeekPlan(){
   if(rl)rl||0;
   const DN=['日','一','二','三','四','五','六'],SNAMES=['早晨','上午','下午','晚上'],SBG=['var(--amberL)','var(--mossL)','var(--hazeL)','var(--blushL)'],SC=['var(--amberD)','var(--mossD)','var(--hazeD)','var(--blushD)'];
   const el=document.getElementById('wkGrid');if(!el)return;
-  let h=`<table style="width:100%;border-collapse:collapse;min-width:580px"><thead><tr><th style="width:46px;border:1px solid var(--bdr);background:var(--bg2);font-size:11px;color:var(--txtL)">時段</th>`;
-  dates.forEach(d=>{const dkk=dk(d),isT=dkk===TODAY,dow=d.getDay(),isSat=dow===6,isSun=dow===0,isHol=!!HOL[dkk];const rd=ROXI[dkk]||'',rI=rd?getRI(rd):null;const roles=D.weekRoles?.[dkk]||[];const ro=WK_ROLES.find(r=>roles.includes(r.key));const tc=isT?'var(--bark)':isSun||isHol?'var(--blushD)':isSat?'#2563EB':'var(--txtM)';h+=`<th style="border:1px solid var(--bdr);padding:7px 4px;text-align:center;background:${isT?'var(--coLL)':'var(--bg2)'};min-width:82px;font-size:12px"><div style="font-weight:700;color:${tc}">週${DN[dow]} ${d.getMonth()+1}/${d.getDate()}${isT?' ●':''}</div>${rI?`<div style="font-size:9px;color:${rI.c}">${rI.ic}</div>`:''}${ro?`<div style="font-size:9px;background:${ro.bg};color:${ro.c};padding:1px 5px;border-radius:6px;margin-top:2px">${ro.label.replace(/[🗓🔥💆🌿🌙️‍♀️]*/g,'').trim()}</div>`:''}</th>`;});
-  h+=`</tr></thead><tbody><tr><td style="border:1px solid var(--bdr);font-size:10px;color:var(--txtL);text-align:center;background:var(--bg2);padding:3px">行程</td>`;
-  dates.forEach(d=>{const dkk=dk(d),isT=dkk===TODAY;const td2=D.tasks[dkk]||{},main=td2.mainTask||td2.main||'';const evs=D.ev[dkk]||[];h+=`<td style="border:1px solid var(--bdr);padding:5px;cursor:pointer;background:${isT?'var(--coLL)':'var(--card)'}" onclick="openMoDP('${dkk}',${d.getDate()},${d.getFullYear()},${d.getMonth()})">${main?`<div style="font-size:10px;font-weight:700;color:var(--mossD);margin-bottom:2px">🎯 ${main}</div>`:''}${evs.slice(0,2).map(e=>`<div style="font-size:9px;color:var(--txtM);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${e.t?e.t.slice(0,5)+' ':''}${e.tx}</div>`).join('')}${!main&&!evs.length?'<div style="font-size:9px;color:var(--bdr);text-align:center">＋</div>':''}</td>`;});
+  let h=`<table style="width:100%;border-collapse:collapse;min-width:580px"><thead><tr><th style="width:46px;border:1px solid var(--bdr);background:var(--bg2);font-size:11px;color:var(--inkL)">時段</th>`;
+  dates.forEach(d=>{const dkk=dk(d),isT=dkk===TODAY,dow=d.getDay(),isSat=dow===6,isSun=dow===0,isHol=!!HOL[dkk];const rd=ROXI[dkk]||'',rI=rd?getRI(rd):null;const roles=D.weekRoles?.[dkk]||[];const ro=WK_ROLES.find(r=>roles.includes(r.key));const tc=isT?'var(--bark)':isSun||isHol?'var(--blushD)':isSat?'#2563EB':'var(--inkM)';h+=`<th style="border:1px solid var(--bdr);padding:7px 4px;text-align:center;background:${isT?'var(--coLL)':'var(--bg2)'};min-width:82px;font-size:12px"><div style="font-weight:700;color:${tc}">週${DN[dow]} ${d.getMonth()+1}/${d.getDate()}${isT?' ●':''}</div>${rI?`<div style="font-size:9px;color:${rI.c}">${rI.ic}</div>`:''}${ro?`<div style="font-size:9px;background:${ro.bg};color:${ro.c};padding:1px 5px;border-radius:6px;margin-top:2px">${ro.label.replace(/[🗓🔥💆🌿🌙️‍♀️]*/g,'').trim()}</div>`:''}</th>`;});
+  h+=`</tr></thead><tbody><tr><td style="border:1px solid var(--bdr);font-size:10px;color:var(--inkL);text-align:center;background:var(--bg2);padding:3px">行程</td>`;
+  dates.forEach(d=>{const dkk=dk(d),isT=dkk===TODAY;const td2=D.tasks[dkk]||{},main=td2.mainTask||td2.main||'';const evs=D.ev[dkk]||[];h+=`<td style="border:1px solid var(--bdr);padding:5px;cursor:pointer;background:${isT?'var(--coLL)':'var(--card)'}" onclick="openMoDP('${dkk}',${d.getDate()},${d.getFullYear()},${d.getMonth()})">${main?`<div style="font-size:10px;font-weight:700;color:var(--mossD);margin-bottom:2px">🎯 ${main}</div>`:''}${evs.slice(0,2).map(e=>`<div style="font-size:9px;color:var(--inkM);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${e.t?e.t.slice(0,5)+' ':''}${e.tx}</div>`).join('')}${!main&&!evs.length?'<div style="font-size:9px;color:var(--bdr);text-align:center">＋</div>':''}</td>`;});
   h+=`</tr>`;
-  SNAMES.forEach((sn,si)=>{h+=`<tr><td style="border:1px solid var(--bdr);font-size:10px;font-weight:700;text-align:center;background:${SBG[si]};color:${SC[si]};padding:3px">${sn}</td>`;dates.forEach(d=>{const dkk=dk(d),isT=dkk===TODAY;const sv2=(D.weekSlots?.[dkk]||{})[`s${si}`]||'';h+=`<td style="border:1px solid var(--bdr);background:${isT?'var(--coLL)':'var(--card)'}"><textarea onblur="saveWS('${dkk}','s${si}',this.value)" style="width:100%;min-height:52px;border:none;outline:none;font-size:10px;font-family:var(--f);color:var(--txt);resize:none;background:transparent;line-height:1.5;padding:4px" placeholder="...">${sv2}</textarea></td>`;});h+=`</tr>`;});
+  SNAMES.forEach((sn,si)=>{h+=`<tr><td style="border:1px solid var(--bdr);font-size:10px;font-weight:700;text-align:center;background:${SBG[si]};color:${SC[si]};padding:3px">${sn}</td>`;dates.forEach(d=>{const dkk=dk(d),isT=dkk===TODAY;const sv2=(D.weekSlots?.[dkk]||{})[`s${si}`]||'';h+=`<td style="border:1px solid var(--bdr);background:${isT?'var(--coLL)':'var(--card)'}"><textarea onblur="saveWS('${dkk}','s${si}',this.value)" style="width:100%;min-height:52px;border:none;outline:none;font-size:10px;font-family:var(--f);color:var(--ink);resize:none;background:transparent;line-height:1.5;padding:4px" placeholder="...">${sv2}</textarea></td>`;});h+=`</tr>`;});
   h+=`<tr><td style="border:1px solid var(--bdr);font-size:10px;font-weight:700;text-align:center;background:var(--milk);color:var(--bark);padding:3px">主軸</td>`;
   dates.forEach(d=>{const dkk=dk(d),isT=dkk===TODAY;const saved=D.weekRoles?.[dkk]||[];h+=`<td style="border:1px solid var(--bdr);padding:4px;background:${isT?'var(--coLL)':'var(--card)'}"><div style="display:flex;flex-wrap:wrap;gap:2px">${WK_ROLES.map(r=>{const on=saved.includes(r.key);return`<div onclick="togWkRole('${dkk}','${r.key}')" style="padding:2px 6px;border-radius:7px;font-size:9px;font-weight:600;cursor:pointer;border:1px solid ${r.bc};background:${on?r.c:'transparent'};color:${on?'#fff':r.c};transition:.15s">${r.label.replace(/[🗓🔥💆🌿🌙️‍♀️]*/g,'').trim().slice(0,3)}</div>`;}).join('')}</div></td>`;});
   h+=`</tr></tbody></table>`;
   el.innerHTML=h;
   // 週角色側欄
   const rl2=document.getElementById('wkRoleList');
-  if(rl2)rl2.innerHTML=dates.map(d=>{const dkk=dk(d),isT=dkk===TODAY,dow=d.getDay(),saved=D.weekRoles?.[dkk]||[];const DN2=['日','一','二','三','四','五','六'];return`<div style="margin-bottom:9px;padding:10px 13px;border-radius:11px;border:1.5px solid ${isT?'var(--bark)':'var(--bdr)'};background:${isT?'var(--coLL)':'var(--card)'}"><div style="font-size:13px;font-weight:700;color:${isT?'var(--bark)':'var(--txt)'};margin-bottom:7px">週${DN2[dow]} ${d.getDate()}日${isT?' · 今天':''}</div><div style="display:flex;flex-wrap:wrap;gap:5px">${WK_ROLES.map(r=>{const on=saved.includes(r.key);return`<div onclick="togWkRole('${dkk}','${r.key}')" style="padding:3px 9px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid ${r.bc};background:${on?r.c:'transparent'};color:${on?'#fff':r.c};transition:.15s">${r.label}</div>`;}).join('')}</div></div>`;}).join('');
+  if(rl2)rl2.innerHTML=dates.map(d=>{const dkk=dk(d),isT=dkk===TODAY,dow=d.getDay(),saved=D.weekRoles?.[dkk]||[];const DN2=['日','一','二','三','四','五','六'];return`<div style="margin-bottom:9px;padding:10px 13px;border-radius:11px;border:1.5px solid ${isT?'var(--bark)':'var(--bdr)'};background:${isT?'var(--coLL)':'var(--card)'}"><div style="font-size:13px;font-weight:700;color:${isT?'var(--bark)':'var(--ink)'};margin-bottom:7px">週${DN2[dow]} ${d.getDate()}日${isT?' · 今天':''}</div><div style="display:flex;flex-wrap:wrap;gap:5px">${WK_ROLES.map(r=>{const on=saved.includes(r.key);return`<div onclick="togWkRole('${dkk}','${r.key}')" style="padding:3px 9px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid ${r.bc};background:${on?r.c:'transparent'};color:${on?'#fff':r.c};transition:.15s">${r.label}</div>`;}).join('')}</div></div>`;}).join('');
   // 週能量補充
   const wkKey=dk(dates[0]);const we=(D.weekEnergy||{})[wkKey]||{};
   const wkEL=document.getElementById('wkEnergyList');
@@ -1258,10 +1376,10 @@ function dYG(id){D.yg=D.yg.filter(g=>g.id!==id);rGoals();sv();}
 function uYG(id,val){const g=D.yg.find(g=>g.id===id);if(g)g.p=parseInt(val);const pp=document.getElementById('yp'+id),pf=document.getElementById('yf'+id);if(pp)pp.textContent=val+'%';if(pf)pf.style.width=val+'%';sv();}
 function rGoals(){
   const wl=document.getElementById('wgList'),wlg=document.getElementById('wgListG'),ml=document.getElementById('mgList'),mlg=document.getElementById('mgListG'),yl=document.getElementById('ygList');
-  const wh=D.wg.length?D.wg.map(g=>gRow(g,'tWG','dWG')).join(''):'<div style="font-size:14px;color:var(--txtL);padding:12px 0">設定本週目標吧</div>';
-  const mh2=D.mg.length?D.mg.map(g=>gRow(g,'tMG','dMG')).join(''):'<div style="font-size:14px;color:var(--txtL);padding:12px 0">這個月想達成什麼？</div>';
+  const wh=D.wg.length?D.wg.map(g=>gRow(g,'tWG','dWG')).join(''):'<div style="font-size:14px;color:var(--inkL);padding:12px 0">設定本週目標吧</div>';
+  const mh2=D.mg.length?D.mg.map(g=>gRow(g,'tMG','dMG')).join(''):'<div style="font-size:14px;color:var(--inkL);padding:12px 0">這個月想達成什麼？</div>';
   if(wl)wl.innerHTML=wh;if(wlg)wlg.innerHTML=wh;if(ml)ml.innerHTML=mh2;if(mlg)mlg.innerHTML=mh2;
-  if(yl)yl.innerHTML=D.yg.length?D.yg.map(g=>`<div class="gr-row"><div style="flex:1"><div class="gn">${g.tx} <span style="font-size:12px;font-weight:400;color:var(--txtL)">${g.cat}</span></div><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--txtM);margin:7px 0 4px"><span>進度</span><span id="yp${g.id}">${g.p}%</span></div><div class="pb" style="height:6px"><div class="pf" id="yf${g.id}" style="width:${g.p}%;height:6px"></div></div><input type="range" min="0" max="100" value="${g.p}" step="1" style="width:100%;margin-top:6px;accent-color:var(--co)" oninput="uYG(${g.id},this.value)"></div><button class="btn-del" onclick="dYG(${g.id})">✕</button></div>`).join(''):'<div style="font-size:14px;color:var(--txtL);padding:12px 0">設定你的年度大目標吧</div>';
+  if(yl)yl.innerHTML=D.yg.length?D.yg.map(g=>`<div class="gr-row"><div style="flex:1"><div class="gn">${g.tx} <span style="font-size:12px;font-weight:400;color:var(--inkL)">${g.cat}</span></div><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--inkM);margin:7px 0 4px"><span>進度</span><span id="yp${g.id}">${g.p}%</span></div><div class="pb" style="height:6px"><div class="pf" id="yf${g.id}" style="width:${g.p}%;height:6px"></div></div><input type="range" min="0" max="100" value="${g.p}" step="1" style="width:100%;margin-top:6px;accent-color:var(--co)" oninput="uYG(${g.id},this.value)"></div><button class="btn-del" onclick="dYG(${g.id})">✕</button></div>`).join(''):'<div style="font-size:14px;color:var(--inkL);padding:12px 0">設定你的年度大目標吧</div>';
 }
 
 // ── 每日日誌 ──
@@ -1312,10 +1430,10 @@ function grRenderView(dkk){
   if(!hasAny){grRenderEdit(dkk);return;}
   let h='';
   if(tsDone.length||tsStop.length)h+=`<div style="margin-bottom:14px;padding:14px;background:linear-gradient(145deg,var(--amberL),var(--milk));border-radius:12px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--amberD);margin-bottom:8px">🌅 今日儀式打卡記錄</div>${tsDone.length?`<div style="font-size:13px;color:var(--mossD);margin-bottom:5px">✅ 做到：${tsDone.join('・')}</div>`:''} ${tsStop.length?`<div style="font-size:13px;color:var(--blushD)">🚫 避免：${tsStop.join('・')}</div>`:''}</div>`;
-  if(wRoles.length){const ro=wRoles.map(k=>WK_ROLES.find(r=>r.key===k)).filter(Boolean);h+=`<div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:13px;font-weight:700;color:var(--txtM)">今日主軸：</span>${ro.map(r=>`<span style="padding:4px 11px;border-radius:14px;font-size:13px;font-weight:700;background:${r.c};color:#fff">${r.label}</span>`).join('')}</div>`;}
-  if(main||s1||s2)h+=`<div style="margin-bottom:14px;padding:14px;background:var(--mossL);border-radius:12px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--mossD);margin-bottom:9px">🎯 核心任務</div>${main?`<div style="font-family:var(--fs);font-size:17px;font-weight:700;color:var(--txt);line-height:1.7;margin-bottom:9px">${main}</div>`:''} ${s1?`<div style="display:flex;align-items:center;gap:9px;font-size:14px;color:${d1?'var(--txtL)':'var(--txt)'};${d1?'text-decoration:line-through':''};margin-bottom:4px"><span style="width:19px;height:19px;border-radius:50%;${d1?'background:var(--mossD);':'border:2px solid var(--bdr);'}display:flex;align-items:center;justify-content:center;font-size:11px;color:${d1?'#fff':'transparent'};flex-shrink:0">${d1?'✓':''}</span>${s1}</div>`:''} ${s2?`<div style="display:flex;align-items:center;gap:9px;font-size:14px;color:${d2?'var(--txtL)':'var(--txt)'};${d2?'text-decoration:line-through':''}"><span style="width:19px;height:19px;border-radius:50%;${d2?'background:var(--mossD);':'border:2px solid var(--bdr);'}display:flex;align-items:center;justify-content:center;font-size:11px;color:${d2?'#fff':'transparent'};flex-shrink:0">${d2?'✓':''}</span>${s2}</div>`:''}</div>`;
-  if(evs.length)h+=`<div style="margin-bottom:14px;padding:14px;background:var(--milk);border-radius:12px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--bark);margin-bottom:9px">🕐 當日行程</div>${evs.map(e=>`<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:14px"><span style="font-size:12px;color:var(--txtM);min-width:38px;font-weight:700">${e.t||'全天'}</span><div style="width:2px;height:18px;background:var(--milk);border-radius:2px"></div><span>${e.tx}</span></div>`).join('')}</div>`;
-  if(hasSlots){const SN=['早晨','上午','下午','晚上'];const SB=['var(--amberL)','var(--mossL)','var(--hazeL)','var(--blushL)'];const SC2=['var(--amberD)','var(--mossD)','var(--hazeD)','var(--blushD)'];h+=`<div style="margin-bottom:14px;padding:14px;border-radius:12px;border:1px solid var(--bdr);background:var(--card2)"><div style="font-size:14px;font-weight:700;color:var(--txtM);margin-bottom:9px">📅 週計劃記錄</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">${[0,1,2,3].map(i=>{const v=wSlots[`s${i}`]||'';return v?`<div style="padding:9px;border-radius:9px;background:${SB[i]}"><div style="font-size:11px;font-weight:700;color:${SC2[i]};margin-bottom:3px">${SN[i]}</div><div style="font-size:13px;color:var(--txt);line-height:1.6">${v}</div></div>`:''}).join('')}</div></div>`;}
+  if(wRoles.length){const ro=wRoles.map(k=>WK_ROLES.find(r=>r.key===k)).filter(Boolean);h+=`<div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:13px;font-weight:700;color:var(--inkM)">今日主軸：</span>${ro.map(r=>`<span style="padding:4px 11px;border-radius:14px;font-size:13px;font-weight:700;background:${r.c};color:#fff">${r.label}</span>`).join('')}</div>`;}
+  if(main||s1||s2)h+=`<div style="margin-bottom:14px;padding:14px;background:var(--mossL);border-radius:12px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--mossD);margin-bottom:9px">🎯 核心任務</div>${main?`<div style="font-family:var(--fs);font-size:17px;font-weight:700;color:var(--ink);line-height:1.7;margin-bottom:9px">${main}</div>`:''} ${s1?`<div style="display:flex;align-items:center;gap:9px;font-size:14px;color:${d1?'var(--inkL)':'var(--ink)'};${d1?'text-decoration:line-through':''};margin-bottom:4px"><span style="width:19px;height:19px;border-radius:50%;${d1?'background:var(--mossD);':'border:2px solid var(--bdr);'}display:flex;align-items:center;justify-content:center;font-size:11px;color:${d1?'#fff':'transparent'};flex-shrink:0">${d1?'✓':''}</span>${s1}</div>`:''} ${s2?`<div style="display:flex;align-items:center;gap:9px;font-size:14px;color:${d2?'var(--inkL)':'var(--ink)'};${d2?'text-decoration:line-through':''}"><span style="width:19px;height:19px;border-radius:50%;${d2?'background:var(--mossD);':'border:2px solid var(--bdr);'}display:flex;align-items:center;justify-content:center;font-size:11px;color:${d2?'#fff':'transparent'};flex-shrink:0">${d2?'✓':''}</span>${s2}</div>`:''}</div>`;
+  if(evs.length)h+=`<div style="margin-bottom:14px;padding:14px;background:var(--milk);border-radius:12px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--bark);margin-bottom:9px">🕐 當日行程</div>${evs.map(e=>`<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:14px"><span style="font-size:12px;color:var(--inkM);min-width:38px;font-weight:700">${e.t||'全天'}</span><div style="width:2px;height:18px;background:var(--milk);border-radius:2px"></div><span>${e.tx}</span></div>`).join('')}</div>`;
+  if(hasSlots){const SN=['早晨','上午','下午','晚上'];const SB=['var(--amberL)','var(--mossL)','var(--hazeL)','var(--blushL)'];const SC2=['var(--amberD)','var(--mossD)','var(--hazeD)','var(--blushD)'];h+=`<div style="margin-bottom:14px;padding:14px;border-radius:12px;border:1px solid var(--bdr);background:var(--card2)"><div style="font-size:14px;font-weight:700;color:var(--inkM);margin-bottom:9px">📅 週計劃記錄</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">${[0,1,2,3].map(i=>{const v=wSlots[`s${i}`]||'';return v?`<div style="padding:9px;border-radius:9px;background:${SB[i]}"><div style="font-size:11px;font-weight:700;color:${SC2[i]};margin-bottom:3px">${SN[i]}</div><div style="font-size:13px;color:var(--ink);line-height:1.6">${v}</div></div>`:''}).join('')}</div></div>`;}
   
   // reviewQs 顯示
   const rqs=rec.reviewQs||{};
@@ -1325,11 +1443,11 @@ function grRenderView(dkk){
   if(hasRqs){h+=`<div style="margin-bottom:14px;padding:14px;background:var(--milk);border-radius:12px;border:1px solid var(--mist)"><div style="font-size:13px;font-weight:500;color:var(--bark);margin-bottom:10px">🌙 今日復盤</div>`;rqIds.forEach((id,i)=>{if(rqs[id]&&rqs[id].trim())h+=`<div style="margin-bottom:9px"><div style="font-size:11px;color:var(--inkL);margin-bottom:3px">${rqLabels[i]}</div><div style="font-size:13px;color:var(--inkM);line-height:1.7;font-family:var(--fs)">${rqs[id]}</div></div>`;});h+=`</div>`;}
   const bs=rec.bodyScan||'';
   if(bs)h+=`<div style="margin-bottom:12px;padding:11px 14px;background:var(--milk);border-radius:10px;border:1px solid var(--mist)"><div style="font-size:11px;color:var(--inkL);margin-bottom:3px">🫀 身體掃描</div><div style="font-size:13px;color:var(--inkM)">${bs}</div></div>`;
-  if(gItems.length)h+=`<div style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;color:var(--bark);margin-bottom:9px">🙏 今日感恩</div>${gItems.map((it,i)=>`<div style="display:flex;align-items:flex-start;gap:11px;margin-bottom:8px;padding:12px 15px;background:var(--card2);border-radius:11px;border:1px solid var(--bdr)"><span style="width:23px;height:23px;border-radius:50%;background:var(--bark);color:#FDF6F0;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span><div style="font-family:var(--fs);font-size:15px;color:var(--txt);line-height:1.7">${it}</div></div>`).join('')}</div>`;
+  if(gItems.length)h+=`<div style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;color:var(--bark);margin-bottom:9px">🙏 今日感恩</div>${gItems.map((it,i)=>`<div style="display:flex;align-items:flex-start;gap:11px;margin-bottom:8px;padding:12px 15px;background:var(--card2);border-radius:11px;border:1px solid var(--bdr)"><span style="width:23px;height:23px;border-radius:50%;background:var(--bark);color:#FDF6F0;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span><div style="font-family:var(--fs);font-size:15px;color:var(--ink);line-height:1.7">${it}</div></div>`).join('')}</div>`;
   const allET=[...etags,ecustom].filter(x=>x);if(allET.length)h+=`<div style="margin-bottom:13px;padding:13px 15px;background:var(--amberL);border-radius:11px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--amberD);margin-bottom:7px">⚡ 今天我把能量留給了</div><div style="display:flex;flex-wrap:wrap;gap:6px">${allET.map(t=>`<span style="padding:5px 12px;border-radius:16px;background:var(--coLL);color:var(--bark);font-size:13px;font-weight:600">${t}</span>`).join('')}</div></div>`;
   if(selfMsg)h+=`<div style="margin-bottom:13px;padding:14px;background:var(--hazeL);border-radius:11px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--hazeD);margin-bottom:6px">💜 對自己說</div><div style="font-family:var(--fs);font-size:16px;color:var(--hazeD);font-style:italic;line-height:1.8">${selfMsg}</div></div>`;
-  if(aiText)h+=`<div style="padding:18px;background:var(--milk);border-radius:13px;border:1.5px solid var(--bdr2)"><div style="display:flex;align-items:center;gap:9px;margin-bottom:11px"><div class="mgr-av" style="width:32px;height:32px;font-size:16px">🌿</div><div style="font-size:14px;font-weight:700;color:var(--bark)">複利管家的回應</div><button onclick="grReAna('${dkk}')" style="margin-left:auto;background:none;border:1px solid var(--bdr);border-radius:7px;padding:3px 9px;font-size:11px;color:var(--txtM);cursor:pointer;font-family:var(--f)">🔄 重新</button></div><div style="font-family:var(--fs);font-size:14px;color:var(--bark);line-height:1.9;white-space:pre-wrap">${aiText}</div></div>`;
-  else if(gItems.length)h+=`<div style="padding:14px;border-radius:12px;border:2px dashed var(--bdr);text-align:center;cursor:pointer" onclick="grReAna('${dkk}')"><div style="font-size:18px;margin-bottom:6px">🌿</div><div style="font-size:14px;font-weight:700;color:var(--bark);margin-bottom:2px">複利管家・感恩分析</div><div style="font-size:12px;color:var(--txtL)">看見今天感恩背後的正向意義</div></div>`;
+  if(aiText)h+=`<div style="padding:18px;background:var(--milk);border-radius:13px;border:1.5px solid var(--bdr2)"><div style="display:flex;align-items:center;gap:9px;margin-bottom:11px"><div class="mgr-av" style="width:32px;height:32px;font-size:16px">🌿</div><div style="font-size:14px;font-weight:700;color:var(--bark)">複利管家的回應</div><button onclick="grReAna('${dkk}')" style="margin-left:auto;background:none;border:1px solid var(--bdr);border-radius:7px;padding:3px 9px;font-size:11px;color:var(--inkM);cursor:pointer;font-family:var(--f)">🔄 重新</button></div><div style="font-family:var(--fs);font-size:14px;color:var(--bark);line-height:1.9;white-space:pre-wrap">${aiText}</div></div>`;
+  else if(gItems.length)h+=`<div style="padding:14px;border-radius:12px;border:2px dashed var(--bdr);text-align:center;cursor:pointer" onclick="grReAna('${dkk}')"><div style="font-size:18px;margin-bottom:6px">🌿</div><div style="font-size:14px;font-weight:700;color:var(--bark);margin-bottom:2px">複利管家・感恩分析</div><div style="font-size:12px;color:var(--inkL)">看見今天感恩背後的正向意義</div></div>`;
   ct.innerHTML=h;
 }
 function grRenderEdit(dkk){
@@ -1488,20 +1606,20 @@ function grSum2(){
   const el=document.getElementById('grSum');if(!el)return;
   const gr=D.gratitude||{},tasks=D.tasks||{},evs=D.ev||{};const prefix=`${grY}-${String(grM+1).padStart(2,'0')}-`;const total=new Date(grY,grM+1,0).getDate();
   const allKeys=new Set();[gr,tasks,evs].forEach(obj=>Object.keys(obj).filter(dk2=>dk2.startsWith(prefix)).forEach(dk2=>allKeys.add(dk2)));const keys=[...allKeys].sort().reverse();
-  if(!keys.length){el.innerHTML='<div style="text-align:center;padding:30px 20px;color:var(--txtL)"><div style="font-size:36px;margin-bottom:10px">🌱</div>這個月還沒有記錄</div>';return;}
+  if(!keys.length){el.innerHTML='<div style="text-align:center;padding:30px 20px;color:var(--inkL)"><div style="font-size:36px;margin-bottom:10px">🌱</div>這個月還沒有記錄</div>';return;}
   const grCnt=Object.keys(gr).filter(dk2=>dk2.startsWith(prefix)).length;const taskCnt=Object.keys(tasks).filter(dk2=>dk2.startsWith(prefix)&&(tasks[dk2].mainTask||tasks[dk2].main)).length;
   const DN=['日','一','二','三','四','五','六'];
   let h=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
-    <div style="padding:11px;background:var(--coLL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:24px;font-weight:900;color:var(--bark)">${keys.length}</div><div style="font-size:11px;color:var(--txtM)">天有記錄</div></div>
-    <div style="padding:11px;background:var(--mossL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:24px;font-weight:900;color:var(--mossD)">${taskCnt}</div><div style="font-size:11px;color:var(--txtM)">天有核心任務</div></div>
-    <div style="padding:11px;background:var(--hazeL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:24px;font-weight:900;color:var(--hazeD)">${grCnt}</div><div style="font-size:11px;color:var(--txtM)">天有感恩記錄</div></div>
-    <div style="padding:11px;background:var(--amberL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:24px;font-weight:900;color:var(--amberD)">${Math.round(keys.length/total*100)}%</div><div style="font-size:11px;color:var(--txtM)">月記錄率</div></div>
-  </div><div style="font-size:13px;font-weight:700;color:var(--txtM);margin-bottom:9px">所有日記</div>`;
+    <div style="padding:11px;background:var(--coLL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:24px;font-weight:900;color:var(--bark)">${keys.length}</div><div style="font-size:11px;color:var(--inkM)">天有記錄</div></div>
+    <div style="padding:11px;background:var(--mossL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:24px;font-weight:900;color:var(--mossD)">${taskCnt}</div><div style="font-size:11px;color:var(--inkM)">天有核心任務</div></div>
+    <div style="padding:11px;background:var(--hazeL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:24px;font-weight:900;color:var(--hazeD)">${grCnt}</div><div style="font-size:11px;color:var(--inkM)">天有感恩記錄</div></div>
+    <div style="padding:11px;background:var(--amberL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:24px;font-weight:900;color:var(--amberD)">${Math.round(keys.length/total*100)}%</div><div style="font-size:11px;color:var(--inkM)">月記錄率</div></div>
+  </div><div style="font-size:13px;font-weight:700;color:var(--inkM);margin-bottom:9px">所有日記</div>`;
   keys.forEach(dk2=>{const rec=gr[dk2]||{},gI=Array.isArray(rec)?rec:(rec.items||[]),td3=tasks[dk2]||{},main3=td3.mainTask||td3.main||'',dayE=evs[dk2]||[],d2=new Date(dk2),isT=dk2===TODAY;
     h+=`<div onclick="grSel('${dk2}')" class="jnl-row ${isT?'':''}">
       <div class="jnl-date">${d2.getMonth()+1}/${d2.getDate()}（週${DN[d2.getDay()]}）${isT?' · 今天':''}</div>
-      ${main3?`<div style="font-size:13px;font-family:var(--fs);color:var(--txt);margin-bottom:2px">🎯 ${main3}</div>`:''}
-      ${dayE.length?`<div style="font-size:12px;color:var(--txtM)">🕐 ${dayE.slice(0,2).map(e=>(e.t?e.t.slice(0,5)+' ':'')+e.tx).join('　')}</div>`:''}
+      ${main3?`<div style="font-size:13px;font-family:var(--fs);color:var(--ink);margin-bottom:2px">🎯 ${main3}</div>`:''}
+      ${dayE.length?`<div style="font-size:12px;color:var(--inkM)">🕐 ${dayE.slice(0,2).map(e=>(e.t?e.t.slice(0,5)+' ':'')+e.tx).join('　')}</div>`:''}
       ${gI.length?`<div class="jnl-preview" style="margin-top:3px">🌿 ${gI[0]}</div>`:''}
     </div>`;
   });
@@ -1511,10 +1629,10 @@ function grSum2(){
 // ── 讀書日記 ──
 function addBook(){const title=document.getElementById('bookTitle').value.trim();if(!title){toast('請填寫書名');return;}if(!D.books)D.books=[];D.books.unshift({id:Date.now(),date:TODAY,title,cat:document.getElementById('bookCat').value,status:document.getElementById('bookStatus').value,ideas:document.getElementById('bookIdeas').value.trim(),note:document.getElementById('bookNote').value.trim(),action:document.getElementById('bookAction').value.trim()});['bookTitle','bookIdeas','bookNote','bookAction'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});sv();rBooks();toast('📚 讀書記錄已儲存！');}
 function filterBook(f,el){bookFilter=f;document.querySelectorAll('#pg-book .tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');rBooks();}
-function rBooks(){const el=document.getElementById('bookList');if(!el)return;const books=D.books||[];const filtered=bookFilter==='all'?books:books.filter(b=>b.status===bookFilter);if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--txtL)"><div style="font-size:36px;margin-bottom:10px">📚</div>還沒有讀書記錄</div>';return;}el.innerHTML=filtered.map(b=>`<div class="jnl-row">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:16px;font-weight:700;color:var(--bark);font-family:var(--fs)">${b.title}</div><div style="font-size:12px;color:var(--txtL);margin-top:2px">${b.date} · ${b.cat}</div></div><div style="display:flex;align-items:center;gap:7px"><span style="padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${b.status==='已讀完'?'var(--mossL)':b.status==='閱讀中'?'var(--coLL)':'var(--bg2)'};color:${b.status==='已讀完'?'var(--mossD)':b.status==='閱讀中'?'var(--bark)':'var(--txtM)'}">${b.status}</span><button class="btn-del" onclick="delBook(${b.id})">✕</button></div></div>
+function rBooks(){const el=document.getElementById('bookList');if(!el)return;const books=D.books||[];const filtered=bookFilter==='all'?books:books.filter(b=>b.status===bookFilter);if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--inkL)"><div style="font-size:36px;margin-bottom:10px">📚</div>還沒有讀書記錄</div>';return;}el.innerHTML=filtered.map(b=>`<div class="jnl-row">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:16px;font-weight:700;color:var(--bark);font-family:var(--fs)">${b.title}</div><div style="font-size:12px;color:var(--inkL);margin-top:2px">${b.date} · ${b.cat}</div></div><div style="display:flex;align-items:center;gap:7px"><span style="padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${b.status==='已讀完'?'var(--mossL)':b.status==='閱讀中'?'var(--coLL)':'var(--bg2)'};color:${b.status==='已讀完'?'var(--mossD)':b.status==='閱讀中'?'var(--bark)':'var(--inkM)'}">${b.status}</span><button class="btn-del" onclick="delBook(${b.id})">✕</button></div></div>
   ${b.ideas?`<div style="font-size:13px;color:var(--bark);margin-bottom:6px;padding:10px 12px;background:var(--coLL);border-radius:8px;border-left:3px solid var(--co)"><strong>3個有用觀念：</strong><br>${b.ideas.replace(/\n/g,'<br>')}</div>`:''}
-  ${b.note?`<div style="font-size:13px;color:var(--txtM);line-height:1.6;margin-bottom:4px">${b.note}</div>`:''}
+  ${b.note?`<div style="font-size:13px;color:var(--inkM);line-height:1.6;margin-bottom:4px">${b.note}</div>`:''}
   ${b.action?`<div style="font-size:13px;color:var(--mossD);padding:8px 12px;background:var(--mossL);border-radius:8px"><strong>行動計劃：</strong> ${b.action}</div>`:''}
 </div>`).join('');}
 function delBook(id){D.books=D.books.filter(b=>b.id!==id);sv();rBooks();}
@@ -1522,20 +1640,20 @@ function delBook(id){D.books=D.books.filter(b=>b.id!==id);sv();rBooks();}
 // ── 股票交易 ──
 function addStock(){const code=document.getElementById('stCode').value.trim();if(!code){toast('請填寫股票代號');return;}if(!D.stocks)D.stocks=[];const pnl=parseFloat(document.getElementById('stPnl').value)||0;D.stocks.unshift({id:Date.now(),date:document.getElementById('stDate').value||TODAY,code,type:document.getElementById('stType').value,price:parseFloat(document.getElementById('stPrice').value)||0,qty:parseInt(document.getElementById('stQty').value)||0,pnl,reason:document.getElementById('stReason').value.trim(),mood:document.getElementById('stMood').value,review:document.getElementById('stReview').value.trim()});['stCode','stPrice','stQty','stPnl','stReason','stReview'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});sv();rStocks();rStockStat();toast('📈 交易記錄已儲存！');}
 function filterStock(f,el){stockFilter=f;document.querySelectorAll('#pg-stock .tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');rStocks();}
-function rStocks(){const el=document.getElementById('stockList');if(!el)return;const stocks=D.stocks||[];const filtered=stockFilter==='all'?stocks:stocks.filter(s=>s.type===stockFilter);if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--txtL)"><div style="font-size:36px;margin-bottom:10px">📈</div>還沒有交易記錄</div>';return;}el.innerHTML=filtered.map(s=>{const pnl=s.pnl||0;return`<div class="jnl-row">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px"><div><div style="font-size:15px;font-weight:700;color:var(--bark)">${s.code}</div><div style="font-size:12px;color:var(--txtL);margin-top:1px">${s.date}</div></div><div style="display:flex;align-items:center;gap:7px"><span style="padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${s.type==='買進'?'var(--coLL)':s.type==='賣出'?'var(--blushL)':'var(--bg2)'};color:${s.type==='買進'?'var(--bark)':s.type==='賣出'?'var(--blushD)':'var(--txtM)'}">${s.type}</span>${pnl!==0?`<span style="font-size:14px;font-weight:700;color:${pnl>0?'var(--mossD)':'var(--blushD)'}">${pnl>0?'+':''}${pnl.toLocaleString()}</span>`:''}<button class="btn-del" onclick="delStock(${s.id})">✕</button></div></div>
-  <div style="font-size:13px;color:var(--txtM);margin-bottom:4px">成交：${s.price}元 × ${s.qty}股 · 心態：${s.mood}</div>
+function rStocks(){const el=document.getElementById('stockList');if(!el)return;const stocks=D.stocks||[];const filtered=stockFilter==='all'?stocks:stocks.filter(s=>s.type===stockFilter);if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--inkL)"><div style="font-size:36px;margin-bottom:10px">📈</div>還沒有交易記錄</div>';return;}el.innerHTML=filtered.map(s=>{const pnl=s.pnl||0;return`<div class="jnl-row">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px"><div><div style="font-size:15px;font-weight:700;color:var(--bark)">${s.code}</div><div style="font-size:12px;color:var(--inkL);margin-top:1px">${s.date}</div></div><div style="display:flex;align-items:center;gap:7px"><span style="padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${s.type==='買進'?'var(--coLL)':s.type==='賣出'?'var(--blushL)':'var(--bg2)'};color:${s.type==='買進'?'var(--bark)':s.type==='賣出'?'var(--blushD)':'var(--inkM)'}">${s.type}</span>${pnl!==0?`<span style="font-size:14px;font-weight:700;color:${pnl>0?'var(--mossD)':'var(--blushD)'}">${pnl>0?'+':''}${pnl.toLocaleString()}</span>`:''}<button class="btn-del" onclick="delStock(${s.id})">✕</button></div></div>
+  <div style="font-size:13px;color:var(--inkM);margin-bottom:4px">成交：${s.price}元 × ${s.qty}股 · 心態：${s.mood}</div>
   ${s.reason?`<div style="font-size:13px;color:var(--bark);margin-bottom:4px;padding:8px 11px;background:var(--coLL);border-radius:7px">進場理由：${s.reason}</div>`:''}
   ${s.review?`<div style="font-size:13px;color:var(--mossD);padding:8px 11px;background:var(--mossL);border-radius:7px">復盤：${s.review}</div>`:''}
 </div>`}).join('');}
-function rStockStat(){const el=document.getElementById('stockStat');if(!el)return;const stocks=D.stocks||[];if(!stocks.length){el.innerHTML='<div style="font-size:14px;color:var(--txtL)">尚無交易記錄</div>';return;}const totalPnl=stocks.reduce((a,s)=>a+(s.pnl||0),0);const wins=stocks.filter(s=>s.type==='賣出'&&s.pnl>0).length;const losses=stocks.filter(s=>s.type==='賣出'&&s.pnl<0).length;const moodCount={};stocks.forEach(s=>{moodCount[s.mood]=(moodCount[s.mood]||0)+1;});const topMood=Object.entries(moodCount).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="padding:11px;background:${totalPnl>=0?'var(--mossL)':'var(--blushL)'};border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:${totalPnl>=0?'var(--mossD)':'var(--blushD)'}">${totalPnl>=0?'+':''}${totalPnl.toLocaleString()}</div><div style="font-size:11px;color:var(--txtM)">總損益</div></div><div style="padding:11px;background:var(--coLL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:var(--bark)">${stocks.length}</div><div style="font-size:11px;color:var(--txtM)">總筆數</div></div><div style="padding:11px;background:var(--mossL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:var(--mossD)">${wins}</div><div style="font-size:11px;color:var(--txtM)">獲利次數</div></div><div style="padding:11px;background:var(--blushL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:var(--blushD)">${losses}</div><div style="font-size:11px;color:var(--txtM)">虧損次數</div></div></div><div style="margin-top:10px;padding:10px 13px;background:var(--milk);border-radius:10px;font-size:13px;color:var(--bark)">最常見交易心態：<strong>${topMood}</strong></div>`;}
+function rStockStat(){const el=document.getElementById('stockStat');if(!el)return;const stocks=D.stocks||[];if(!stocks.length){el.innerHTML='<div style="font-size:14px;color:var(--inkL)">尚無交易記錄</div>';return;}const totalPnl=stocks.reduce((a,s)=>a+(s.pnl||0),0);const wins=stocks.filter(s=>s.type==='賣出'&&s.pnl>0).length;const losses=stocks.filter(s=>s.type==='賣出'&&s.pnl<0).length;const moodCount={};stocks.forEach(s=>{moodCount[s.mood]=(moodCount[s.mood]||0)+1;});const topMood=Object.entries(moodCount).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="padding:11px;background:${totalPnl>=0?'var(--mossL)':'var(--blushL)'};border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:${totalPnl>=0?'var(--mossD)':'var(--blushD)'}">${totalPnl>=0?'+':''}${totalPnl.toLocaleString()}</div><div style="font-size:11px;color:var(--inkM)">總損益</div></div><div style="padding:11px;background:var(--coLL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:var(--bark)">${stocks.length}</div><div style="font-size:11px;color:var(--inkM)">總筆數</div></div><div style="padding:11px;background:var(--mossL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:var(--mossD)">${wins}</div><div style="font-size:11px;color:var(--inkM)">獲利次數</div></div><div style="padding:11px;background:var(--blushL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:var(--blushD)">${losses}</div><div style="font-size:11px;color:var(--inkM)">虧損次數</div></div></div><div style="margin-top:10px;padding:10px 13px;background:var(--milk);border-radius:10px;font-size:13px;color:var(--bark)">最常見交易心態：<strong>${topMood}</strong></div>`;}
 function delStock(id){D.stocks=D.stocks.filter(s=>s.id!==id);sv();rStocks();rStockStat();}
 
 // ── 服務觀察 ──
 function addSvc(){const obs=document.getElementById('svcObs').value.trim();if(!obs){toast('請填寫觀察內容');return;}if(!D.services)D.services=[];D.services.unshift({id:Date.now(),date:document.getElementById('svcDate').value||TODAY,type:document.getElementById('svcType').value,client:document.getElementById('svcClient').value,obs,insight:document.getElementById('svcInsight').value.trim(),tech:document.getElementById('svcTech').value.trim(),brand:document.getElementById('svcBrand').value.trim(),energy:document.getElementById('svcEnergy').value,income:parseFloat(document.getElementById('svcIncome').value)||0});['svcObs','svcInsight','svcTech','svcBrand','svcIncome'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});sv();rSvcs();toast('💆‍♀️ 服務筆記已儲存！');}
 function filterSvc(f,el){svcFilter=f;document.querySelectorAll('#pg-service .tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');rSvcs();}
-function rSvcs(){const el=document.getElementById('svcList');if(!el)return;const svcs=D.services||[];let filtered=svcs;if(svcFilter==='VIP老客')filtered=svcs.filter(s=>s.client==='VIP老客');else if(svcFilter==='insight')filtered=svcs.filter(s=>s.insight&&s.insight.trim());if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--txtL)"><div style="font-size:36px;margin-bottom:10px">💆‍♀️</div>還沒有服務記錄</div>';return;}el.innerHTML=filtered.map(s=>`<div class="jnl-row">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px"><div><div style="font-size:15px;font-weight:700;color:var(--bark)">${s.type} · ${s.client}</div><div style="font-size:12px;color:var(--txtL);margin-top:1px">${s.date} · 能量：${s.energy}${s.income?` · 收入：$${s.income.toLocaleString()}`:''}</div></div><button class="btn-del" onclick="delSvc(${s.id})">✕</button></div>
+function rSvcs(){const el=document.getElementById('svcList');if(!el)return;const svcs=D.services||[];let filtered=svcs;if(svcFilter==='VIP老客')filtered=svcs.filter(s=>s.client==='VIP老客');else if(svcFilter==='insight')filtered=svcs.filter(s=>s.insight&&s.insight.trim());if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--inkL)"><div style="font-size:36px;margin-bottom:10px">💆‍♀️</div>還沒有服務記錄</div>';return;}el.innerHTML=filtered.map(s=>`<div class="jnl-row">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px"><div><div style="font-size:15px;font-weight:700;color:var(--bark)">${s.type} · ${s.client}</div><div style="font-size:12px;color:var(--inkL);margin-top:1px">${s.date} · 能量：${s.energy}${s.income?` · 收入：$${s.income.toLocaleString()}`:''}</div></div><button class="btn-del" onclick="delSvc(${s.id})">✕</button></div>
   <div style="font-size:13px;color:var(--bark);margin-bottom:6px;line-height:1.6">${s.obs}</div>
   ${s.insight?`<div style="font-size:13px;color:var(--bark);padding:8px 11px;background:var(--coLL);border-radius:7px;margin-bottom:5px"><strong>💡 靈感素材：</strong>${s.insight}</div>`:''}
   ${s.tech?`<div style="font-size:13px;color:var(--mossD);padding:8px 11px;background:var(--mossL);border-radius:7px;margin-bottom:5px"><strong>🔧 技術：</strong>${s.tech}</div>`:''}
@@ -1547,9 +1665,165 @@ function delSvc(id){D.services=D.services.filter(s=>s.id!==id);sv();rSvcs();}
 function addIdea(){const cat=document.getElementById('ideaCat').value,tx=document.getElementById('ideaTxt').value.trim();if(!tx)return;if(!D.ideas)D.ideas=[];D.ideas.unshift({cat,tx,id:Date.now(),date:TODAY});document.getElementById('ideaTxt').value='';tf('addIdeaW');rIdeas();toast('💡 靈感已記錄！');}
 function addIdea2(){const cat=document.getElementById('ideaCat2').value,tx=document.getElementById('ideaTxt2').value.trim();if(!tx)return;if(!D.ideas)D.ideas=[];D.ideas.unshift({cat,tx,id:Date.now(),date:TODAY});document.getElementById('ideaTxt2').value='';tf('addIdeaW2');rIdeas();rIdeas2();toast('💡 靈感已記錄！');}
 function dIdea(id){D.ideas=D.ideas.filter(i=>i.id!==id);sv();rIdeas();rIdeas2();}
-function rIdeas(){const el=document.getElementById('ideaList');if(!el)return;const ideas=D.ideas||[];el.innerHTML=ideas.length?ideas.slice(0,20).map(i=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px;padding:3px 10px;border-radius:8px;background:var(--mossL);color:var(--mossD);flex-shrink:0;font-weight:700">${i.cat}</span><div style="flex:1"><div style="font-size:14px;color:var(--txt);line-height:1.5">${i.tx}</div><div style="font-size:11px;color:var(--txtL);margin-top:2px">${i.date}</div></div><button class="btn-del" onclick="dIdea(${i.id})">✕</button></div>`).join(''):'<div style="text-align:center;padding:20px;color:var(--txtL)">把靈感、故事、拍攝想法記錄在這裡</div>';}
-function rIdeas2(){const el=document.getElementById('ideaList2');if(!el)return;const ideas=D.ideas||[];el.innerHTML=ideas.length?ideas.slice(0,30).map(i=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px;padding:3px 10px;border-radius:8px;background:var(--mossL);color:var(--mossD);flex-shrink:0;font-weight:700">${i.cat}</span><div style="flex:1"><div style="font-size:14px;color:var(--txt);line-height:1.5">${i.tx}</div><div style="font-size:11px;color:var(--txtL);margin-top:2px">${i.date}</div></div><button class="btn-del" onclick="dIdea(${i.id})">✕</button></div>`).join(''):'<div style="text-align:center;padding:20px;color:var(--txtL)">把靈感・故事・拍攝想法記錄在這裡</div>';}
+function rIdeas(){const el=document.getElementById('ideaList');if(!el)return;const ideas=D.ideas||[];el.innerHTML=ideas.length?ideas.slice(0,20).map(i=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px;padding:3px 10px;border-radius:8px;background:var(--mossL);color:var(--mossD);flex-shrink:0;font-weight:700">${i.cat}</span><div style="flex:1"><div style="font-size:14px;color:var(--ink);line-height:1.5">${i.tx}</div><div style="font-size:11px;color:var(--inkL);margin-top:2px">${i.date}</div></div><button class="btn-del" onclick="dIdea(${i.id})">✕</button></div>`).join(''):'<div style="text-align:center;padding:20px;color:var(--inkL)">把靈感、故事、拍攝想法記錄在這裡</div>';}
+function rIdeas2(){const el=document.getElementById('ideaList2');if(!el)return;const ideas=D.ideas||[];el.innerHTML=ideas.length?ideas.slice(0,30).map(i=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px;padding:3px 10px;border-radius:8px;background:var(--mossL);color:var(--mossD);flex-shrink:0;font-weight:700">${i.cat}</span><div style="flex:1"><div style="font-size:14px;color:var(--ink);line-height:1.5">${i.tx}</div><div style="font-size:11px;color:var(--inkL);margin-top:2px">${i.date}</div></div><button class="btn-del" onclick="dIdea(${i.id})">✕</button></div>`).join(''):'<div style="text-align:center;padding:20px;color:var(--inkL)">把靈感・故事・拍攝想法記錄在這裡</div>';}
 
+
+
+// ────────────────────────────────
+// 現在～2026.8 行動導覽
+// ────────────────────────────────
+const NOW_MONTHS = [
+  {
+    mo:'2026年5月',emoji:'🌊',theme:'清掃舊能量',
+    color:'var(--blushD)',bg:'var(--blushL)',bdr:'var(--blush)',
+    feel:'Rahu-Mars 衝擊感最強。容易煩躁、失眠、突發事件多。\n重點：穩住自己，不要被牽動。',
+    tasks:['處理前夫家的訊息事件（守住邊界）','預約完整健康檢查','開始記每日3句日記'],
+    isCurrent: true,
+  },
+  {
+    mo:'2026年6月',emoji:'🌿',theme:'沉澱＋思考',
+    color:'var(--mossD)',bg:'var(--mossL)',bdr:'var(--moss)',
+    feel:'能量稍微平緩。適合內在反省、整理。',
+    tasks:['寫一份「沐蜜 Moome 核心理念」初稿','完成健康檢查','跟伴侶有一次「我們未來怎麼走」的真實對話'],
+    isCurrent: false,
+  },
+  {
+    mo:'2026年7月',emoji:'🌀',theme:'放空＋等待',
+    color:'var(--hazeD)',bg:'var(--hazeL)',bdr:'var(--haze)',
+    feel:'Dasha 切換前的「臨界期」。容易感覺「卡住」「沒方向」——這是正常的轉換徵兆。不要急著突破。',
+    tasks:['給自己一個短旅行或閉關（2-3天獨處）','整理一個空間（衣櫃、抽屜、手機）','把過去18年的「未完成感覺」寫下來、放下'],
+    isCurrent: false,
+  },
+  {
+    mo:'2026年8月',emoji:'✨',theme:'迎接新章節',
+    color:'var(--amberD)',bg:'var(--amberL)',bdr:'var(--amber)',
+    feel:'8/10–8/23 是 Dasha 切換的「能量斷層期」，這2週「無為」最好。\n8/23 Jupiter Dasha 正式啟動日——你會感受到能量轉換。\n8/24–8/31 新能量校準期，感受新方向浮現，仍不急著決定。',
+    tasks:['8/10–8/23：多睡覺、多獨處、多安靜，不做重大決定','8/23 後：感受新方向的浮現，繼續觀察'],
+    isCurrent: false,
+  },
+];
+
+const NOW_ACTIONS = [
+  {
+    face:'◇ 自己（最優先）',emoji:'🫀',color:'var(--bark)',bg:'var(--milk)',bdr:'var(--chai)',
+    items:[
+      {t:'守住作息',d:'21:30睡、5:30起、早晨運動。這是你接下來16年的根基，不要因為任何事情打破它。'},
+      {t:'每週1次「我的時間」',d:'至少2小時，誰都不能打擾。寫東西、讀書、發呆、獨處。練習「我存在，不只是別人的支持系統」。'},
+      {t:'完整健康檢查1次',d:'包含女性生殖系統、乳房、甲狀腺、血液檢查。為Jupiter Dasha 16年打好身體基礎。不要省這筆錢。'},
+      {t:'不做任何新的重大決定',d:'不結婚、不生育、不大投資、不簽長約。等2026.11後再考慮。'},
+    ]
+  },
+  {
+    face:'○ 家庭（守邊界）',emoji:'🏠',color:'var(--blushD)',bg:'var(--blushL)',bdr:'var(--blush)',
+    items:[
+      {t:'前夫家的事件處理乾淨',d:'教育費守住協議。不回應越界訊息。必要時諮詢律師（這是「保險費」）。'},
+      {t:'跟伴侶的財務界線清楚',d:'不要在這3個月開共同帳戶。不要承諾大筆共財。各自獨立＋共同分攤的模式維持。'},
+      {t:'跟孩子保持「單獨時間」',d:'每週1-2小時純粹陪她。不指導、不糾正、純粹在場。讓她感受到「媽媽在」。'},
+      {t:'跟原生家庭：誠實適度',d:'不勉強自己變成「好女兒」，但保持基本聯繫。'},
+    ]
+  },
+  {
+    face:'● 事業（不擴張、深化品牌核心）',emoji:'💼',color:'var(--hazeD)',bg:'var(--hazeL)',bdr:'var(--haze)',
+    items:[
+      {t:'守住現在的作息＋每週1篇公開內容',d:'IG、Threads、或部落格都可以。寫你的觀察、心得、看法。不要急著賣什麼，先「讓人認識妳是怎麼想的」——這是Jupiter Dasha「智慧軸線」啟動的暖身。'},
+      {t:'記錄「服務觀察筆記」',d:'每位客人結束後寫5-10行。這些素材未來會變成你的內容、課程、書。'},
+      {t:'思考「沐蜜 Moome 3.0」',d:'每週花30分鐘想：沐蜜的核心理念一句話是什麼？我希望客人帶走什麼感受？我的服務跟別人有什麼不一樣？寫下來，慢慢累積。'},
+      {t:'暫緩營業登記＋不承接大合作',d:'等Jupiter Dasha啟動後（2026.10後）能量會更清晰。機會會出現，但這3個月不是時候。'},
+    ]
+  },
+  {
+    face:'◉ 財富（建立緩衝）',emoji:'💰',color:'var(--amberD)',bg:'var(--amberL)',bdr:'var(--amber)',
+    items:[
+      {t:'個人帳戶獨立、清楚',d:'你的事業收入100%進你個人名下。不要混在「共同帳戶」裡。'},
+      {t:'開始建立「緊急儲備」',d:'目標：6-12個月的生活費。這是2028-2031考驗期的保命錢。從現在開始存，3年後才會夠。'},
+      {t:'記帳每天3分鐘',d:'看清楚錢的流向。特別覺察「情緒性消費」和「人設性支出」。'},
+      {t:'不做大投資、不借錢、不衝動消費',d:'Rahu-Mars末期容易做後悔的財務決定。守好現有的就好。'},
+    ]
+  },
+  {
+    face:'✿ 健康（為16年打底）',emoji:'🌸',color:'var(--mossD)',bg:'var(--mossL)',bdr:'var(--moss)',
+    items:[
+      {t:'完整健康檢查1次（最重要）',d:'女性生殖系統、乳房、甲狀腺、血液。為Jupiter Dasha 16年打好身體基礎。'},
+      {t:'每週3次運動節律',d:'你已經在做晨運——保持下去。加1-2次瑜伽或皮拉提斯更好。'},
+      {t:'照顧月經週期',d:'月亮入旺的妳對荷爾蒙特別敏感。觀察、記錄、調理（必要時找中醫）。'},
+      {t:'每月1次身體投資',d:'按摩、整復、針灸、SPA。這不是奢侈，是必要。'},
+    ]
+  },
+];
+
+const openNowFaces = new Set();
+const openNowMonths = new Set();
+
+function rNowPage(){
+  rNowMonthMap();
+  rNowActions();
+}
+
+function rNowMonthMap(){
+  const el=document.getElementById('nowMonthMap');
+  if(!el)return;
+  el.innerHTML=NOW_MONTHS.map((m,i)=>{
+    const isOpen=openNowMonths.has(i);
+    return`<div style="margin-bottom:8px;border-radius:12px;overflow:hidden;border:1.5px solid ${m.isCurrent?'var(--bark)':m.bdr};box-shadow:${m.isCurrent?'0 2px 8px rgba(93,74,58,.12)':'none'}">
+      <div onclick="toggleNowMonth(${i})" style="display:flex;align-items:center;gap:12px;padding:13px 16px;background:${m.isCurrent?m.bg:'var(--card)'};cursor:pointer;user-select:none">
+        <span style="font-size:22px">${m.emoji}</span>
+        <div style="flex:1">
+          <div style="font-size:11px;color:${m.color};font-weight:600;margin-bottom:2px;letter-spacing:.04em">${m.mo}${m.isCurrent?' · 現在':''}</div>
+          <div style="font-family:var(--fs);font-size:14px;font-weight:600;color:var(--bark)">${m.theme}</div>
+        </div>
+        <span style="font-size:13px;color:var(--inkL);transition:.2s;transform:${isOpen?'rotate(180deg)':'none'};display:block">▾</span>
+      </div>
+      ${isOpen?`<div style="padding:14px 16px;background:#fff;border-top:1px solid ${m.bdr}">
+        <div style="font-size:13px;color:var(--inkM);line-height:1.85;margin-bottom:12px;white-space:pre-wrap">${m.feel}</div>
+        <div style="font-size:12px;font-weight:600;color:${m.color};margin-bottom:8px;letter-spacing:.04em">這個月的具體任務</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${m.tasks.map(t=>`<div style="display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:8px;background:${m.bg};border:1px solid ${m.bdr}">
+            <span style="color:${m.color};font-weight:700;flex-shrink:0">✓</span>
+            <span style="font-size:13px;color:var(--ink);line-height:1.6">${t}</span>
+          </div>`).join('')}
+        </div>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleNowMonth(i){
+  if(openNowMonths.has(i))openNowMonths.delete(i);
+  else openNowMonths.add(i);
+  rNowMonthMap();
+}
+
+function rNowActions(){
+  const el=document.getElementById('nowActions');
+  if(!el)return;
+  el.innerHTML=NOW_ACTIONS.map((face,i)=>{
+    const isOpen=openNowFaces.has(i);
+    return`<div style="margin-bottom:8px;border-radius:12px;overflow:hidden;border:1.5px solid ${face.bdr}">
+      <div onclick="toggleNowFace(${i})" style="display:flex;align-items:center;gap:12px;padding:13px 16px;background:${face.bg};cursor:pointer;user-select:none">
+        <span style="font-size:20px">${face.emoji}</span>
+        <div style="flex:1">
+          <div style="font-family:var(--fs);font-size:14px;font-weight:600;color:var(--bark)">${face.face}</div>
+        </div>
+        <span style="font-size:13px;color:var(--inkL);transition:.2s;transform:${isOpen?'rotate(180deg)':'none'};display:block">▾</span>
+      </div>
+      ${isOpen?`<div style="background:#fff;border-top:1px solid ${face.bdr}">
+        ${face.items.map(item=>`<div style="padding:13px 16px;border-bottom:1px solid var(--bdr)">
+          <div style="font-size:13px;font-weight:600;color:${face.color};margin-bottom:5px;display:flex;align-items:center;gap:7px">
+            <span style="color:${face.color}">✓</span>${item.t}
+          </div>
+          <div style="font-size:13px;color:var(--inkM);line-height:1.75;padding-left:17px">${item.d}</div>
+        </div>`).join('')}
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleNowFace(i){
+  if(openNowFaces.has(i))openNowFaces.delete(i);
+  else openNowFaces.add(i);
+  rNowActions();
+}
 
 // ────────────────────────────────
 // 事業天命時間軸（折疊式）
