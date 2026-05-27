@@ -31,20 +31,41 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 .app{display:flex;min-height:100vh;}
 
 /* SIDEBAR */
-.sb{width:228px;flex-shrink:0;background:var(--card);border-right:1px solid var(--bdr);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column;}
+.sb{
+  width:64px;flex-shrink:0;background:var(--card);
+  border-right:1px solid var(--bdr);
+  position:fixed;top:0;left:0;height:100vh;
+  overflow-y:auto;z-index:100;
+  display:flex;flex-direction:column;
+  transition:width .25s cubic-bezier(.4,0,.2,1);
+  overflow-x:hidden;
+}
 .sb::-webkit-scrollbar{width:0;}
-.sb-logo{padding:28px 24px 22px;background:linear-gradient(165deg,var(--milk) 0%,#EFE4D8 100%);border-bottom:1px solid var(--mist);}
+.sb:hover{width:228px;box-shadow:4px 0 20px rgba(93,74,58,.10);}
+.sb:hover .sb-logo-n,
+.sb:hover .sb-logo-s,
+.sb:hover .sb-sec,
+.sb:hover .sb-item span:last-child{opacity:1;max-width:180px;}
+.sb-logo-n,.sb-logo-s,.sb-sec,.sb-item span:last-child{
+  opacity:0;max-width:0;
+  overflow:hidden;white-space:nowrap;
+  transition:opacity .2s .05s, max-width .2s .05s;
+  display:inline-block;
+}
+.sb-item{justify-content:flex-start;}
+.sb-logo{padding:18px 14px 16px;background:linear-gradient(165deg,var(--milk) 0%,#EFE4D8 100%);border-bottom:1px solid var(--mist);display:flex;flex-direction:column;align-items:center;}
+.sb:hover .sb-logo{align-items:flex-start;padding:28px 24px 22px;}
 .sb-logo-i{font-size:22px;margin-bottom:8px;display:block;}
 .sb-logo-n{font-family:var(--fs);font-size:16px;font-weight:500;color:var(--bark);letter-spacing:.14em;display:block;margin-bottom:3px;}
 .sb-logo-s{font-size:11px;color:var(--inkL);line-height:1.7;letter-spacing:.05em;}
 .sb-sec{padding:18px 24px 5px;font-size:10px;font-weight:500;color:var(--inkL);letter-spacing:.18em;text-transform:uppercase;}
-.sb-item{display:flex;align-items:center;gap:11px;padding:11px 24px;cursor:pointer;transition:all .2s;color:var(--inkM);font-size:14px;font-weight:300;border-left:3px solid transparent;user-select:none;}
+.sb-item{display:flex;align-items:center;gap:11px;padding:11px 18px;cursor:pointer;transition:all .2s;color:var(--inkM);font-size:14px;font-weight:300;border-left:3px solid transparent;user-select:none;}
 .sb-item:hover{background:var(--milk);color:var(--bark);}
 .sb-item.on{background:linear-gradient(90deg,var(--milk),transparent);color:var(--bark);border-left-color:var(--chai);font-weight:500;}
 .sb-item .i{font-size:16px;width:22px;text-align:center;flex-shrink:0;opacity:.85;}
 
 /* MAIN */
-.main{margin-left:228px;flex:1;display:flex;flex-direction:column;}
+.main{margin-left:64px;flex:1;display:flex;flex-direction:column;transition:margin-left .25s;}
 .topbar{background:rgba(253,250,247,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);padding:0 36px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .tb-ttl{font-family:var(--fs);font-size:17px;font-weight:500;color:var(--bark);letter-spacing:.1em;}
 .tb-r{display:flex;align-items:center;gap:10px;}
@@ -265,9 +286,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 /* RESPONSIVE */
 @media(min-width:1280px){.ct{padding:32px 44px;}.g2{gap:22px;}}
 @media(max-width:1024px){
-  .sb{width:64px;}.sb-item span:last-child,.sb-logo-s,.sb-sec,.sb-logo-n{display:none;}
-  .sb-item{padding:13px;justify-content:center;}.sb-logo{padding:14px;text-align:center;}
-  .main{margin-left:64px;}.g2{grid-template-columns:1fr;}.ct{padding:18px 20px;}.topbar{padding:0 20px;}
+  .g2{grid-template-columns:1fr;}.ct{padding:18px 20px;}.topbar{padding:0 20px;}
 }
 @media(max-width:680px){.ct{padding:14px 16px;}.qbox-t{font-size:15px;}}
 </style>
@@ -638,155 +657,183 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 <!-- ══ 事業天命 ══ -->
 <div class="pg" id="pg-destiny">
   <div class="pg-ttl">事業天命</div>
-  <div class="pg-sub">沐蜜 Moome × 珞熙 Roxi · 吠陀占星命盤洞察</div>
+  <div class="pg-sub">沐蜜 Moome × 珞熙 Roxi · 吠陀占星命盤洞察 · 點開大綱查看細節</div>
 
   <!-- 天命方程式 -->
-  <div class="dest-block" style="background:linear-gradient(145deg,#F5EDE3,#EFE4D8)">
+  <div class="dest-block" style="background:linear-gradient(145deg,#F5EDE3,#EFE4D8);margin-bottom:18px">
     <div class="dest-ttl">✨ 我的天命方程式</div>
-    <div style="font-family:var(--fs);font-size:18px;color:var(--bark);line-height:2;text-align:center;padding:8px 0">
+    <div style="font-family:var(--fs);font-size:17px;color:var(--bark);line-height:2.2;text-align:center;padding:8px 0 4px">
       （美學・女性）＋（滋養・感官）＋（核心・表達）
-      <div style="font-size:14px;color:var(--inkM);margin-top:8px;font-weight:300">＝ 以個人核心為品牌・透過美學・進行身心滋養</div>
+      <div style="font-size:14px;color:var(--inkM);margin-top:6px;font-weight:300">＝ 以個人核心為品牌・透過美學・進行身心滋養</div>
+    </div>
+    <div style="margin-top:14px;padding:14px 16px;background:rgba(201,168,142,.15);border-radius:10px">
+      <div style="font-size:13px;color:var(--bark);line-height:1.85">
+        我的「智慧表達＋美學服務」是三重輪都祝福的能量。<br>
+        寫作・教學・美學服務・智慧分享——不只是事業，是三個維度都會帶來「收穫、財富、智慧、社群」的能量。<br>
+        <strong>你越往這個方向走，三重輪都會祝福你。</strong>
+      </div>
     </div>
   </div>
 
   <div class="g2">
+  <!-- 左欄 -->
   <div>
+
     <!-- 事業進化路徑 -->
     <div class="card"><div class="ch"><span class="ct-ttl">🌱 事業進化路徑</span></div><div class="cb">
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="padding:14px 18px;border-radius:11px;border:1px solid var(--bdr);background:var(--card)"><div style="font-size:12px;color:var(--inkL);margin-bottom:4px">現在</div><div style="font-family:var(--fs);font-size:15px;font-weight:500;color:var(--ink)">1.0 服務型工匠</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">持續做服務（這是底層，永遠不放棄）</div></div>
-        <div style="text-align:center;font-size:18px;color:var(--inkL)">↓</div>
-        <div style="padding:14px 18px;border-radius:11px;border:1px solid var(--chai);background:var(--milk)"><div style="font-size:12px;color:var(--chai);margin-bottom:4px">進行中</div><div style="font-family:var(--fs);font-size:15px;font-weight:500;color:var(--bark)">2.0 美學品牌主</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">寫作・拍影片・做內容・個人品牌</div></div>
-        <div style="text-align:center;font-size:18px;color:var(--inkL)">↓</div>
-        <div style="padding:14px 18px;border-radius:11px;border:1px solid var(--amber);background:var(--amberL)"><div style="font-size:12px;color:var(--amberD);margin-bottom:4px">2034+ 黃金期</div><div style="font-family:var(--fs);font-size:15px;font-weight:500;color:var(--amberD)">3.0 智慧傳遞者</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">教學・培訓・工作坊・美學系統建立</div></div>
+        <div style="padding:14px 18px;border-radius:11px;border:1px solid var(--bdr);background:var(--card)"><div style="font-size:11px;color:var(--inkL);margin-bottom:4px">現在</div><div style="font-family:var(--fs);font-size:15px;font-weight:500;color:var(--ink)">1.0 服務型工匠</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">持續做服務（這是底層，永遠不放棄）</div></div>
+        <div style="text-align:center;font-size:16px;color:var(--inkL)">↓</div>
+        <div style="padding:14px 18px;border-radius:11px;border:1px solid var(--chai);background:var(--milk)"><div style="font-size:11px;color:var(--chai);margin-bottom:4px">進行中</div><div style="font-family:var(--fs);font-size:15px;font-weight:500;color:var(--bark)">2.0 美學品牌主</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">寫作・拍影片・做內容・個人品牌</div></div>
+        <div style="text-align:center;font-size:16px;color:var(--inkL)">↓</div>
+        <div style="padding:14px 18px;border-radius:11px;border:1px solid var(--amber);background:var(--amberL)"><div style="font-size:11px;color:var(--amberD);margin-bottom:4px">2034+ 黃金期</div><div style="font-family:var(--fs);font-size:15px;font-weight:500;color:var(--amberD)">3.0 智慧傳遞者</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">教學・培訓・工作坊・美學系統</div></div>
       </div>
     </div></div>
 
-    <!-- 事業能量 -->
-    <div class="card"><div class="ch"><span class="ct-ttl">⚡ 我的事業能量</span></div><div class="cb">
-      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px">
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">美學</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">女性</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">美容</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">儀式</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">紀律</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">長期累積</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">主動精進</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">技藝</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">勇氣</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">表達</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">溝通</span>
-        <span style="padding:7px 14px;border-radius:20px;background:var(--milk);border:1px solid var(--chai);font-size:13px;color:var(--bark)">分享</span>
+    <!-- 人生關鍵年份 -->
+    <div class="card"><div class="ch"><span class="ct-ttl">🔑 你會回頭看的4個關鍵年</span></div><div class="cb">
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div style="padding:12px 15px;border-radius:10px;border:1px solid var(--chai);background:var(--milk)"><div style="font-size:12px;font-weight:500;color:var(--bark)">2026 年</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">你做了對的決定，沒有被舊版本拉回去。</div></div>
+        <div style="padding:12px 15px;border-radius:10px;border:1px solid var(--blush);background:var(--blushL)"><div style="font-size:12px;font-weight:500;color:var(--blushD)">2029 年</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">你在考驗中守住了核心，沒有崩盤。</div></div>
+        <div style="padding:12px 15px;border-radius:10px;border:1px solid var(--moss);background:var(--mossL)"><div style="font-size:12px;font-weight:500;color:var(--mossD)">2032 年</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">你發現自己的智慧可以變現，開始「飛起來」。</div></div>
+        <div style="padding:12px 15px;border-radius:10px;border:1px solid var(--amber);background:var(--amberL)"><div style="font-size:12px;font-weight:500;color:var(--amberD)">2035 年</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">你站在某個高度看自己，發現「這才是真正的妳」。</div></div>
       </div>
-      <div style="font-size:13px;color:var(--inkM);line-height:1.8">
+    </div></div>
+
+    <!-- 逆天改命公式 -->
+    <div class="card"><div class="ch"><span class="ct-ttl">★ 你人生的逆天改命公式</span></div><div class="cb">
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
+        <div style="padding:10px 14px;border-radius:9px;background:var(--blushL);border:1px solid var(--blush);color:var(--blushD)">2008–2026 Rahu Dasha<br><strong>拆解舊版本的自己</strong></div>
+        <div style="padding:10px 14px;border-radius:9px;background:var(--milk);border:1px solid var(--chai);color:var(--bark)">現在–2028 Jupiter 啟動<br><strong>建構真實版本</strong></div>
+        <div style="padding:10px 14px;border-radius:9px;background:var(--blushL);border:1px solid var(--blush);color:var(--blushD)">2028–2031 Saturn 考驗<br><strong>結構性淬鍊</strong></div>
+        <div style="padding:10px 14px;border-radius:9px;background:var(--mossL);border:1px solid var(--moss);color:var(--mossD)">2031–2034 Mercury+Ketu<br><strong>智慧收成 + 沉澱</strong></div>
+        <div style="padding:10px 14px;border-radius:9px;background:var(--amberL);border:1px solid var(--amber);color:var(--amberD)">2034–2037 Venus 黃金<br><strong>真正綻放 ★★★</strong></div>
+      </div>
+    </div></div>
+
+    <!-- 事業能量 + 4顆行星 -->
+    <div class="card"><div class="ch"><span class="ct-ttl">⚡ 事業能量 + 6宮四顆行星</span></div><div class="cb">
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+        <span style="padding:6px 12px;border-radius:18px;background:var(--milk);border:1px solid var(--chai);font-size:12px;color:var(--bark)">美學</span>
+        <span style="padding:6px 12px;border-radius:18px;background:var(--milk);border:1px solid var(--chai);font-size:12px;color:var(--bark)">女性</span>
+        <span style="padding:6px 12px;border-radius:18px;background:var(--milk);border:1px solid var(--chai);font-size:12px;color:var(--bark)">儀式</span>
+        <span style="padding:6px 12px;border-radius:18px;background:var(--milk);border:1px solid var(--chai);font-size:12px;color:var(--bark)">紀律</span>
+        <span style="padding:6px 12px;border-radius:18px;background:var(--milk);border:1px solid var(--chai);font-size:12px;color:var(--bark)">長期累積</span>
+        <span style="padding:6px 12px;border-radius:18px;background:var(--milk);border:1px solid var(--chai);font-size:12px;color:var(--bark)">表達</span>
+        <span style="padding:6px 12px;border-radius:18px;background:var(--milk);border:1px solid var(--chai);font-size:12px;color:var(--bark)">溫智性</span>
+        <span style="padding:6px 12px;border-radius:18px;background:var(--milk);border:1px solid var(--chai);font-size:12px;color:var(--bark)">療癒性表達</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="padding:11px 13px;border-radius:9px;background:var(--amberL);border:1px solid var(--amber)"><div style="font-size:11px;font-weight:500;color:var(--amberD)">☀️ Sun</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">核心・領導・表達</div></div>
+        <div style="padding:11px 13px;border-radius:9px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:11px;font-weight:500;color:var(--blushD)">♀ Venus</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">美學・女性・天命之星</div></div>
+        <div style="padding:11px 13px;border-radius:9px;background:var(--mossL);border:1px solid var(--moss)"><div style="font-size:11px;font-weight:500;color:var(--mossD)">♂ Mars</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">行動・技藝・勇氣</div></div>
+        <div style="padding:11px 13px;border-radius:9px;background:var(--hazeL);border:1px solid var(--haze)"><div style="font-size:11px;font-weight:500;color:var(--hazeD)">☊ Rahu</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">突破・特殊・放大</div></div>
+      </div>
+      <div style="margin-top:12px;font-size:13px;color:var(--inkM);line-height:1.85">
         ✅ 「溝通、寫作、教學」能力是天賦<br>
-        ✅ 智慧 ＋ 表達 ＝ 教學型事業有極大潛力<br>
-        ✅ 你是「溫智性」型——智慧裡有溫度<br>
-        ✅ 你說話的方式本身就有療癒性
+        ✅ 你說話的方式本身就有療癒性<br>
+        ✅ 你是「溫智性」型——智慧裡有溫度
       </div>
     </div></div>
 
-    <!-- 4顆行星 -->
-    <div class="card"><div class="ch"><span class="ct-ttl">🪐 6宮四顆行星・靈魂的主場</span></div><div class="cb">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
-        <div style="padding:12px 14px;border-radius:10px;background:var(--amberL);border:1px solid var(--amber)"><div style="font-size:12px;font-weight:500;color:var(--amberD)">☀️ Sun</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">核心・領導・自我表達</div></div>
-        <div style="padding:12px 14px;border-radius:10px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:12px;font-weight:500;color:var(--blushD)">♀ Venus</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">美學・女性能量・藝術</div></div>
-        <div style="padding:12px 14px;border-radius:10px;background:var(--mossL);border:1px solid var(--moss)"><div style="font-size:12px;font-weight:500;color:var(--mossD)">♂ Mars</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">行動・技藝・勇氣</div></div>
-        <div style="padding:12px 14px;border-radius:10px;background:var(--hazeL);border:1px solid var(--haze)"><div style="font-size:12px;font-weight:500;color:var(--hazeD)">☊ Rahu</div><div style="font-size:13px;color:var(--inkM);margin-top:3px">突破・特殊・放大</div></div>
-      </div>
-    </div></div>
-
-    <!-- 我的業力 -->
+    <!-- 累世業力 -->
     <div class="card"><div class="ch"><span class="ct-ttl">🌀 累世業力主題</span></div><div class="cb">
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="padding:13px 16px;border-radius:10px;border-left:3px solid var(--chai);background:var(--milk)"><div style="font-size:13px;font-weight:500;color:var(--bark);margin-bottom:4px">① 過度給予的修煉</div><div style="font-size:13px;color:var(--inkM);line-height:1.7">累世都是母親・照顧者・療癒者。這一世的功課：學會接受・學會說不・把自己放在第一。</div></div>
-        <div style="padding:13px 16px;border-radius:10px;border-left:3px solid var(--amber);background:var(--amberL)"><div style="font-size:13px;font-weight:500;color:var(--amberD);margin-bottom:4px">② 美學與靈性的結合</div><div style="font-size:13px;color:var(--inkM);line-height:1.7">不只做「外在的美」，也不只做「內在的靈」，而是「美 ＝ 通往靈的門」。沐蜜的高階形態。</div></div>
-        <div style="padding:13px 16px;border-radius:10px;border-left:3px solid var(--moss);background:var(--mossL)"><div style="font-size:13px;font-weight:500;color:var(--mossD);margin-bottom:4px">③ 邊界與整合的修煉</div><div style="font-size:13px;color:var(--inkM);line-height:1.7">學會在「給予」與「自我」之間平衡。接受「我不需要拯救所有人」。</div></div>
-        <div style="padding:13px 16px;border-radius:10px;border-left:3px solid var(--haze);background:var(--hazeL)"><div style="font-size:13px;font-weight:500;color:var(--hazeD);margin-bottom:4px">④ 真實表達的修煉</div><div style="font-size:13px;color:var(--inkM);line-height:1.7">大聲說出來・寫下來・讓真實的你被世界看見。沐蜜是累世修煉的集結展現。</div></div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div style="padding:12px 15px;border-radius:10px;border-left:3px solid var(--chai);background:var(--milk)"><div style="font-size:13px;font-weight:500;color:var(--bark);margin-bottom:3px">① 過度給予的修煉</div><div style="font-size:12px;color:var(--inkM);line-height:1.7">功課：學會接受・學會說不・把自己放在第一。這不是自私，是業力的平衡。</div></div>
+        <div style="padding:12px 15px;border-radius:10px;border-left:3px solid var(--amber);background:var(--amberL)"><div style="font-size:13px;font-weight:500;color:var(--amberD);margin-bottom:3px">② 美學與靈性的結合</div><div style="font-size:12px;color:var(--inkM);line-height:1.7">「美 ＝ 通往靈的門」。沐蜜的高階形態：美學儀式療癒。</div></div>
+        <div style="padding:12px 15px;border-radius:10px;border-left:3px solid var(--moss);background:var(--mossL)"><div style="font-size:13px;font-weight:500;color:var(--mossD);margin-bottom:3px">③ 邊界與整合的修煉</div><div style="font-size:12px;color:var(--inkM);line-height:1.7">接受「我不需要拯救所有人」。</div></div>
+        <div style="padding:12px 15px;border-radius:10px;border-left:3px solid var(--haze);background:var(--hazeL)"><div style="font-size:13px;font-weight:500;color:var(--hazeD);margin-bottom:3px">④ 真實表達的修煉</div><div style="font-size:12px;color:var(--inkM);line-height:1.7">大聲說出來・寫下來・讓真實的你被世界看見。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 育兒 -->
+    <div class="card"><div class="ch"><span class="ct-ttl">👧 育兒・靈魂約定</span></div><div class="cb">
+      <div style="font-size:13px;color:var(--inkM);line-height:1.9">
+        我和孩子之間有深刻的業力連結——不是輕鬆的母女關係，是靈魂約定型的關係。<br><br>
+        <strong style="color:var(--bark)">① 不要用制式要求她</strong><br>強迫乖巧會壓抑她的真實能量。<br><br>
+        <strong style="color:var(--bark)">② 重視她的美學・藝術・表達</strong><br>繪畫・音樂・設計・寫作・舞蹈・戲劇。<br><br>
+        <strong style="color:var(--bark)">③ 給她真實的尊重</strong><br>「我相信你能找到自己的路。」<br><br>
+        <strong style="color:var(--bark)">④ 教育費不能讓步</strong><br>你是她資源的守護者。當有人試圖削減這份資源時——你的拒絕是天經地義的。
       </div>
     </div></div>
   </div>
 
+  <!-- 右欄 -->
   <div>
-    <!-- 實戰建議 -->
-    <div class="card"><div class="ch"><span class="ct-ttl">◇ 實戰建議</span></div><div class="cb">
-      <div style="margin-bottom:16px">
-        <div style="font-size:12px;font-weight:500;color:var(--bark);margin-bottom:9px;letter-spacing:.06em">短期 2026-2028</div>
-        <div style="display:flex;flex-direction:column;gap:7px">
-          <div style="padding:10px 14px;border-radius:9px;border:1px solid var(--bdr);font-size:13px;color:var(--inkM);line-height:1.6">🌙 保護我的月亮——睡眠、節律、情緒穩定</div>
-          <div style="padding:10px 14px;border-radius:9px;border:1px solid var(--bdr);font-size:13px;color:var(--inkM);line-height:1.6">🔒 守住土星邊界——女兒教育費、伴侶財務、所有協議</div>
-          <div style="padding:10px 14px;border-radius:9px;border:1px solid var(--chai);background:var(--milk);font-size:13px;color:var(--bark);line-height:1.6">☀️ 開始啟動「太陽」——寫作、表達、發聲，把內在的火浮出來</div>
-        </div>
+
+    <!-- 16年時間軸（折疊式）-->
+    <div class="card">
+      <div class="ch"><span class="ct-ttl">📅 16年 Jupiter Dasha 完整時間軸</span></div>
+      <div class="cb" style="padding:12px 16px">
+        <div id="destTimeline"></div>
       </div>
-      <div style="margin-bottom:16px">
-        <div style="font-size:12px;font-weight:500;color:var(--bark);margin-bottom:9px;letter-spacing:.06em">中期 2028-2034</div>
-        <div style="display:flex;flex-direction:column;gap:7px">
-          <div style="padding:10px 14px;border-radius:9px;border:1px solid var(--blush);background:var(--blushL);font-size:13px;color:var(--blushD);line-height:1.6">⚠️ 準備考驗期——身體、財務、關係的穩定基礎</div>
-          <div style="padding:10px 14px;border-radius:9px;border:1px solid var(--bdr);font-size:13px;color:var(--inkM);line-height:1.6">🏗️ 建立「美學系統」雛形——不只做服務，建立可複製的方法論</div>
-          <div style="padding:10px 14px;border-radius:9px;border:1px solid var(--bdr);font-size:13px;color:var(--inkM);line-height:1.6">📚 開始教學或內容輸出——讓木星＋水星＋金星的組合啟動</div>
+    </div>
+
+    <!-- 三個關鍵分歧點 -->
+    <div class="card"><div class="ch"><span class="ct-ttl">🚨 三個你絕對不能忽略的關鍵分歧點</span></div><div class="cb">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="border-radius:11px;overflow:hidden;border:1.5px solid var(--chai)">
+          <div style="background:var(--milk);padding:13px 16px"><div style="font-size:13px;font-weight:500;color:var(--bark)">🚨 分歧點 ① 2026.5 – 2026.10（現在！）</div><div style="font-size:12px;color:var(--inkM);margin-top:4px;line-height:1.7">這段時間做的決定 ＝ 接下來10年的方向</div></div>
+          <div style="background:#fff;padding:12px 16px;font-size:12px;color:var(--inkM);line-height:1.8">
+            ✅ 順命：守住邊界・保留現狀・不急著決定<br>
+            ❌ 逆命：妥協・急著證明・衝動承諾<br><br>
+            注意選擇：是否與伴侶共財？是否答應越界要求？是否做重大決定？
+          </div>
         </div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:500;color:var(--amberD);margin-bottom:9px;letter-spacing:.06em">長期 2034-2042 ★ 黃金期</div>
-        <div style="display:flex;flex-direction:column;gap:7px">
-          <div style="padding:10px 14px;border-radius:9px;border:1px solid var(--amber);background:var(--amberL);font-size:13px;color:var(--amberD);line-height:1.6">★ 黃金期綻放——美學系統成熟、品牌成型、財務獨立</div>
-          <div style="padding:10px 14px;border-radius:9px;border:1px solid var(--amber);background:var(--amberL);font-size:13px;color:var(--amberD);line-height:1.6">★ 進入「美學導師」階段——不只服務，是傳遞</div>
-          <div style="padding:10px 14px;border-radius:9px;border:1px solid var(--amber);background:var(--amberL);font-size:13px;color:var(--amberD);line-height:1.6">★ 建立可傳承的事業形態——這是我的最終形</div>
+        <div style="border-radius:11px;overflow:hidden;border:1.5px solid var(--blush)">
+          <div style="background:var(--blushL);padding:13px 16px"><div style="font-size:13px;font-weight:500;color:var(--blushD)">🚨 分歧點 ② 2028 夏 – 2029 年初</div><div style="font-size:12px;color:var(--inkM);margin-top:4px;line-height:1.7">進入考驗期前的最後準備</div></div>
+          <div style="background:#fff;padding:12px 16px;font-size:12px;color:var(--inkM);line-height:1.8">
+            ✅ 順命：充分準備・不擴張・不冒險<br>
+            ❌ 逆命：以為已穩・突然大投資/承諾<br><br>
+            注意：身體儲備・緊急金・伴侶長期形態釐清
+          </div>
+        </div>
+        <div style="border-radius:11px;overflow:hidden;border:1.5px solid var(--amber)">
+          <div style="background:var(--amberL);padding:13px 16px"><div style="font-size:13px;font-weight:500;color:var(--amberD)">🚨 分歧點 ③ 2034 年初</div><div style="font-size:12px;color:var(--inkM);margin-top:4px;line-height:1.7">從「累積期」轉入「綻放期」的關鍵點</div></div>
+          <div style="background:#fff;padding:12px 16px;font-size:12px;color:var(--inkM);line-height:1.8">
+            ✅ 順命：勇敢綻放・接受祝福・相信自己值得<br>
+            ❌ 逆命：自我懷疑・退縮・覺得「我配不上」
+          </div>
         </div>
       </div>
     </div></div>
 
-    <!-- 我需要謹慎的 -->
+    <!-- 謹慎 + 身體訊號 -->
     <div class="card"><div class="ch"><span class="ct-ttl">⚠️ 我需要謹慎的</span></div><div class="cb">
-      <div style="display:flex;flex-direction:column;gap:9px">
-        <div style="padding:12px 15px;border-radius:10px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:13px;font-weight:500;color:var(--blushD);margin-bottom:3px">過度給予 → 自我耗竭</div><div style="font-size:12px;color:var(--inkM)">這是你最大的厄運入口。不是別人傷你——是你太過給予。</div></div>
-        <div style="padding:12px 15px;border-radius:10px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:13px;font-weight:500;color:var(--blushD);margin-bottom:3px">被情緒勒索 → 被動受害</div><div style="font-size:12px;color:var(--inkM)">「我為了你好」「都是為了家庭」——這類話語最容易綁架你。</div></div>
-        <div style="padding:12px 15px;border-radius:10px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:13px;font-weight:500;color:var(--blushD);margin-bottom:3px">不擅長拒絕 → 累積怨恨</div><div style="font-size:12px;color:var(--inkM)">勉強答應→內在累積怨恨→在不對的地方爆發。</div></div>
-        <div style="padding:12px 15px;border-radius:10px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:13px;font-weight:500;color:var(--blushD);margin-bottom:3px">過度信任 → 被佔便宜</div><div style="font-size:12px;color:var(--inkM)">先觀察，再信任。</div></div>
-        <div style="padding:12px 15px;border-radius:10px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:13px;font-weight:500;color:var(--blushD);margin-bottom:3px">逃避問題 → 問題擴大</div><div style="font-size:12px;color:var(--inkM)">有些事情不主動處理就會擴大。</div></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="padding:11px 14px;border-radius:9px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:12px;font-weight:500;color:var(--blushD)">過度給予 → 自我耗竭</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">這是你最大的厄運入口。不是別人傷你——是你太過給予。</div></div>
+        <div style="padding:11px 14px;border-radius:9px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:12px;font-weight:500;color:var(--blushD)">被情緒勒索 → 被動受害</div><div style="font-size:12px;color:var(--inkM);margin-top:2px">「我為了你好」「都是為了家庭」——最容易綁架你。</div></div>
+        <div style="padding:11px 14px;border-radius:9px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:12px;font-weight:500;color:var(--blushD)">不擅長拒絕 → 累積怨恨</div></div>
+        <div style="padding:11px 14px;border-radius:9px;background:var(--blushL);border:1px solid var(--blush)"><div style="font-size:12px;font-weight:500;color:var(--blushD)">逃避問題 → 問題擴大</div></div>
+      </div>
+      <div style="margin-top:14px"><div style="font-size:13px;font-weight:500;color:var(--bark);margin-bottom:10px">🫀 身體直覺訊號</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+          <div style="padding:9px 12px;border-radius:9px;background:var(--milk);border:1px solid var(--mist);display:flex;align-items:center;gap:8px"><span style="font-size:16px">😰</span><div><div style="font-size:12px;font-weight:500;color:var(--bark)">胃緊</div><div style="font-size:11px;color:var(--inkM)">不對的事</div></div></div>
+          <div style="padding:9px 12px;border-radius:9px;background:var(--milk);border:1px solid var(--mist);display:flex;align-items:center;gap:8px"><span style="font-size:16px">🏋️</span><div><div style="font-size:12px;font-weight:500;color:var(--bark)">肩膀重</div><div style="font-size:11px;color:var(--inkM)">承擔太多</div></div></div>
+          <div style="padding:9px 12px;border-radius:9px;background:var(--milk);border:1px solid var(--mist);display:flex;align-items:center;gap:8px"><span style="font-size:16px">🤐</span><div><div style="font-size:12px;font-weight:500;color:var(--bark)">喉嚨卡</div><div style="font-size:11px;color:var(--inkM)">有話沒說</div></div></div>
+          <div style="padding:9px 12px;border-radius:9px;background:var(--milk);border:1px solid var(--mist);display:flex;align-items:center;gap:8px"><span style="font-size:16px">💓</span><div><div style="font-size:12px;font-weight:500;color:var(--bark)">心悸</div><div style="font-size:11px;color:var(--inkM)">危險訊號</div></div></div>
+        </div>
       </div>
     </div></div>
 
-    <!-- 身體直覺訊號 -->
-    <div class="card"><div class="ch"><span class="ct-ttl">🫀 感受身體的直覺訊號</span></div><div class="cb">
-      <div style="font-size:13px;color:var(--inkL);margin-bottom:12px">學會聽身體：它從不騙你。</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:9px;background:var(--milk);border:1px solid var(--mist)"><span style="font-size:18px">😰</span><div><div style="font-size:13px;font-weight:500;color:var(--bark)">胃緊</div><div style="font-size:12px;color:var(--inkM)">＝ 不對的事</div></div></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:9px;background:var(--milk);border:1px solid var(--mist)"><span style="font-size:18px">🏋️</span><div><div style="font-size:13px;font-weight:500;color:var(--bark)">肩膀重</div><div style="font-size:12px;color:var(--inkM)">＝ 承擔太多</div></div></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:9px;background:var(--milk);border:1px solid var(--mist)"><span style="font-size:18px">🤐</span><div><div style="font-size:13px;font-weight:500;color:var(--bark)">喉嚨卡</div><div style="font-size:12px;color:var(--inkM)">＝ 有話沒說</div></div></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:9px;background:var(--milk);border:1px solid var(--mist)"><span style="font-size:18px">💓</span><div><div style="font-size:13px;font-weight:500;color:var(--bark)">心悸</div><div style="font-size:12px;color:var(--inkM)">＝ 危險訊號</div></div></div>
-      </div>
-    </div></div>
-
-    <!-- D60 最終訊息 -->
+    <!-- D60最終訊息 -->
     <div class="dest-block" style="background:linear-gradient(145deg,#F5EDE3,#EFE4D8);border-color:var(--chai)">
-      <div class="dest-ttl">◆ D60 給我的最終訊息</div>
-      <div class="dest-body" style="font-size:13px;line-height:1.9">我這一世真正的任務：
+      <div class="dest-ttl">◆ D60 最終訊息 + 給未來的妳</div>
+      <div class="dest-body" style="font-size:13px;line-height:1.95">我這一世真正的任務：
 不是「成功」——是「成為完整」。
 
 ① 完整滋養能力——但不再耗竭自己
 ② 完整美學表達——讓累世美學透過沐蜜流出
 ③ 完整真實聲音——說出心底的話
 ④ 完整邊界肌肉——保護核心
-⑤ 完整靈性連結——讓服務有更深層意義
-
-「沐蜜 Moome 只是你的起點，不是你的終點。」</div>
-    </div>
-
-    <!-- 育兒指引 -->
-    <div class="card"><div class="ch"><span class="ct-ttl">👧 育兒・靈魂約定</span></div><div class="cb">
-      <div style="font-size:13px;color:var(--inkM);line-height:1.85">
-        我和孩子之間有深刻的業力連結——不是輕鬆的母女關係，是靈魂約定型的關係。<br><br>
-        <strong style="color:var(--bark)">① 不要用制式要求她</strong><br>
-        她的命格不適合「乖乖牌」模式。<br><br>
-        <strong style="color:var(--bark)">② 重視她的美學・藝術・表達</strong><br>
-        繪畫・音樂・設計・寫作・舞蹈・戲劇。<br><br>
-        <strong style="color:var(--bark)">③ 給她真實的尊重</strong><br>
-        「我相信你能找到自己的路。」<br><br>
-        <strong style="color:var(--bark)">④ 業力主題：學習如何給予自由</strong><br>
-        你要學會不過度保護。教育費不能讓步——這是她未來發展的真實資源，你是她資源的守護者。
+⑤ 完整靈性連結——讓服務有更深層意義</div>
+      <div style="margin-top:16px;padding:16px 18px;background:rgba(93,74,58,.06);border-radius:11px">
+        <div style="font-family:var(--fs);font-size:14px;color:var(--bark);line-height:2;font-style:italic">「妳已經被命盤承諾了一個黃金期（2034-2037）。<br>
+妳現在感受到的所有辛苦——<br>
+都是為了讓 41 歲的妳能完整地綻放。<br>
+<strong>不要在 35 歲時把 41 歲的禮物丟掉。</strong>」</div>
       </div>
-    </div></div>
+    </div>
   </div>
   </div>
 </div>
@@ -927,7 +974,7 @@ function getMon(d){const dt=new Date(d),dow=dt.getDay(),off=dow===0?-6:1-dow;dt.
 function getWkDates(off){const mon=getMon(NOW);const b=new Date(mon);b.setDate(mon.getDate()+off*7);return Array.from({length:7},(_,i)=>{const d=new Date(b);d.setDate(b.getDate()+i);return d;});}
 
 const PAGE_TITLES={'today':'日計劃','week':'週計劃','month':'月計劃','goals':'目標追蹤','journal':'每日日誌','book':'讀書日記','stock':'股票交易日記','service':'服務觀察筆記','ideas':'素材庫','destiny':'事業天命'};
-function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rTodaySlots();rTasks();rEv();rWX();}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();}if(id==='journal'){grY=NOW.getFullYear();grM=NOW.getMonth();buildGrCal();grSum2();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){}if(id==='today'){rDayTimeline();rBizList();setMode(tlMode);}}
+function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rTodaySlots();rTasks();rEv();rWX();}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();}if(id==='journal'){grY=NOW.getFullYear();grM=NOW.getMonth();buildGrCal();grSum2();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){rDestTimeline();}if(id==='today'){rDayTimeline();rBizList();setMode(tlMode);}}
 function tf(id){const el=document.getElementById(id);if(!el)return;const op=el.style.display==='block';el.style.display=op?'none':'block';if(!op){const i=el.querySelector('input[type=text],input[type=time],textarea');if(i)setTimeout(()=>i.focus(),50);}}
 function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');moId=null;moDk2=null;}
@@ -1219,6 +1266,15 @@ function grRenderView(dkk){
   if(main||s1||s2)h+=`<div style="margin-bottom:14px;padding:14px;background:var(--mossL);border-radius:12px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--mossD);margin-bottom:9px">🎯 核心任務</div>${main?`<div style="font-family:var(--fs);font-size:17px;font-weight:700;color:var(--txt);line-height:1.7;margin-bottom:9px">${main}</div>`:''} ${s1?`<div style="display:flex;align-items:center;gap:9px;font-size:14px;color:${d1?'var(--txtL)':'var(--txt)'};${d1?'text-decoration:line-through':''};margin-bottom:4px"><span style="width:19px;height:19px;border-radius:50%;${d1?'background:var(--mossD);':'border:2px solid var(--bdr);'}display:flex;align-items:center;justify-content:center;font-size:11px;color:${d1?'#fff':'transparent'};flex-shrink:0">${d1?'✓':''}</span>${s1}</div>`:''} ${s2?`<div style="display:flex;align-items:center;gap:9px;font-size:14px;color:${d2?'var(--txtL)':'var(--txt)'};${d2?'text-decoration:line-through':''}"><span style="width:19px;height:19px;border-radius:50%;${d2?'background:var(--mossD);':'border:2px solid var(--bdr);'}display:flex;align-items:center;justify-content:center;font-size:11px;color:${d2?'#fff':'transparent'};flex-shrink:0">${d2?'✓':''}</span>${s2}</div>`:''}</div>`;
   if(evs.length)h+=`<div style="margin-bottom:14px;padding:14px;background:var(--milk);border-radius:12px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--bark);margin-bottom:9px">🕐 當日行程</div>${evs.map(e=>`<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:14px"><span style="font-size:12px;color:var(--txtM);min-width:38px;font-weight:700">${e.t||'全天'}</span><div style="width:2px;height:18px;background:var(--milk);border-radius:2px"></div><span>${e.tx}</span></div>`).join('')}</div>`;
   if(hasSlots){const SN=['早晨','上午','下午','晚上'];const SB=['var(--amberL)','var(--mossL)','var(--hazeL)','var(--blushL)'];const SC2=['var(--amberD)','var(--mossD)','var(--hazeD)','var(--blushD)'];h+=`<div style="margin-bottom:14px;padding:14px;border-radius:12px;border:1px solid var(--bdr);background:var(--card2)"><div style="font-size:14px;font-weight:700;color:var(--txtM);margin-bottom:9px">📅 週計劃記錄</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">${[0,1,2,3].map(i=>{const v=wSlots[`s${i}`]||'';return v?`<div style="padding:9px;border-radius:9px;background:${SB[i]}"><div style="font-size:11px;font-weight:700;color:${SC2[i]};margin-bottom:3px">${SN[i]}</div><div style="font-size:13px;color:var(--txt);line-height:1.6">${v}</div></div>`:''}).join('')}</div></div>`;}
+  
+  // reviewQs 顯示
+  const rqs=rec.reviewQs||{};
+  const rqLabels=['今天讓我有感覺的事','今天我學到什麼','今天有為自己做什麼','有沒有踩到界線','服務筆記'];
+  const rqIds=['rq1','rq2','rq3','rq4','rq5'];
+  const hasRqs=rqIds.some(id=>rqs[id]&&rqs[id].trim());
+  if(hasRqs){h+=`<div style="margin-bottom:14px;padding:14px;background:var(--milk);border-radius:12px;border:1px solid var(--mist)"><div style="font-size:13px;font-weight:500;color:var(--bark);margin-bottom:10px">🌙 今日復盤</div>`;rqIds.forEach((id,i)=>{if(rqs[id]&&rqs[id].trim())h+=`<div style="margin-bottom:9px"><div style="font-size:11px;color:var(--inkL);margin-bottom:3px">${rqLabels[i]}</div><div style="font-size:13px;color:var(--inkM);line-height:1.7;font-family:var(--fs)">${rqs[id]}</div></div>`;});h+=`</div>`;}
+  const bs=rec.bodyScan||'';
+  if(bs)h+=`<div style="margin-bottom:12px;padding:11px 14px;background:var(--milk);border-radius:10px;border:1px solid var(--mist)"><div style="font-size:11px;color:var(--inkL);margin-bottom:3px">🫀 身體掃描</div><div style="font-size:13px;color:var(--inkM)">${bs}</div></div>`;
   if(gItems.length)h+=`<div style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;color:var(--bark);margin-bottom:9px">🙏 今日感恩</div>${gItems.map((it,i)=>`<div style="display:flex;align-items:flex-start;gap:11px;margin-bottom:8px;padding:12px 15px;background:var(--card2);border-radius:11px;border:1px solid var(--bdr)"><span style="width:23px;height:23px;border-radius:50%;background:var(--bark);color:#FDF6F0;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span><div style="font-family:var(--fs);font-size:15px;color:var(--txt);line-height:1.7">${it}</div></div>`).join('')}</div>`;
   const allET=[...etags,ecustom].filter(x=>x);if(allET.length)h+=`<div style="margin-bottom:13px;padding:13px 15px;background:var(--amberL);border-radius:11px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--amberD);margin-bottom:7px">⚡ 今天我把能量留給了</div><div style="display:flex;flex-wrap:wrap;gap:6px">${allET.map(t=>`<span style="padding:5px 12px;border-radius:16px;background:var(--coLL);color:var(--bark);font-size:13px;font-weight:600">${t}</span>`).join('')}</div></div>`;
   if(selfMsg)h+=`<div style="margin-bottom:13px;padding:14px;background:var(--hazeL);border-radius:11px;border:1px solid var(--bdr)"><div style="font-size:14px;font-weight:700;color:var(--hazeD);margin-bottom:6px">💜 對自己說</div><div style="font-family:var(--fs);font-size:16px;color:var(--hazeD);font-style:italic;line-height:1.8">${selfMsg}</div></div>`;
@@ -1228,32 +1284,137 @@ function grRenderView(dkk){
 }
 function grRenderEdit(dkk){
   grIsEdit=true;
-  const eb=document.getElementById('grEditBtn');if(eb){eb.textContent='👁 閱覽';eb.onclick=()=>{if(D.gratitude[dkk]||D.tasks[dkk])grRenderView(dkk);};}
+  const eb=document.getElementById('grEditBtn');
+  if(eb){eb.textContent='👁 閱覽';eb.onclick=()=>{if(D.gratitude[dkk]||D.tasks[dkk])grRenderView(dkk);};}
   const ct=document.getElementById('grDayCt');if(!ct)return;
-  const rec=D.gratitude[dkk]||{},items=Array.isArray(rec)?rec:(rec.items||[]),etags=rec.energyTags||[],ecustom=rec.energyCustom||'',selfMsg=rec.selfMsg||'';
-  const td2=D.tasks[dkk]||{},sMain=td2.mainTask||td2.main||'',sS1=td2.s1||'',sS2=td2.s2||'';
+  const rec=D.gratitude[dkk]||{};
+  const items=Array.isArray(rec)?rec:(rec.items||[]);
+  const etags=rec.energyTags||[];
+  const selfMsg=rec.selfMsg||'';
+  const td2=D.tasks[dkk]||{};
+  const sMain=td2.mainTask||td2.main||'';
+  const sS1=td2.s1||'',sS2=td2.s2||'';
   grTags=[...etags];
   const isT=dkk===TODAY;
-  const ETAGLIST=[{t:'陪伴女兒',e:'👧'},{t:'服務客人',e:'💆‍♀️'},{t:'創作拍攝',e:'🎬'},{t:'好好休息',e:'🌙'},{t:'自我照顧',e:'🌸'},{t:'學習成長',e:'📚'},{t:'家人陪伴',e:'🏠'},{t:'運動身體',e:'🏃‍♀️'},{t:'財務整理',e:'💰'},{t:'品牌思考',e:'💼'}];
-  const SLIST=['我今天其實已經很努力了。','我今天做到了自己能做的。','我今天允許自己不夠完美。','我今天選擇了對的事。','我值得被好好對待。'];
+
+  // 復盤引導問題
+  const REVIEW_QS=[
+    {id:'rq1',label:'今天讓我有感覺的事是什麼？',ph:'一件讓你心動、感動、或困擾的事...'},
+    {id:'rq2',label:'今天我學到什麼？',ph:'任何一個小發現、新認識、或確認...'},
+    {id:'rq3',label:'今天我有為自己做什麼嗎？',ph:'再小的事都算——為自己泡杯茶、說一句「不」...'},
+    {id:'rq4',label:'今天有沒有踩到自己的界線？',ph:'有沒有答應了不該答應的？被情緒帶走了嗎？'},
+    {id:'rq5',label:'服務筆記：哪位客人有感覺？技術細節？閃過的想法？',ph:'哪個客人讓你印象深刻？哪個技術值得記下？'},
+  ];
+
+  const ETAGLIST=[
+    {t:'陪伴女兒',e:'👧'},{t:'服務客人',e:'💆‍♀️'},{t:'創作拍攝',e:'🎬'},
+    {t:'好好休息',e:'🌙'},{t:'自我照顧',e:'🌸'},{t:'學習成長',e:'📚'},
+    {t:'家人陪伴',e:'🏠'},{t:'運動身體',e:'🏃‍♀️'},{t:'財務整理',e:'💰'},{t:'品牌思考',e:'💼'}
+  ];
+  const SELF_LIST=['我今天其實已經很努力了。','我今天做到了自己能做的。','我今天允許自己不夠完美。','我今天選擇了對的事。','我值得被好好對待。'];
+
   let h='';
-  if(isT&&sMain)h+=`<div style="font-size:13px;background:var(--mossL);border-radius:9px;padding:11px 14px;margin-bottom:14px;color:var(--mossD)">✅ 今日任務已記錄：${sMain}</div>`;
-  if(isT&&!sMain)h+=`<div style="font-size:13px;background:var(--milk);border-radius:9px;padding:11px 14px;margin-bottom:14px;color:var(--bark)">💡 請先在「今日儀式」填寫核心任務並儲存，這裡就會自動顯示。</div>`;
-  if(!isT)h+=`<div style="margin-bottom:14px;padding:14px;background:var(--mossL);border-radius:12px;border:1px solid var(--bdr)"><div style="font-size:13px;font-weight:700;color:var(--mossD);margin-bottom:9px">🎯 那天的核心一件事</div><textarea id="grEM" rows="2" class="ta" placeholder="那天最重要的一件事是什麼？">${sMain}</textarea><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px"><input id="grES1" type="text" class="inp" placeholder="次要任務 1" value="${sS1}" style="font-size:13px"><input id="grES2" type="text" class="inp" placeholder="次要任務 2" value="${sS2}" style="font-size:13px"></div></div>`;
-  h+=`<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:700;color:var(--bark);margin-bottom:9px">🙏 感恩的事（越具體越好）</div><div style="font-size:12px;color:var(--txtL);margin-bottom:10px">例如：「感恩客人帶來早餐，讓我感受到被記得」</div>`;
-  for(let i=1;i<=3;i++)h+=`<div style="margin-bottom:10px"><label style="font-size:12px;font-weight:700;color:var(--bark);display:block;margin-bottom:5px">🌿 感恩 ${i}</label><textarea id="grE${i}" rows="2" class="ta" placeholder="感恩今天...">${items[i-1]||''}</textarea></div>`;
-  h+=`</div><div style="background:var(--amberL);border:1.5px solid var(--bdr);border-radius:12px;padding:14px;margin-bottom:14px"><div style="font-size:13px;font-weight:700;color:var(--amberD);margin-bottom:8px">⚡ 今天我把能量留給了什麼？</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">${ETAGLIST.map(({t,e})=>`<div onclick="grTogTag(this,'${t}')" class="dtag" style="border-color:${etags.includes(t)?'var(--bark)':'var(--bdr)'};background:${etags.includes(t)?'var(--bark)':'rgba(255,255,255,.5)'};color:${etags.includes(t)?'#fff':'var(--bark)'}">${e} ${t}</div>`).join('')}</div><textarea id="grEC" rows="1" class="ta" placeholder="或自己填寫...">${ecustom}</textarea></div>`;
-  h+=`<div style="background:var(--hazeL);border:1.5px solid var(--bdr);border-radius:12px;padding:14px;margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--hazeD);margin-bottom:6px">💜 今天，我想對自己說</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">${SLIST.map(s=>`<div onclick="grSetSelf(this,'${s}')" class="dtag" style="border-color:${selfMsg===s?'var(--hazeD)':'var(--bdr)'};background:${selfMsg===s?'var(--hazeD)':'transparent'};color:${selfMsg===s?'#fff':'var(--hazeD)'};font-family:var(--fs)">${s}</div>`).join('')}</div><textarea id="grESelf" rows="2" class="ta" placeholder="或用自己的話..." style="font-style:italic;font-family:var(--fs)">${selfMsg}</textarea></div>`;
-  h+=`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="saveGr('${dkk}')">💾 儲存今天</button>${D.gratitude[dkk]?`<button class="btn btn-s" style="color:var(--blushD);border-color:var(--blushL)" onclick="delGr('${dkk}')">🗑️ 清除感恩</button>`:''}</div>`;
+
+  // 頂部提示
+  h+=`<div style="padding:13px 16px;background:var(--milk);border-radius:10px;border:1px solid var(--mist);margin-bottom:18px">
+    <div style="font-size:12px;font-weight:500;color:var(--bark);margin-bottom:4px">🌙 晚上 20:30 · 好好結束一天</div>
+    <div style="font-size:12px;color:var(--inkL);line-height:1.7">核心精神：好好結束一天，明天才有新的開始。</div>
+  </div>`;
+
+  // 若是今天且有任務記錄，顯示提示
+  if(isT&&sMain){
+    h+=`<div style="font-size:13px;background:var(--mossL);border-radius:9px;padding:10px 14px;margin-bottom:14px;color:var(--mossD)">✅ 今日任務已記錄：${sMain}</div>`;
+  }
+  if(isT&&!sMain){
+    h+=`<div style="font-size:13px;background:var(--milk);border-radius:9px;padding:10px 14px;margin-bottom:14px;color:var(--inkM)">💡 今日任務可在「日計劃」頁面設定，這裡會自動顯示。</div>`;
+  }
+  if(!isT){
+    h+=`<div style="margin-bottom:14px;padding:13px;background:var(--mossL);border-radius:11px;border:1px solid var(--moss)"><div style="font-size:12px;font-weight:500;color:var(--mossD);margin-bottom:8px">🎯 那天的核心任務</div><textarea id="grEM" rows="2" class="ta" placeholder="那天最重要的一件事是什麼？" style="font-size:13px">${sMain}</textarea><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><input id="grES1" type="text" class="inp" placeholder="次要任務 1" value="${sS1}" style="font-size:13px"><input id="grES2" type="text" class="inp" placeholder="次要任務 2" value="${sS2}" style="font-size:13px"></div></div>`;
+  }
+
+  // 自我復盤問
+  h+=`<div style="margin-bottom:18px">
+    <div style="font-size:13px;font-weight:500;color:var(--bark);margin-bottom:12px;letter-spacing:.04em">🌙 自我復盤</div>`;
+  REVIEW_QS.forEach((q,i)=>{
+    const saved=(rec.reviewQs||{})[q.id]||'';
+    h+=`<div style="margin-bottom:12px">
+      <label style="font-size:12px;font-weight:500;color:var(--bark);display:block;margin-bottom:5px;letter-spacing:.03em">${q.label}</label>
+      <textarea id="grRQ${i}" rows="2" class="ta" placeholder="${q.ph}" oninput="grSaveRQ('${dkk}',${i})" style="font-size:13px">${saved}</textarea>
+    </div>`;
+  });
+  h+=`</div>`;
+
+  // 感恩日記
+  h+=`<div style="margin-bottom:18px">
+    <div style="font-size:13px;font-weight:500;color:var(--bark);margin-bottom:12px;letter-spacing:.04em">🙏 感恩日記</div>
+    <div style="font-size:12px;color:var(--inkL);margin-bottom:10px">越具體越好。例如：「感恩客人帶來早餐，讓我感受到被記得」</div>`;
+  for(let i=1;i<=3;i++){
+    h+=`<div style="margin-bottom:9px">
+      <label style="font-size:12px;font-weight:500;color:var(--bark);display:block;margin-bottom:5px">感恩 ${i}</label>
+      <textarea id="grE${i}" rows="2" class="ta" placeholder="感恩今天..." style="font-size:13px">${items[i-1]||''}</textarea>
+    </div>`;
+  }
+  h+=`</div>`;
+
+  // 身體掃描
+  h+=`<div style="margin-bottom:18px;padding:13px 15px;background:var(--milk);border-radius:11px;border:1px solid var(--mist)">
+    <div style="font-size:12px;font-weight:500;color:var(--bark);margin-bottom:8px">🫀 身體掃描 1 分鐘</div>
+    <div style="font-size:12px;color:var(--inkL);margin-bottom:9px">從頭到腳感受一下，哪裡緊？哪裡需要被照顧？</div>
+    <textarea id="grBodyScan" rows="2" class="ta" placeholder="肩膀緊？胃不舒服？腳冷？..." oninput="grSaveBody('${dkk}',this.value)" style="font-size:13px">${rec.bodyScan||''}</textarea>
+  </div>`;
+
+  // 今天的能量給了什麼
+  h+=`<div style="margin-bottom:18px;background:var(--amberL);border:1px solid var(--amber);border-radius:11px;padding:13px 15px">
+    <div style="font-size:12px;font-weight:500;color:var(--amberD);margin-bottom:8px">⚡ 今天我把能量留給了什麼？</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px">
+      ${ETAGLIST.map(({t,e})=>`<div onclick="grTogTag(this,'${t}')" class="dtag" style="border-color:${etags.includes(t)?'var(--bark)':'var(--bdr)'};background:${etags.includes(t)?'var(--bark)':'transparent'};color:${etags.includes(t)?'var(--milk)':'var(--inkM)'}">${e} ${t}</div>`).join('')}
+    </div>
+    <textarea id="grEC" rows="1" class="ta" placeholder="或自己填寫..." style="font-size:13px">${rec.energyCustom||''}</textarea>
+  </div>`;
+
+  // 對自己說
+  h+=`<div style="margin-bottom:18px;background:var(--hazeL);border:1px solid var(--haze);border-radius:11px;padding:13px 15px">
+    <div style="font-size:12px;font-weight:500;color:var(--hazeD);margin-bottom:6px">💜 今天，我想對自己說</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px">
+      ${SELF_LIST.map(s=>`<div onclick="grSetSelf(this,'${s}')" class="dtag" style="border-color:${selfMsg===s?'var(--hazeD)':'var(--bdr)'};background:${selfMsg===s?'var(--hazeD)':'transparent'};color:${selfMsg===s?'#fff':'var(--inkM)'};font-family:var(--fs)">${s}</div>`).join('')}
+    </div>
+    <textarea id="grESelf" rows="2" class="ta" placeholder="或用自己的話..." style="font-style:italic;font-family:var(--fs);font-size:13px">${selfMsg}</textarea>
+  </div>`;
+
+  h+=`<div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn btn-p" onclick="saveGr('${dkk}')">💾 儲存今天</button>
+    ${D.gratitude[dkk]?`<button class="btn btn-s" style="color:var(--blushD);border-color:var(--blushL)" onclick="delGr('${dkk}')">🗑️ 清除</button>`:''}
+  </div>`;
+
   ct.innerHTML=h;
 }
+
+function grSaveRQ(dkk,idx){
+  const REVIEW_QS_IDS=['rq1','rq2','rq3','rq4','rq5'];
+  if(!D.gratitude[dkk])D.gratitude[dkk]={};
+  if(!D.gratitude[dkk].reviewQs)D.gratitude[dkk].reviewQs={};
+  const el=document.getElementById('grRQ'+idx);
+  if(el)D.gratitude[dkk].reviewQs[REVIEW_QS_IDS[idx]]=el.value;
+  sv();
+}
+function grSaveBody(dkk,val){
+  if(!D.gratitude[dkk])D.gratitude[dkk]={};
+  D.gratitude[dkk].bodyScan=val;
+  sv();
+}
+
 function grTogTag(el,tag){if(el.style.background.includes('coD')||el.classList.contains('sel')){el.style.cssText=`border-color:var(--bdr);background:rgba(255,255,255,.5);color:var(--bark);padding:7px 14px;border-radius:18px;font-size:13px;font-weight:600;cursor:pointer;border:2px solid`;grTags=grTags.filter(t=>t!==tag);}else{el.style.cssText=`border-color:var(--bark);background:var(--bark);color:#FDF6F0;padding:7px 14px;border-radius:18px;font-size:13px;font-weight:600;cursor:pointer;border:2px solid`;grTags.push(tag);}}
 function grSetSelf(el,msg){document.querySelectorAll('[onclick*="grSetSelf"]').forEach(t=>{t.style.background='transparent';t.style.color='var(--hazeD)';t.style.borderColor='var(--bdr)';});el.style.background='var(--hazeD)';el.style.color='#fff';el.style.borderColor='var(--hazeD)';const ta=document.getElementById('grESelf');if(ta)ta.value=msg;}
 function saveGr(dkk){
   const items=[1,2,3].map(i=>{const el=document.getElementById('grE'+i);return el?el.value.trim():'';}).filter(x=>x);
   const ec=document.getElementById('grEC'),sm=document.getElementById('grESelf');
+  const bs=document.getElementById('grBodyScan');
+  const RQIDS=['rq1','rq2','rq3','rq4','rq5'];
+  const rqs={};RQIDS.forEach((id,i)=>{const el=document.getElementById('grRQ'+i);if(el&&el.value.trim())rqs[id]=el.value.trim();});
   if(!D.gratitude)D.gratitude={};
-  if(items.length||grTags.length||(ec&&ec.value.trim())||(sm&&sm.value.trim())){D.gratitude[dkk]={items,energyTags:[...grTags],energyCustom:ec?ec.value.trim():'',selfMsg:sm?sm.value.trim():''};}
+  const existing=D.gratitude[dkk]||{};
+  const hasContent=items.length||grTags.length||(ec&&ec.value.trim())||(sm&&sm.value.trim())||Object.keys(rqs).length||(bs&&bs.value.trim());
+  if(hasContent){D.gratitude[dkk]={...existing,items,energyTags:[...grTags],energyCustom:ec?ec.value.trim():'',selfMsg:sm?sm.value.trim():'',reviewQs:rqs,bodyScan:bs?bs.value.trim():''};}
   if(dkk!==TODAY){const m2=document.getElementById('grEM');const s12=document.getElementById('grES1');const s22=document.getElementById('grES2');if(m2&&m2.value.trim()){if(!D.tasks[dkk])D.tasks[dkk]={};D.tasks[dkk].mainTask=m2.value.trim();if(s12)D.tasks[dkk].s1=s12.value.trim();if(s22)D.tasks[dkk].s2=s22.value.trim();}}
   sv();buildGrCal();grSum2();
   if(items.length){toast('💚 已儲存，分析中...');setTimeout(()=>grLocalAna(dkk),1200);}
@@ -1339,6 +1500,183 @@ function dIdea(id){D.ideas=D.ideas.filter(i=>i.id!==id);sv();rIdeas();rIdeas2();
 function rIdeas(){const el=document.getElementById('ideaList');if(!el)return;const ideas=D.ideas||[];el.innerHTML=ideas.length?ideas.slice(0,20).map(i=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px;padding:3px 10px;border-radius:8px;background:var(--mossL);color:var(--mossD);flex-shrink:0;font-weight:700">${i.cat}</span><div style="flex:1"><div style="font-size:14px;color:var(--txt);line-height:1.5">${i.tx}</div><div style="font-size:11px;color:var(--txtL);margin-top:2px">${i.date}</div></div><button class="btn-del" onclick="dIdea(${i.id})">✕</button></div>`).join(''):'<div style="text-align:center;padding:20px;color:var(--txtL)">把靈感、故事、拍攝想法記錄在這裡</div>';}
 function rIdeas2(){const el=document.getElementById('ideaList2');if(!el)return;const ideas=D.ideas||[];el.innerHTML=ideas.length?ideas.slice(0,30).map(i=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)"><span style="font-size:12px;padding:3px 10px;border-radius:8px;background:var(--mossL);color:var(--mossD);flex-shrink:0;font-weight:700">${i.cat}</span><div style="flex:1"><div style="font-size:14px;color:var(--txt);line-height:1.5">${i.tx}</div><div style="font-size:11px;color:var(--txtL);margin-top:2px">${i.date}</div></div><button class="btn-del" onclick="dIdea(${i.id})">✕</button></div>`).join(''):'<div style="text-align:center;padding:20px;color:var(--txtL)">把靈感・故事・拍攝想法記錄在這裡</div>';}
 
+
+// ────────────────────────────────
+// 事業天命時間軸（折疊式）
+// ────────────────────────────────
+const DEST_PHASES = [
+  {
+    period:'2025.10 – 2026.8',emoji:'⚠️',label:'目前末期・收尾衝擊',type:'warn',
+    summary:'18年的「結帳期」——所有未處理的、未說清的、未邊界化的事，都會被宇宙翻出來。',
+    details:`為什麼最近這麼多事？
+為什麼我以為已經放下的，又冒出來？
+為什麼我想要安靜，但事情一直來？
+
+這不是巧合——是宇宙的「結帳通知」。
+「隱藏耗損」被強烈啟動：過去未處理的事情突然冒出來，宇宙在「清掃」舊業。`,
+  },
+  {
+    period:'2026.8.23 – 2028.10.10',emoji:'✨',label:'第一次真實啟動',type:'good',
+    summary:'你會開始「真的知道自己要什麼」。沐蜜3.0的方向變清楚。',
+    details:`1. 內在覺醒
+不再是「我大概想要」，是「我清楚要這個」。內在的太陽開始浮上來。
+
+2. 事業雛形成形
+沐蜜 Moome 3.0 的方向變清楚。可能開始寫作 / 內容輸出 / 個人品牌。客戶開始「找到你」而不是你去找客戶。
+
+3. 關係的真實面浮現
+跟伴侶的關係會接受真實檢驗。跟孩子的關係進入新階段。跟原生家庭的關係會被釐清。
+
+4. 健康、節律、自我照顧建立
+你開始真的把自己放在第一位。
+
+⚠️ 特別注意時段：
+• 2026.11 – 2027.2：過運轉換，可能有家庭重大議題
+• 2027 夏季：突發機會或誘惑——要分辨清楚
+• 2028 前半年：是為「考驗期」的準備`,
+  },
+  {
+    period:'2028.10.10 – 2031.4.22',emoji:'⚠️⚠️⚠️',label:'最大考驗期',type:'danger',
+    summary:'接下來16年最關鍵的2.5年。土星三條軸線同時考驗：伴侶/婚姻 + 信念崩塌 + 靈魂深度。',
+    details:`1. 婚姻/伴侶關係的最大考驗
+如果2026-2028已建立健康邊界 → 可以通過
+如果財務不清 → 會在這時候裂開
+
+2. 健康的關鍵測試
+過去累積的身體債會在這時候要回來。2026-2028沒建立好健康節律 → 會出大問題。
+
+3. 財務結構的檢驗
+緊急儲備有沒有6-12個月？收入是否穩定？與伴侶的財務界線是否清楚？
+
+4. 事業的「結構考驗」
+「我做的事，能不能持續到60歲？」不能持續的部分會被淘汰。
+
+5. 信念體系的崩塌與重建
+過去相信的「應該」會被打碎。重新建立屬於自己的「真實信念」。
+
+★★★ 這2.5年的逆襲關鍵：
+• 2028.10 前準備好——身體、財務、邊界、事業基礎
+• 不要做重大新承諾（婚姻、生育、創業、大投資）
+• 這是「淨化期」而非「擴張期」
+• 守住你已有的，比追求新的更重要
+
+🎯 掉坑的最大風險：
+• 跟伴侶在這時候結婚 → 後續很辛苦
+• 跟伴侶在這時候大筆共財 → 容易爆雷
+• 跟前夫家在這時候鬆口教育費 → 影響孩子長期發展
+• 這時候大投資/創業/借錢 → 高機率虧損
+• 忽略健康警訊 → 後續代價極大`,
+  },
+  {
+    period:'2031.4.22 – 2033.7.28',emoji:'📚✨',label:'智慧輸出收成期',type:'good',
+    summary:'第一波真實收成。開始「以智慧變現」，個人品牌成形。',
+    details:`1. 你開始「以智慧變現」
+不只是用手做服務。開始用「教學、內容、寫作、課程」賺錢。收入結構出現質變。
+
+2. 個人品牌成形
+影響力擴大。不只是台南的美容師。開始有跨城市、甚至跨國的客戶。
+
+3. 可能的具體形態
+出書、開課、做工作坊。建立線上社群。成為某個領域的「意見領袖」。收徒、培訓、傳承。
+
+4. 財務的明顯提升
+從「服務一個人賺一份錢」，進入「服務一群人賺多份錢」。被動收入開始出現。`,
+  },
+  {
+    period:'2033.7.28 – 2034.7.4',emoji:'🌀',label:'中場休息與沉澱',type:'neutral',
+    summary:'短暫歇息。想要安靜、獨處。靈性深度的進入。這個感受不是退步——是準備躍升。',
+    details:`1. 暫時的「淡出公眾」
+你會想要安靜、獨處、不被打擾。可能主動「縮減」事業規模。
+
+2. 靈性深度的進入
+接觸更深的修行 / 靈性 / 冥想 / 占星。可能去某個地方靈修、閉關、深度療癒。
+
+3. 內在整合
+把過去7年所有發生的事「整理乾淨」。為下一階段（黃金期）做準備。`,
+  },
+  {
+    period:'2034.7.4 – 2037.3.4',emoji:'🌟🌟🌟',label:'★ 黃金綻放期',type:'golden',
+    summary:'你人生的「真正全盛時刻」。41-43歲：事業、財富、影響力同時達到新高。',
+    details:`1. 41-43 歲：你的「人生顛峰」
+事業、財富、影響力同時達到新高。你會看著鏡子說：「這才是真正的我。」
+
+2. 沐蜜 Moome 的完整形態
+從個人工作室 → 美學系統 → 品牌生態。可能有自己的產品線、課程、書、空間。
+
+3. 感情層面的真實綻放
+如果通過2028-2031的考驗 → 進入深度穩定期。
+如果分開 → 在這時可能遇到「真正的靈魂伴侶」。
+你選擇的可能是：「不需要婚姻證明的深度連結」。
+
+4. 財務的「飛躍」
+收入可能比現在翻3-5倍。被動收入結構成熟。開始能真正「自由」地選擇生活。
+
+5. 女性能量的完整綻放
+美麗、智慧、深度、力量全部整合。你會成為「很多人想成為」的那種女性。`,
+  },
+  {
+    period:'2037.3.4 – 2039.4.22',emoji:'☀️',label:'整合期',type:'good',
+    summary:'「站穩、深化、傳承」。44-46歲，你已成為曾經想成為的那個人。',
+    details:`這2年是站穩、深化、傳承。
+你大概44-46歲——你會發現自己已經成為「曾經想成為的那個人」。`,
+  },
+  {
+    period:'2039.4.22 – 2040.3.28',emoji:'🔥',label:'警戒區',type:'warn',
+    summary:'46-47歲。要警覺健康（血液、發炎、女性系統）、衝動的決定、與人的衝突。',
+    details:`特別照顧自己：
+• 健康（特別是血液、發炎、女性系統）
+• 避免衝動的決定
+• 注意與人的衝突`,
+  },
+  {
+    period:'2040.3.28 – 2042.8.23',emoji:'⚡',label:'突破期 + Jupiter Dasha 收尾',type:'good',
+    summary:'可能有突破性的「最後一次轉型」。47-49歲，準備好下一個19年（Saturn Dasha）的形態。',
+    details:`1. 可能有突破性的「最後一次轉型」
+2. 進入下一個Dasha（Saturn）前的「重整」
+3. 可能會有「跨界、突破、不被理解」的選擇
+
+你會準備好「下一個19年（Saturn Dasha）」的形態。`,
+  },
+];
+
+const PHASE_STYLE = {
+  good:   {dot:'var(--moss)',  bg:'var(--mossL)', bdr:'var(--moss)',  tc:'var(--mossD)'},
+  golden: {dot:'var(--amber)', bg:'var(--amberL)',bdr:'var(--amber)', tc:'var(--amberD)'},
+  warn:   {dot:'var(--blush)', bg:'var(--blushL)',bdr:'var(--blush)', tc:'var(--blushD)'},
+  danger: {dot:'#C44040',      bg:'#FEF2F2',      bdr:'#C44040',      tc:'#8A2020'},
+  neutral:{dot:'var(--haze)',  bg:'var(--hazeL)', bdr:'var(--haze)',  tc:'var(--hazeD)'},
+};
+const openPhases = new Set();
+
+function rDestTimeline(){
+  const el = document.getElementById('destTimeline');
+  if(!el) return;
+  el.innerHTML = DEST_PHASES.map((p,i) => {
+    const s = PHASE_STYLE[p.type] || PHASE_STYLE.good;
+    const isOpen = openPhases.has(i);
+    const isNow = p.period.includes('2025') || p.period.includes('2026.8.23 – 2028');
+    return `<div style="margin-bottom:8px;border-radius:12px;overflow:hidden;border:1.5px solid ${isNow?'var(--bark)':s.bdr};box-shadow:${isNow?'0 2px 8px rgba(93,74,58,.12)':'none'}">
+      <div onclick="togglePhase(${i})" style="display:flex;align-items:center;gap:12px;padding:13px 16px;background:${isNow?'var(--milk)':s.bg};cursor:pointer;transition:all .18s;user-select:none">
+        <div style="width:10px;height:10px;border-radius:50%;background:${s.dot};flex-shrink:0"></div>
+        <div style="flex:1">
+          <div style="font-size:11px;color:${s.tc};font-weight:500;letter-spacing:.04em;margin-bottom:2px">${p.emoji} ${p.period}${isNow?' · 現在':''}</div>
+          <div style="font-family:var(--fs);font-size:14px;font-weight:500;color:var(--bark)">${p.label}</div>
+          <div style="font-size:12px;color:var(--inkM);margin-top:3px;line-height:1.5">${p.summary}</div>
+        </div>
+        <span style="font-size:14px;color:var(--inkL);transition:.2s;transform:${isOpen?'rotate(180deg)':'none'};display:block">▾</span>
+      </div>
+      ${isOpen ? `<div style="padding:14px 16px;background:#fff;border-top:1px solid ${s.bdr}">
+        <div style="font-size:13px;color:var(--inkM);line-height:1.9;white-space:pre-wrap">${p.details}</div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+function togglePhase(i){
+  if(openPhases.has(i)) openPhases.delete(i);
+  else openPhases.add(i);
+  rDestTimeline();
+}
+
 // ────────────────────────────────
 // 日計劃時間軸
 // ────────────────────────────────
@@ -1356,8 +1694,9 @@ const DEFAULT_TIMELINE = [
   {time:'17:30',text:'處理沐蜜事務',cat:'biz'},
   {time:'18:30',text:'晚餐・陪女兒',cat:'family'},
   {time:'20:00',text:'寫作・拍影片・做內容',cat:'biz'},
+  {time:'20:30',text:'晚間日誌・自我復盤・感恩',cat:'self'},
   {time:'21:30',text:'洗澡・保養儀式',cat:'self'},
-  {time:'22:00',text:'閱讀・靜心・感恩日記',cat:'self'},
+  {time:'22:00',text:'閱讀・靜心',cat:'self'},
   {time:'22:30',text:'準備睡覺',cat:'routine'},
 ];
 const CAT_STYLE = {
