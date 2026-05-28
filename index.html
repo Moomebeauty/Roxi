@@ -451,6 +451,8 @@ body{
 
   <div class="sidebar-section">靈魂指引</div>
   <div class="nav-item" onclick="nav('destiny',this)"><span class="icon">✨</span>事業天命</div>
+  <div class="nav-item" onclick="nav('invest',this)"><span class="icon">💰</span>投資指引</div>
+  <div class="nav-item" onclick="nav('house',this)"><span class="icon">🏠</span>關於房子</div>
   <div class="nav-item" onclick="nav('now826',this)"><span class="icon">🧭</span>現在→8月行動</div>
 </div>
 
@@ -929,6 +931,7 @@ body{
 <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
 <script>
+
 // ══════════════════════════════════════════════
 // 資料層 - 永遠先本地，再同步雲端
 // ══════════════════════════════════════════════
@@ -2511,6 +2514,7 @@ window.addEventListener('load',()=>{
 });
 // 頁面關閉前強制存本地
 window.addEventListener('beforeunload',()=>saveLocal());
+
 </script>
 </body>
 </html>
