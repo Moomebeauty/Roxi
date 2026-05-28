@@ -1960,7 +1960,7 @@ function rStocks(){
   el.innerHTML=list.map(s=>{
     const pnl=s.pnl||0;
     const buyPrice=s.price||0;
-    const slPrice=buyPrice>0?(buyPrice*(1+(s.sl||−10)/100)).toFixed(0):'—';
+    const slPrice=buyPrice>0?(buyPrice*(1+(s.sl||-10)/100)).toFixed(0):'—';
     const tp1Price=buyPrice>0?(buyPrice*(1+(s.tp1||20)/100)).toFixed(0):'—';
     const tp2Price=buyPrice>0?(buyPrice*(1+(s.tp2||40)/100)).toFixed(0):'—';
     const exits=s.exits||[];
