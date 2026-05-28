@@ -1276,7 +1276,7 @@ const MAIN_TASK_TAGS=['🎬 拍一支重要影片|拍一支重要影片','📚 �
 
 const NOW=new Date(),TODAY=dk(NOW);
 const TMR=new Date(NOW);TMR.setDate(NOW.getDate()+1);
-let moY=NOW.getFullYear(),moM=NOW.getMonth(),wkOff=0,selMoDk=null,selGrDk=null,grY=NOW.getFullYear(),grM=NOW.getMonth(),moId=null,moDk2=null,grIsEdit=false,grTags=[],bookFilter='all',stockFilter='all',svcFilter='all';
+let moY=NOW.getFullYear(),moM=NOW.getMonth(),wkOff=0,selMoDk=null,selGrDk=null,grY=NOW.getFullYear(),grM=NOW.getMonth(),moId=null,moDk2=null,grIsEdit=false,grTags=[],bookFilter='all',stockFilter='all',svcFilter='all',jnlFilter='all';
 
 function dk(d){return d.toISOString().slice(0,10);}
 function mks(d){return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -2669,7 +2669,7 @@ const JNL_SELF=[
   '我今天其實已經很努力了。','我今天做到了自己能做的。',
   '我今天允許自己不夠完美。','我今天選擇了對的事。','我值得被好好對待。'
 ];
-let jnlETagSel=[], jnlSelfSel='', jnlFilter='all';
+let jnlETagSel=[], jnlSelfSel='';
 
 function initJournalForm(){
   const dateEl=document.getElementById('jnlDate');
