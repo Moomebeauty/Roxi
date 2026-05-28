@@ -1917,6 +1917,10 @@ function addStock(){
 function editStock(id){
   const s=D.stocks.find(s=>s.id===id);
   if(!s)return;
+  // 確保舊版資料有新欄位
+  if(!s.exits)s.exits=[];
+  if(!s.r1)s.r1=s.review||'';
+  if(!s.r2)s.r2='';if(!s.r3)s.r3='';if(!s.r4)s.r4='';
   const map={stDate:'date',stCode:'code',stPrice:'price',stQty:'qty',stPosition:'position',
     stMaxLoss:'maxLoss',stReason:'reason',stKline:'kline',stMarket:'market',stChip:'chip',
     stSL:'sl',stTP1:'tp1',stTP2:'tp2',stR1:'r1',stR2:'r2',stR3:'r3',stR4:'r4'};
@@ -1950,8 +1954,21 @@ function filterStock(f,el){
 
 function rStocks(){
   const el=document.getElementById('stockList');if(!el)return;
+  // 相容舊版資料：確保每筆記錄有必要欄位
+  (D.stocks||[]).forEach(s=>{
+    if(!s.exits)s.exits=[];
+    if(!s.r1)s.r1=s.review||s.復盤||'';
+    if(!s.r2)s.r2='';if(!s.r3)s.r3='';if(!s.r4)s.r4='';
+    if(!s.type&&s.操作)s.type=s.操作;
+    if(!s.type)s.type='買進';
+    if(!s.code&&s.stCode)s.code=s.stCode;
+    if(!s.date&&s.交易日期)s.date=s.交易日期;
+    if(!s.price)s.price=parseFloat(s.成交價||0);
+    if(!s.mood)s.mood=s.心情||s.stMood||'';
+    if(s.pnl===undefined)s.pnl=parseFloat(s.損益||0);
+  });
   const stocks=D.stocks||[];
-  let list=[...stocks].sort((a,b)=>b.date.localeCompare(a.date));
+  let list=[...stocks].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   if(stockFilter!=='all')list=list.filter(s=>s.type===stockFilter);
   if(!list.length){
     el.innerHTML=`<div style="text-align:center;padding:40px 20px"><div style="font-size:36px;margin-bottom:12px">📈</div><div style="font-size:14px;color:var(--inkM)">還沒有交易記錄<br>記錄你的第一筆交易</div></div>`;
@@ -2021,7 +2038,7 @@ function rStockStat(){
   const allPnl=stocks.map(s=>{
     const exits=s.exits||[];
     const ep=exits.reduce((a,e)=>a+(e.pnl||0),0);
-    return ep||s.pnl||0;
+    return ep||parseFloat(s.pnl||0)||0;
   });
   const totalPnl=allPnl.reduce((a,b)=>a+b,0);
   const wins=allPnl.filter(p=>p>0).length;
