@@ -7,212 +7,309 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F7F3EE;
+  /* 導覽列 — 溫暖白底 */
+  --nav-bg:#FFFFFF;
+  --nav-border:#F0ECE8;
+  --nav-hover:#FBF7F4;
+  --nav-active:#FDF2EB;
+  --nav-text:#8A7A70;
+  --nav-text-active:#5D3A28;
+  --nav-accent:#E8916A;
+
+  /* 頁面背景 */
+  --bg:#F8F5F2;
   --white:#FFFFFF;
-  --sidebar:#2D2420;
-  --sidebar-hover:#3D3028;
-  --sidebar-active:#C9A88E;
-  --accent:#C9A88E;
-  --accent-dark:#8A6A52;
-  --accent-light:#F5EDE3;
-  --red:#C0392B;
-  --red-light:#FDECEA;
-  --green:#2E7D52;
-  --green-light:#E8F5EE;
-  --gold:#B8860B;
-  --gold-light:#FFF8E1;
-  --border:#E0D8D0;
-  --text:#1A1410;
-  --text-2:#5A4E44;
-  --text-3:#9A8E84;
-  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.05);
-  --radius:10px;
+  --border:#EDE8E3;
+  --border-2:#DDD6CF;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,.08);
+
+  /* 文字 */
+  --text:#2D2420;
+  --text-2:#6B5E56;
+  --text-3:#B0A098;
+
+  /* 功能色 — 柔和版 */
+  --green:#3D9970;   --green-bg:#F0FAF5;   --green-light:#A8D5BE;
+  --red:#E05C5C;     --red-bg:#FFF4F4;     --red-light:#F4AAAA;
+  --blue:#4A90D9;    --blue-bg:#F0F7FF;    --blue-light:#A8C8F0;
+  --purple:#8E72C8;  --purple-bg:#F7F3FF;  --purple-light:#C5B3E8;
+  --orange:#E8916A;  --orange-bg:#FFF6F1;  --orange-light:#F4C5A8;
+  --teal:#3AA8A0;    --teal-bg:#F0FAF9;    --teal-light:#A8DAD6;
+  --gold:#C8973A;    --gold-bg:#FFF9EE;    --gold-light:#F0CF88;
+  --pink:#D9619A;    --pink-bg:#FFF2F7;    --pink-light:#EDAACB;
+
+  --accent:#E8916A;
+  --accent-dark:#5D3A28;
+
   --serif:'Noto Serif TC',serif;
   --sans:'Noto Sans TC',sans-serif;
+  --r:12px;
 }
+
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;}
+html{font-size:15px;}
+body{
+  font-family:var(--sans);background:var(--bg);
+  color:var(--text);line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
 
 /* ── Layout ── */
 .layout{display:flex;height:100vh;overflow:hidden;}
 
-/* ── Sidebar ── */
+/* ── Sidebar — 白底清爽版 ── */
 .sidebar{
-  width:200px;min-width:200px;
-  background:var(--sidebar);
+  width:196px;min-width:196px;flex-shrink:0;
+  background:var(--nav-bg);
+  border-right:1px solid var(--nav-border);
   display:flex;flex-direction:column;
-  overflow-y:auto;flex-shrink:0;
+  overflow-y:auto;
 }
+.sidebar::-webkit-scrollbar{width:0;}
+
 .sidebar-logo{
-  padding:24px 20px 20px;
-  border-bottom:1px solid rgba(255,255,255,.1);
+  padding:22px 18px 20px;
+  border-bottom:1px solid var(--nav-border);
+  background:linear-gradient(145deg,#FDF6F0,#FBF0E8);
 }
 .sidebar-logo-name{
-  font-family:var(--serif);font-size:17px;font-weight:700;
-  color:#F5EDE3;letter-spacing:.1em;display:block;
+  font-family:var(--serif);font-size:16px;font-weight:700;
+  color:var(--accent-dark);letter-spacing:.08em;display:block;margin-bottom:4px;
 }
-.sidebar-logo-sub{font-size:11px;color:rgba(245,237,227,.45);margin-top:3px;display:block;}
+.sidebar-logo-sub{font-size:11px;color:var(--text-3);display:block;line-height:1.5;}
+
 .sidebar-section{
-  padding:16px 14px 4px;
-  font-size:10px;font-weight:700;letter-spacing:.15em;
-  color:rgba(245,237,227,.35);text-transform:uppercase;
+  padding:16px 16px 5px;
+  font-size:10px;font-weight:700;letter-spacing:.14em;
+  color:var(--text-3);text-transform:uppercase;
 }
 .nav-item{
   display:flex;align-items:center;gap:10px;
-  padding:10px 16px;cursor:pointer;
-  color:rgba(245,237,227,.65);font-size:14px;
+  padding:9px 16px;cursor:pointer;
+  color:var(--nav-text);font-size:13px;
   border-left:3px solid transparent;
-  transition:all .15s;user-select:none;
+  border-radius:0;transition:all .15s;user-select:none;
 }
-.nav-item:hover{background:var(--sidebar-hover);color:#F5EDE3;}
+.nav-item:hover{background:var(--nav-hover);color:var(--nav-text-active);}
 .nav-item.active{
-  background:rgba(201,168,142,.15);
-  color:var(--sidebar-active);
-  border-left-color:var(--sidebar-active);
+  background:var(--nav-active);
+  color:var(--nav-text-active);
+  border-left-color:var(--nav-accent);
   font-weight:700;
 }
-.nav-item .icon{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
+.nav-item .icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
 
 /* ── Main ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .topbar{
-  background:var(--white);border-bottom:1px solid var(--border);
+  background:var(--white);
+  border-bottom:1px solid var(--border);
   padding:0 28px;height:56px;
   display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;
 }
-.topbar-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--text);}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.sync-badge{
-  font-size:12px;padding:4px 12px;border-radius:20px;
-  background:var(--green-light);color:var(--green);font-weight:700;
+.topbar-title{
+  font-family:var(--serif);font-size:18px;font-weight:700;
+  color:var(--text);display:flex;align-items:center;gap:9px;
 }
-.sync-badge.syncing{background:var(--gold-light);color:var(--gold);}
-.sync-badge.offline{background:var(--red-light);color:var(--red);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.sync-dot.syncing{background:var(--gold);animation:pulse 1.2s ease-in-out infinite;}
+.sync-dot.offline{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sync-text{font-size:12px;color:var(--text-3);}
 
-.content{flex:1;overflow-y:auto;padding:24px 28px;}
+.content{flex:1;overflow-y:auto;padding:22px 28px;}
+.content::-webkit-scrollbar{width:5px;}
+.content::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:3px;}
+
 .page{display:none;}
-.page.active{display:block;}
+.page.active{display:block;animation:fadeUp .2s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.section-title{font-family:var(--serif);font-size:21px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.section-sub{font-size:13px;color:var(--text-3);margin-bottom:20px;}
 
 /* ── Cards ── */
 .card{
   background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);
+  border-radius:var(--r);box-shadow:var(--shadow);
   margin-bottom:16px;overflow:hidden;
 }
+/* 彩色頂線卡片（截圖風格）*/
+.card-green{border-top:3px solid var(--green);}
+.card-red{border-top:3px solid var(--red);}
+.card-blue{border-top:3px solid var(--blue);}
+.card-orange{border-top:3px solid var(--orange);}
+.card-purple{border-top:3px solid var(--purple);}
+.card-teal{border-top:3px solid var(--teal);}
+.card-gold{border-top:3px solid var(--gold);}
+.card-pink{border-top:3px solid var(--pink);}
+
 .card-header{
   padding:14px 20px;border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:8px;
+  flex-wrap:wrap;gap:8px;background:var(--white);
 }
-.card-title{font-size:14px;font-weight:700;color:var(--text);}
+.card-title{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
 .card-body{padding:20px;}
+
+/* ── 統計數字卡 ── */
+.stat-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);
+}
+.stat-card-label{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:6px;}
+.stat-card-num{font-family:var(--serif);font-size:28px;font-weight:700;line-height:1.2;color:var(--text);}
+.stat-card-num.green{color:var(--green);}
+.stat-card-num.red{color:var(--red);}
+.stat-card-num.blue{color:var(--blue);}
+.stat-card-num.gold{color:var(--gold);}
+.stat-card-sub{font-size:12px;color:var(--text-3);margin-top:5px;}
 
 /* ── Grid ── */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
 
-/* ── Form elements ── */
-.label{display:block;font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:5px;letter-spacing:.03em;}
+/* ── Form ── */
+.label{display:block;font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:5px;letter-spacing:.02em;}
 .input,.select,.textarea{
   width:100%;border:1.5px solid var(--border);border-radius:8px;
   padding:9px 12px;font-size:14px;font-family:var(--sans);
-  color:var(--text);background:var(--bg);outline:none;
-  transition:border-color .15s;
+  color:var(--text);background:#FAFAF9;outline:none;
+  transition:border-color .15s,box-shadow .15s;
 }
-.input:focus,.select:focus,.textarea:focus{border-color:var(--accent);background:var(--white);}
+.input:focus,.select:focus,.textarea:focus{
+  border-color:var(--orange);background:var(--white);
+  box-shadow:0 0 0 3px rgba(232,145,106,.12);
+}
 .textarea{resize:vertical;line-height:1.7;}
 .form-group{margin-bottom:14px;}
 .form-row{display:grid;gap:12px;margin-bottom:14px;}
-.form-row.col-2{grid-template-columns:1fr 1fr;}
-.form-row.col-3{grid-template-columns:1fr 1fr 1fr;}
-.form-row.col-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+.form-row.c2{grid-template-columns:1fr 1fr;}
+.form-row.c3{grid-template-columns:1fr 1fr 1fr;}
+.form-row.c4{grid-template-columns:1fr 1fr 1fr 1fr;}
 
 /* ── Buttons ── */
 .btn{
-  border:none;border-radius:8px;padding:9px 18px;
-  font-size:14px;font-family:var(--sans);font-weight:700;
-  cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;
+  border:none;border-radius:8px;padding:8px 16px;
+  font-size:13px;font-family:var(--sans);font-weight:700;
+  cursor:pointer;transition:all .15s;
+  display:inline-flex;align-items:center;gap:6px;
 }
-.btn-primary{background:var(--accent-dark);color:var(--white);}
-.btn-primary:hover{background:#6A5040;transform:translateY(-1px);}
-.btn-ghost{background:var(--bg);color:var(--text-2);border:1.5px solid var(--border);}
+.btn-primary{background:var(--accent-dark);color:#fff;}
+.btn-primary:hover{background:#4A2A1A;box-shadow:var(--shadow-md);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-green:hover{background:#2E7D56;}
+.btn-ghost{background:var(--white);color:var(--text-2);border:1.5px solid var(--border);}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent-dark);}
-.btn-danger{background:var(--red-light);color:var(--red);border:1px solid rgba(192,57,43,.2);}
-.btn-sm{padding:5px 12px;font-size:12px;border-radius:6px;}
-.btn-icon{background:none;border:none;cursor:pointer;color:var(--text-3);padding:4px;border-radius:6px;font-size:16px;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn-icon{background:none;border:none;cursor:pointer;color:var(--text-3);padding:4px 6px;border-radius:5px;font-size:15px;}
 .btn-icon:hover{background:var(--bg);color:var(--text);}
 
-/* ── Tables ── */
-.table{width:100%;border-collapse:collapse;}
-.table th{text-align:left;padding:10px 12px;font-size:12px;font-weight:700;color:var(--text-3);border-bottom:2px solid var(--border);background:var(--bg);}
-.table td{padding:12px;font-size:14px;border-bottom:1px solid var(--border);vertical-align:top;}
-.table tr:last-child td{border-bottom:none;}
-.table tr:hover td{background:var(--accent-light);}
-
-/* ── Tags / Badges ── */
-.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:700;}
-.tag-green{background:var(--green-light);color:var(--green);}
-.tag-red{background:var(--red-light);color:var(--red);}
-.tag-gold{background:var(--gold-light);color:var(--gold);}
-.tag-gray{background:var(--bg);color:var(--text-3);border:1px solid var(--border);}
-.tag-accent{background:var(--accent-light);color:var(--accent-dark);}
-
-/* ── 今日頁面特殊元素 ── */
-.today-quote{
-  background:linear-gradient(135deg,#3D2E26,#5A4034);
-  border-radius:var(--radius);padding:20px 24px;
-  color:#F5EDE3;margin-bottom:16px;
+/* ── Tabs ── */
+.tabs{display:flex;gap:4px;flex-wrap:wrap;}
+.tab{
+  padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;
+  cursor:pointer;border:1.5px solid var(--border);
+  background:var(--white);color:var(--text-3);transition:all .15s;
 }
-.today-quote-text{font-family:var(--serif);font-size:16px;line-height:1.9;opacity:.9;}
-.today-quote-date{font-size:12px;opacity:.5;margin-top:8px;}
+.tab.active{background:var(--accent-dark);color:#fff;border-color:var(--accent-dark);}
 
-.wx-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;}
-.wx-card{
-  flex-shrink:0;width:90px;border:1.5px solid var(--border);
-  border-radius:8px;padding:10px;background:var(--white);text-align:center;
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;}
+.badge-green{background:var(--green-bg);color:var(--green);}
+.badge-red{background:var(--red-bg);color:var(--red);}
+.badge-blue{background:var(--blue-bg);color:var(--blue);}
+.badge-purple{background:var(--purple-bg);color:var(--purple);}
+.badge-orange{background:var(--orange-bg);color:var(--orange);}
+.badge-gold{background:var(--gold-bg);color:var(--gold);}
+.badge-gray{background:var(--bg);color:var(--text-3);border:1px solid var(--border);}
+.badge-teal{background:var(--teal-bg);color:var(--teal);}
+
+/* ── Alert ── */
+.alert{border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px;font-size:13px;}
+.alert-blue{background:var(--blue-bg);border-left:4px solid var(--blue);color:var(--blue);}
+.alert-green{background:var(--green-bg);border-left:4px solid var(--green);color:var(--green);}
+.alert-red{background:var(--red-bg);border-left:4px solid var(--red);color:var(--red);}
+.alert-orange{background:var(--orange-bg);border-left:4px solid var(--orange);color:var(--orange);}
+.alert-gold{background:var(--gold-bg);border-left:4px solid var(--gold);color:var(--gold);}
+.alert-title{font-weight:700;margin-bottom:8px;}
+
+/* ── Progress ── */
+.progress{background:var(--border);border-radius:10px;overflow:hidden;height:7px;}
+.progress-fill{height:100%;border-radius:10px;transition:width .4s ease;}
+.fill-green{background:linear-gradient(90deg,var(--green),var(--green-light));}
+.fill-blue{background:linear-gradient(90deg,var(--blue),var(--blue-light));}
+.fill-orange{background:linear-gradient(90deg,var(--orange),var(--orange-light));}
+
+/* ── 語錄橫幅 ── */
+.quote-banner{
+  background:linear-gradient(135deg,#FDF6F0 0%,#FBF0E5 100%);
+  border:1px solid #F0DDD0;
+  border-radius:var(--r);padding:18px 22px;
+  margin-bottom:18px;
+  display:flex;align-items:flex-start;gap:14px;
 }
-.wx-card.today{border-color:var(--accent);background:var(--accent-light);}
-.wx-card-day{font-size:11px;color:var(--text-3);margin-bottom:4px;}
-.wx-card-date{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;}
-.wx-card-elements{font-size:16px;margin-bottom:4px;}
-.wx-card-name{font-size:11px;color:var(--text-2);}
+.quote-bar{width:3px;flex-shrink:0;background:var(--orange);border-radius:2px;align-self:stretch;min-height:36px;}
+.quote-text{font-family:var(--serif);font-size:16px;line-height:1.9;color:var(--accent-dark);flex:1;}
+.quote-date{font-size:12px;color:var(--text-3);margin-top:7px;}
 
-/* ── 日計劃時間軸 ── */
-.timeline-item{
-  display:flex;align-items:stretch;gap:0;
+/* ── 五行 ── */
+.wx-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;}
+.wx-scroll::-webkit-scrollbar{height:4px;}
+.wx-scroll::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:2px;}
+.wx-day{
+  flex-shrink:0;width:92px;border:1.5px solid var(--border);
+  border-radius:10px;padding:12px 8px;background:var(--white);
+  text-align:center;transition:all .15s;cursor:default;
+}
+.wx-day:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.wx-day.wx-today{border-color:var(--orange);background:var(--orange-bg);}
+.wx-day-label{font-size:11px;color:var(--text-3);margin-bottom:3px;}
+.wx-day-date{font-size:12px;font-weight:700;margin-bottom:6px;color:var(--text);}
+.wx-day-icons{font-size:18px;margin-bottom:5px;}
+.wx-day-name{font-size:11px;color:var(--text-2);}
+
+/* ── 時間軸 ── */
+.tl-item{
+  display:flex;align-items:stretch;
   border:1px solid var(--border);border-radius:8px;
   margin-bottom:6px;background:var(--white);overflow:hidden;
+  transition:box-shadow .15s;
 }
-.timeline-time{
-  width:60px;flex-shrink:0;background:var(--bg);
+.tl-item:hover{box-shadow:var(--shadow);}
+.tl-time{
+  width:56px;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
   font-size:12px;font-weight:700;color:var(--text-2);
-  border-right:1px solid var(--border);padding:8px 4px;text-align:center;
+  border-right:1px solid var(--border);background:var(--bg);
+  padding:8px 4px;text-align:center;
 }
-.timeline-body{flex:1;padding:10px 14px;display:flex;align-items:center;gap:10px;}
-.timeline-label{flex:1;font-size:14px;color:var(--text);}
-.timeline-cat{font-size:11px;padding:2px 8px;border-radius:10px;flex-shrink:0;}
-.timeline-check{
+.tl-body{flex:1;padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.tl-label{flex:1;font-size:14px;color:var(--text);}
+.tl-cat{font-size:11px;padding:2px 8px;border-radius:10px;flex-shrink:0;font-weight:700;}
+.tl-check{
   width:22px;height:22px;border-radius:50%;
   border:2px solid var(--border);flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:12px;font-weight:700;
-  color:transparent;transition:.15s;
+  cursor:pointer;font-size:11px;font-weight:700;color:transparent;transition:.15s;
 }
-.timeline-check.done{background:var(--green);border-color:var(--green);color:white;}
-.timeline-del{opacity:0;transition:.15s;}
-.timeline-item:hover .timeline-del{opacity:1;}
+.tl-check.done{background:var(--green);border-color:var(--green);color:white;}
+.tl-del{opacity:0;transition:.15s;font-size:14px;}
+.tl-item:hover .tl-del{opacity:1;}
 
 /* ── 沐蜜事業 ── */
 .biz-item{
   display:flex;align-items:center;gap:12px;
-  padding:12px 16px;border:1px solid var(--border);
+  padding:11px 14px;border:1.5px solid var(--border);
   border-radius:8px;margin-bottom:8px;cursor:pointer;
   transition:all .15s;background:var(--white);
 }
-.biz-item:hover{border-color:var(--accent);}
-.biz-item.done{border-color:var(--green);background:var(--green-light);}
+.biz-item:hover{border-color:var(--orange);background:var(--orange-bg);}
+.biz-item.done{border-color:var(--green);background:var(--green-bg);}
 .biz-check{
   width:20px;height:20px;border-radius:50%;
   border:2px solid var(--border);flex-shrink:0;
@@ -220,147 +317,111 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
   font-size:11px;font-weight:700;color:transparent;transition:.15s;
 }
 .biz-item.done .biz-check{background:var(--green);border-color:var(--green);color:white;}
-.biz-label{flex:1;font-size:14px;}
+.biz-label{flex:1;font-size:14px;font-weight:500;color:var(--text);}
 .biz-item.done .biz-label{color:var(--green);font-weight:700;}
 
+/* ── 核心任務 ── */
+.task-main{background:var(--green-bg);border:1.5px solid var(--green-light);border-radius:8px;padding:14px;margin-bottom:14px;}
+.task-chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;font-weight:700;color:transparent;transition:.15s;}
+.task-chk.done{background:var(--green);border-color:var(--green);color:white;}
+
 /* ── 月曆 ── */
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
-.cal-header{text-align:center;padding:8px;font-size:12px;font-weight:700;color:var(--text-3);background:var(--bg);border-bottom:1px solid var(--border);}
-.cal-cell{
-  min-height:80px;padding:6px;cursor:pointer;
-  border-right:1px solid var(--border);border-bottom:1px solid var(--border);
-  transition:background .1s;
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.cal-hd{text-align:center;padding:8px;font-size:12px;font-weight:700;color:var(--text-3);background:var(--bg);border-bottom:1px solid var(--border);}
+.cal-cell{min-height:76px;padding:5px 6px;cursor:pointer;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .1s;background:var(--white);}
+.cal-cell:hover{background:var(--orange-bg);}
+.cal-cell.today{background:#FFFBF7;}
+.cal-cell.other{opacity:.25;pointer-events:none;}
+.cal-cell.holiday{background:var(--red-bg);}
+.cal-dn{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text);}
+.cal-dn.sat{color:var(--blue);}
+.cal-dn.sun,.cal-dn.hol{color:var(--red);}
+.today .cal-dn>span:first-child{
+  background:var(--accent-dark);color:white;width:21px;height:21px;
+  border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;
 }
-.cal-cell:hover{background:var(--accent-light);}
-.cal-cell.today{background:#FFF8F4;}
-.cal-cell.other-month{opacity:.3;pointer-events:none;}
-.cal-cell.holiday{background:#FFF0EE;}
-.cal-date{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
-.cal-date.sat{color:#2563EB;}.cal-date.sun,.cal-date.hol{color:var(--red);}
-.today .cal-date span{
-  background:var(--accent-dark);color:white;
-  width:22px;height:22px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;font-size:12px;
-}
-.cal-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin:1px;}
-.cal-task-text{font-size:10px;color:var(--text-2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.cal-task{font-size:10px;color:var(--green);font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.cal-ev{font-size:10px;color:var(--text-3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 
 /* ── Day panel ── */
-.day-panel{
-  display:none;margin:0 0 16px;
-  border:1px solid var(--border);border-radius:8px;
-  background:var(--white);overflow:hidden;
-}
+.day-panel{display:none;margin:0 0 16px;border:1px solid var(--border);border-radius:10px;background:var(--white);overflow:hidden;box-shadow:var(--shadow-md);}
 .day-panel.open{display:block;}
-.day-panel-header{
-  background:var(--accent-dark);padding:12px 16px;
-  display:flex;align-items:center;justify-content:space-between;
-}
+.day-panel-hd{background:linear-gradient(135deg,var(--accent-dark),#7A5A46);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
 .day-panel-title{font-size:14px;font-weight:700;color:white;}
 .day-panel-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px;}
 
-/* ── 記錄列表 ── */
-.record-item{
-  padding:14px 16px;border:1px solid var(--border);
-  border-radius:8px;margin-bottom:10px;background:var(--white);
+/* ── 複利清單 ── */
+.hab-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:11px 14px;border:1.5px solid var(--border);
+  border-radius:8px;margin-bottom:7px;cursor:pointer;
+  transition:all .15s;background:var(--white);
 }
-.record-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.hab-item:hover{border-color:var(--teal);background:var(--teal-bg);}
+.hab-item.done{border-color:var(--green);background:var(--green-bg);}
+.hab-chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:transparent;transition:.15s;margin-top:2px;}
+.hab-item.done .hab-chk{background:var(--green);border-color:var(--green);color:white;}
+.hab-name{font-size:14px;font-weight:500;color:var(--text);}
+.hab-item.done .hab-name{color:var(--green);font-weight:700;}
+.hab-tip{font-size:12px;color:var(--text-3);margin-top:2px;}
+
+/* ── 記錄卡 ── */
+.record{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;margin-bottom:10px;
+  transition:box-shadow .15s;
+}
+.record:hover{box-shadow:var(--shadow);}
+.record-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
 .record-title{font-size:15px;font-weight:700;color:var(--text);}
-.record-date{font-size:12px;color:var(--text-3);}
-.record-actions{display:flex;gap:6px;flex-shrink:0;}
+.record-meta{font-size:12px;color:var(--text-3);margin-top:3px;}
 .record-body{font-size:13px;color:var(--text-2);line-height:1.7;}
 
-/* ── 復盤問題框 ── */
-.review-box{
-  background:var(--accent-light);border:1px solid var(--border);
-  border-radius:8px;padding:16px;margin-bottom:14px;
-}
-.review-box-title{font-size:13px;font-weight:700;color:var(--accent-dark);margin-bottom:12px;}
-
-/* ── 風險控管 ── */
-.risk-box{
-  border:2px solid var(--red);border-radius:8px;
-  padding:14px;margin-bottom:14px;background:var(--red-light);
-}
+/* ── 風險框 ── */
+.risk-box{border:2px solid #F4AAAA;border-radius:10px;padding:14px;margin-bottom:14px;background:var(--red-bg);}
 .risk-title{font-size:13px;font-weight:700;color:var(--red);margin-bottom:12px;}
-.risk-value{font-size:13px;font-weight:700;color:var(--red);margin-top:4px;}
+.risk-val{font-size:13px;font-weight:700;margin-top:4px;}
+.risk-val.red{color:var(--red);}
+.risk-val.green{color:var(--green);}
+.risk-val.gold{color:var(--gold);}
 
-/* ── 統計數字 ── */
-.stat-box{
-  padding:16px;border:1px solid var(--border);border-radius:8px;
-  text-align:center;background:var(--white);
-}
-.stat-num{font-family:var(--serif);font-size:28px;font-weight:700;}
-.stat-label{font-size:12px;color:var(--text-3);margin-top:4px;}
-
-/* ── 空狀態 ── */
-.empty{text-align:center;padding:48px 20px;color:var(--text-3);}
-.empty-icon{font-size:48px;margin-bottom:12px;}
-.empty-text{font-size:14px;}
-
-/* ── tabs ── */
-.tabs{display:flex;gap:6px;margin-bottom:16px;}
-.tab{
-  padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;
-  cursor:pointer;border:1.5px solid var(--border);
-  background:var(--white);color:var(--text-3);transition:all .15s;
-}
-.tab.active{background:var(--accent-dark);color:white;border-color:var(--accent-dark);}
-
-/* ── Progress bar ── */
-.progress-bar{background:var(--border);border-radius:10px;overflow:hidden;height:6px;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#E8A878);border-radius:10px;transition:width .4s;}
-
-/* ── Section header ── */
-.section-title{
-  font-family:var(--serif);font-size:20px;font-weight:700;
-  color:var(--text);margin-bottom:4px;
-}
-.section-sub{font-size:13px;color:var(--text-3);margin-bottom:20px;}
+/* ── 自我盤點 ── */
+.sc-item{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;background:var(--white);overflow:hidden;}
+.sc-q{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.sc-q-text{font-size:14px;color:var(--text);flex:1;font-weight:500;}
+.sc-btns{display:flex;gap:6px;flex-shrink:0;}
+.sc-btn{padding:5px 14px;border-radius:16px;border:1.5px solid var(--border);font-size:12px;font-weight:700;cursor:pointer;background:white;transition:all .15s;}
+.sc-btn.yes{border-color:var(--red);color:var(--red);}
+.sc-btn.yes.on{background:var(--red);color:white;}
+.sc-btn.no{border-color:var(--green);color:var(--green);}
+.sc-btn.no.on{background:var(--green);color:white;}
+.sc-note{padding:0 16px 13px;}
 
 /* ── Modal ── */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.4);
-  z-index:1000;display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(4px);
-}
+.modal-overlay{position:fixed;inset:0;background:rgba(45,36,32,.35);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(4px);}
 .modal-overlay.open{opacity:1;pointer-events:all;}
-.modal{
-  background:var(--white);border-radius:12px;padding:28px;
-  width:94%;max-width:500px;max-height:90vh;overflow-y:auto;
-  box-shadow:0 20px 60px rgba(0,0,0,.2);
-  transform:translateY(12px);transition:transform .2s;
-}
+.modal{background:var(--white);border-radius:14px;padding:26px;width:94%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15);transform:translateY(10px);transition:transform .2s;border:1px solid var(--border);}
 .modal-overlay.open .modal{transform:none;}
-.modal-title{font-size:17px;font-weight:700;margin-bottom:18px;}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:18px;color:var(--text);}
 .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
 
 /* ── Toast ── */
-.toast{
-  position:fixed;bottom:24px;right:24px;
-  background:var(--text);color:white;
-  padding:12px 20px;border-radius:10px;font-size:14px;font-weight:700;
-  z-index:9999;opacity:0;transform:translateY(8px);
-  transition:all .25s;pointer-events:none;
-}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--accent-dark);color:white;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transform:translateY(6px);transition:all .22s;pointer-events:none;box-shadow:var(--shadow-md);}
 .toast.show{opacity:1;transform:none;}
 
-/* ── 自我盤點 ── */
-.check-item{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;background:var(--white);overflow:hidden;}
-.check-q{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
-.check-q-text{font-size:14px;color:var(--text);flex:1;}
-.check-btns{display:flex;gap:8px;flex-shrink:0;}
-.check-btn{padding:5px 14px;border-radius:16px;border:1.5px solid var(--border);font-size:12px;font-weight:700;cursor:pointer;background:white;transition:all .15s;}
-.check-btn.yes{border-color:var(--red);color:var(--red);}
-.check-btn.yes.active{background:var(--red);color:white;}
-.check-btn.no{border-color:var(--green);color:var(--green);}
-.check-btn.no.active{background:var(--green);color:white;}
-.check-note{padding:0 16px 14px;}
+/* ── 空狀態 ── */
+.empty{text-align:center;padding:40px 20px;color:var(--text-3);}
+.empty-icon{font-size:40px;margin-bottom:10px;}
+.empty-text{font-size:14px;}
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+/* ── 週次表格 ── */
+.wk-table{width:100%;border-collapse:collapse;min-width:560px;}
+.wk-table th{padding:9px 8px;font-size:12px;font-weight:700;color:var(--text-3);border:1px solid var(--border);background:var(--bg);text-align:center;}
+.wk-table td{border:1px solid var(--border);padding:4px;vertical-align:top;}
+.wk-table td textarea{width:100%;min-height:50px;border:none;outline:none;font-size:11px;font-family:var(--sans);resize:none;background:transparent;line-height:1.6;padding:3px;color:var(--text);}
+.wk-table th.today-col{background:var(--orange-bg);color:var(--orange);}
+.wk-table th.sat{color:var(--blue);}
+.wk-table th.sun{color:var(--red);}
 </style>
 </head>
 <body>
@@ -400,8 +461,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
 <div class="topbar">
   <span class="topbar-title" id="topTitle">日計劃</span>
   <div class="topbar-right">
-    <span class="sync-badge" id="syncBadge">✓ 已同步</span>
-    <button class="btn btn-ghost btn-sm" onclick="forceSave()">💾 立即儲存</button>
+    <div style="display:flex;align-items:center;gap:7px"><div class="sync-dot" id="syncDot"></div><span class="sync-text" id="syncText">已同步</span></div>
+    <button class="btn btn-primary btn-sm" onclick="forceSave()" style="background:#4A2C2A">💾 立即儲存</button>
   </div>
 </div>
 
@@ -410,9 +471,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
 
 <!-- ════ PAGE: 日計劃 ════ -->
 <div class="page active" id="pg-today">
-  <div id="today-quote" class="today-quote">
-    <div class="today-quote-text" id="quoteText"></div>
-    <div class="today-quote-date" id="quoteDate"></div>
+  <div id="today-quote" class="quote-banner">
+    <div id="quoteText"></div>
   </div>
   <div id="roxiSpecial"></div>
 
@@ -421,7 +481,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
     <!-- 五行穿衣 -->
     <div class="card">
       <div class="card-header"><span class="card-title">✨ 五行穿衣建議</span><span style="font-size:12px;color:var(--text-3)">今日起6天</span></div>
-      <div class="card-body" style="padding:16px"><div class="wx-strip" id="wxStrip"></div></div>
+      <div class="card-body" style="padding:16px"><div class="wx-scroll" id="wxStrip"></div></div>
     </div>
 
     <!-- 一日時間軸 -->
@@ -436,7 +496,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
       <div class="card-body">
         <div id="tlModeHint" style="font-size:13px;color:var(--text-3);background:var(--bg);border-radius:6px;padding:8px 12px;margin-bottom:14px"></div>
         <div id="tlProgress" style="margin-bottom:10px"></div>
-        <div class="progress-bar" style="margin-bottom:16px"><div class="progress-fill" id="tlBar" style="width:0"></div></div>
+        <div class="progress" style="margin-bottom:16px"><div class="progress-fill fill-orange" id="tlBar" style="width:0"></div></div>
         <div id="dayTimeline"></div>
         <button class="btn btn-ghost btn-sm" onclick="showAddTl()" style="width:100%;margin-top:8px;border-style:dashed">＋ 新增時段</button>
         <div id="addTlForm" style="display:none;margin-top:10px;background:var(--bg);border-radius:8px;padding:14px">
@@ -473,11 +533,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
         </div>
         <div class="label" style="margin-bottom:8px">次要任務（最多2件）</div>
         <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
-          <div class="timeline-check" id="c1" onclick="tSub(1)"></div>
+          <div class="task-chk" id="c1" onclick="tSub(1)"></div>
           <input id="s1" style="flex:1;border:none;outline:none;font-size:14px;color:var(--text);background:transparent" placeholder="次要任務 1" oninput="saveTasks()">
         </div>
         <div style="display:flex;align-items:center;gap:10px;padding:10px 0">
-          <div class="timeline-check" id="c2" onclick="tSub(2)"></div>
+          <div class="task-chk" id="c2" onclick="tSub(2)"></div>
           <input id="s2" style="flex:1;border:none;outline:none;font-size:14px;color:var(--text);background:transparent" placeholder="次要任務 2" oninput="saveTasks()">
         </div>
       </div>
@@ -631,8 +691,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
       <div class="card-header"><span class="card-title">✍️ 新增今天的記錄</span><span style="font-size:12px;color:var(--text-3)" id="jnlEditHint"></span></div>
       <div class="card-body">
         <div class="form-group"><label class="label">日期</label><input type="date" class="input" id="jnlDate"></div>
-        <div class="review-box">
-          <div class="review-box-title">🌙 自我復盤</div>
+        <div class="alert alert-blue">
+          <div class="alert-title" style="font-weight:700;margin-bottom:10px">🌙 自我復盤</div>
           <div class="form-group"><label class="label">今天讓我有感覺的事</label><textarea class="textarea" id="jnl1" rows="2" placeholder="一件讓你心動、感動、或困擾的事..."></textarea></div>
           <div class="form-group"><label class="label">今天我學到什麼</label><textarea class="textarea" id="jnl2" rows="2" placeholder="任何一個小發現、新認識..."></textarea></div>
           <div class="form-group"><label class="label">今天有為自己做什麼嗎</label><textarea class="textarea" id="jnl3" rows="2" placeholder="再小的事都算..."></textarea></div>
@@ -641,7 +701,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
         </div>
         <div class="form-group"><label class="label">🫀 身體掃描（哪裡緊？哪裡需要照顧？）</label><textarea class="textarea" id="jnlBody" rows="2" placeholder="肩膀緊？胃不舒服？..."></textarea></div>
         <div style="background:var(--gold-light);border-radius:8px;padding:14px;margin-bottom:14px">
-          <div class="review-box-title" style="color:var(--gold)">🙏 感恩日記</div>
+          <div class="alert-title" style="font-weight:700;margin-bottom:10px" style="color:var(--gold)">🙏 感恩日記</div>
           <div class="form-group"><label class="label">感恩 1</label><textarea class="textarea" id="jnlG1" rows="2" placeholder="感恩今天...（越具體越有力量）"></textarea></div>
           <div class="form-group"><label class="label">感恩 2</label><textarea class="textarea" id="jnlG2" rows="2"></textarea></div>
           <div class="form-group" style="margin-bottom:0"><label class="label">感恩 3</label><textarea class="textarea" id="jnlG3" rows="2"></textarea></div>
@@ -737,9 +797,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
         <div class="risk-box">
           <div class="risk-title">🛡️ 風險控管</div>
           <div class="form-row col-3">
-            <div><label class="label" style="color:var(--red)">停損 %（預設-10）</label><input type="number" class="input" id="stSL" value="-10" step="0.1" oninput="calcRisk()"><div class="risk-value" id="slPrice"></div></div>
-            <div><label class="label" style="color:var(--green)">第一停利 %（預設+20）</label><input type="number" class="input" id="stTP1" value="20" step="0.1" oninput="calcRisk()"><div style="font-size:13px;font-weight:700;color:var(--green);margin-top:4px" id="tp1Price"></div></div>
-            <div><label class="label" style="color:var(--gold)">第二停利 %（預設+40）</label><input type="number" class="input" id="stTP2" value="40" step="0.1" oninput="calcRisk()"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-top:4px" id="tp2Price"></div></div>
+            <div><label class="label" style="color:var(--red)">停損 %（預設-10）</label><input type="number" class="input" id="stSL" value="-10" step="0.1" oninput="calcRisk()"><div class="risk-val red" id="slPrice"></div></div>
+            <div><label class="label" style="color:var(--green)">第一停利 %（預設+20）</label><input type="number" class="input" id="stTP1" value="20" step="0.1" oninput="calcRisk()"><div class="risk-val green" id="tp1Price"></div></div>
+            <div><label class="label" style="color:var(--gold)">第二停利 %（預設+40）</label><input type="number" class="input" id="stTP2" value="40" step="0.1" oninput="calcRisk()"><div class="risk-val gold" id="tp2Price"></div></div>
           </div>
         </div>
 
@@ -753,8 +813,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
         </div>
 
         <!-- 復盤 -->
-        <div class="review-box">
-          <div class="review-box-title">📝 我學到什麼？</div>
+        <div class="alert alert-blue">
+          <div class="alert-title" style="font-weight:700;margin-bottom:10px">📝 我學到什麼？</div>
           <div class="form-group"><label class="label">1. 我的判斷對了嗎？哪裡對、哪裡錯？</label><textarea class="textarea" id="stR1" rows="3"></textarea></div>
           <div class="form-group"><label class="label">2. 我有遵守紀律嗎？（停損/停利）</label><textarea class="textarea" id="stR2" rows="3"></textarea></div>
           <div class="form-group"><label class="label">3. 我的情緒有影響決策嗎？</label><textarea class="textarea" id="stR3" rows="3"></textarea></div>
@@ -1000,11 +1060,11 @@ async function loadCloud(){
 }
 
 function setBadge(state){
-  const b = document.getElementById('syncBadge');
-  if(!b) return;
-  if(state==='ok'){ b.textContent='✓ 已同步'; b.className='sync-badge'; }
-  else if(state==='syncing'){ b.textContent='⟳ 同步中'; b.className='sync-badge syncing'; }
-  else{ b.textContent='⚠ 離線'; b.className='sync-badge offline'; }
+  const dot=document.getElementById('syncDot'), txt=document.getElementById('syncText');
+  if(!dot||!txt) return;
+  if(state==='ok'){ dot.className='sync-dot'; txt.textContent='已同步'; }
+  else if(state==='syncing'){ dot.className='sync-dot syncing'; txt.textContent='同步中…'; }
+  else{ dot.className='sync-dot offline'; txt.textContent='離線中'; }
 }
 
 // ══════════════════════════════════════════════
@@ -1072,13 +1132,14 @@ function id(){ return Date.now()+Math.floor(Math.random()*9999); }
 // Navigation
 // ══════════════════════════════════════════════
 const PAGE_TITLES={today:'日計劃',week:'週計劃',month:'月計劃',goals:'目標追蹤',journal:'每日日誌',book:'讀書日記',stock:'股票交易日記',service:'服務觀察筆記',ideas:'素材庫',destiny:'事業天命',now826:'現在 → 2026.8 行動導覽'};
+const PAGE_ICONS={today:'🏠',week:'📅',month:'🗓️',goals:'🎯',journal:'📖',book:'📚',stock:'📈',service:'💆‍♀️',ideas:'💡',destiny:'✨',now826:'🧭'};
 
 function nav(page, el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('pg-'+page).classList.add('active');
   if(el) el.classList.add('active');
-  document.getElementById('topTitle').textContent = PAGE_TITLES[page]||page;
+  const ttl=document.getElementById('topTitle'); if(ttl){ttl.innerHTML=(PAGE_ICONS[page]||'📋')+' '+( PAGE_TITLES[page]||page);}
   if(page==='today') renderToday();
   if(page==='week') renderWeek();
   if(page==='month') renderMonth();
@@ -1102,7 +1163,7 @@ function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 // ══════════════════════════════════════════════
 function renderToday(){
   // 語錄
-  document.getElementById('quoteText').textContent = '「' + QS[NOW.getDate()%QS.length] + '」';
+  const qEl=document.getElementById('quoteText'); if(qEl)qEl.innerHTML='<div class="quote-bar"></div><div><div class="quote-text">「'+QS[NOW.getDate()%QS.length]+'」</div><div class="quote-date" id="quoteDate"></div></div>';
   document.getElementById('quoteDate').textContent = NOW.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
   // 珞熙特殊日
   const rd = ROXI[TODAY];
@@ -1137,7 +1198,7 @@ function renderWX(){
     const mk=mkStr(d), elems=WX[mk]||[], isT=i===0;
     const icons=elems.map(e=>`<span title="${e}" style="color:${WX_COLOR[e]||'#666'}">${WX_EMOJI[e]||e}</span>`).join('');
     const names=elems.join('・');
-    h+=`<div class="wx-card ${isT?'today':''}"><div class="wx-card-day">${isT?'今天':'週'+dn[d.getDay()]}</div><div class="wx-card-date">${d.getMonth()+1}/${d.getDate()}</div><div class="wx-card-elements">${icons||'—'}</div><div class="wx-card-name" style="font-size:11px;color:#666">${names||'暫無'}</div></div>`;
+    h+=`<div class="wx-day ${isT?'today':''}"><div class="wx-day-label">${isT?'今天':'週'+dn[d.getDay()]}</div><div class="wx-day-date">${d.getMonth()+1}/${d.getDate()}</div><div class="wx-day-icons">${icons||'—'}</div><div class="wx-day-name" style="font-size:11px;color:#666">${names||'暫無'}</div></div>`;
   }
   strip.innerHTML=h;
   // 今日詳情
@@ -1171,12 +1232,12 @@ function renderTimeline(){
     const isDone=today.done&&today.done[i];
     if(isDone) done++;
     const cat=CAT_COLOR[item.cat]||CAT_COLOR.routine;
-    return`<div class="timeline-item ${isDone?'':''}">
-      <div class="timeline-time">${item.time||'—'}</div>
-      <div class="timeline-body">
+    return`<div class="tl-item ${isDone?'':''}">
+      <div class="tl-time">${item.time||'—'}</div>
+      <div class="tl-body">
         <span class="timeline-cat" style="background:${cat.bg};color:${cat.c}">${CAT_LABEL[item.cat]||'日常'}</span>
-        <span class="timeline-label" ${tlMode==='plan'?`contenteditable="true" onblur="saveTlText(${i},this.innerText)"`:''}>${item.text}</span>
-        ${tlMode==='review'?`<div class="timeline-check ${isDone?'done':''}" onclick="togTlDone(${i})">${isDone?'✓':''}</div>`:`<button class="btn-icon timeline-del" onclick="delTlItem(${i})" style="font-size:13px">✕</button>`}
+        <span class="tl-label" ${tlMode==='plan'?`contenteditable="true" onblur="saveTlText(${i},this.innerText)"`:''}>${item.text}</span>
+        ${tlMode==='review'?`<div class="tl-check ${isDone?'done':''}" onclick="togTlDone(${i})">${isDone?'✓':''}</div>`:`<button class="btn-icon timeline-del" onclick="delTlItem(${i})" style="font-size:13px">✕</button>`}
       </div>
     </div>`;
   }).join('');
@@ -1223,7 +1284,7 @@ function renderTasks(){
   if(tagsEl) tagsEl.innerHTML=MAIN_TAGS.map(t=>`<button class="btn btn-ghost btn-sm" onclick="setMainTask('${t}')" style="font-size:12px">${t}</button>`).join('');
 }
 function setMainTask(t){ document.getElementById('mainTask').value=t; saveTasks(); toast('已設定 ✓'); }
-function updChk(n,done){ const c=document.getElementById('c'+n),s=document.getElementById('s'+n); if(c){c.className='timeline-check'+(done?' done':'');c.textContent=done?'✓':'';} if(s)s.style.textDecoration=done?'line-through':''; }
+function updChk(n,done){ const c=document.getElementById('c'+n),s=document.getElementById('s'+n); if(c){c.className='task-chk'+(done?' done':'');c.textContent=done?'✓':'';} if(s)s.style.textDecoration=done?'line-through':''; }
 function tSub(n){ if(!D.tasks) D.tasks={}; if(!D.tasks[TODAY]) D.tasks[TODAY]={}; D.tasks[TODAY]['d'+n]=!D.tasks[TODAY]['d'+n]; updChk(n,D.tasks[TODAY]['d'+n]); sv(); }
 function saveTasks(){ if(!D.tasks) D.tasks={}; if(!D.tasks[TODAY]) D.tasks[TODAY]={}; ['mainTask','s1','s2'].forEach(k=>{ const el=document.getElementById(k); if(el) D.tasks[TODAY][k]=el.value; }); sv(); }
 function saveTasksNow(){ saveTasks(); toast('任務已儲存 ✓'); }
@@ -1234,7 +1295,7 @@ function renderEv(){
   const el=document.getElementById('evList'); if(!el) return;
   const evs=(D.ev&&D.ev[TODAY])||[];
   if(!evs.length){ el.innerHTML='<div class="empty" style="padding:20px 0"><div class="empty-text">還沒有行程</div></div>'; return; }
-  el.innerHTML=evs.map(e=>`<div class="timeline-item" onclick="openEditEv(${e.id},'${TODAY}')"><div class="timeline-time">${e.t||'全天'}</div><div class="timeline-body"><span class="timeline-label">${e.tx}</span><span style="font-size:12px;color:#999">✏️</span></div></div>`).join('');
+  el.innerHTML=evs.map(e=>`<div class="tl-item" onclick="openEditEv(${e.id},'${TODAY}')"><div class="tl-time">${e.t||'全天'}</div><div class="tl-body"><span class="tl-label">${e.tx}</span><span style="font-size:12px;color:#999">✏️</span></div></div>`).join('');
 }
 function addEv(){
   const t=document.getElementById('evTime').value, tx=document.getElementById('evText').value.trim();
@@ -1319,7 +1380,7 @@ function togHab(key,hid){ if(!D.habits)D.habits={}; if(!D.habits[key])D.habits[k
 function togWkE(wk,hid){ if(!D.weekEnergy)D.weekEnergy={}; if(!D.weekEnergy[wk])D.weekEnergy[wk]={}; D.weekEnergy[wk][hid]=!D.weekEnergy[wk][hid]; sv(); renderWeek(); }
 function chWk(d){ if(d===0)wkOff=0; else wkOff+=d; renderWeek(); }
 function habPill(h,done,onClick){
-  return`<div onclick="${onClick}" class="biz-item ${done?'done':''}"><div class="biz-check">${done?'✓':''}</div><div style="flex:1"><div class="biz-label">${h.l}</div>${h.tip?`<div style="font-size:11px;color:#999;margin-top:2px">${h.tip}</div>`:''}</div></div>`;
+  return`<div onclick="${onClick}" class="hab-item ${done?'done':''}"><div class="hab-chk">${done?'✓':''}</div><div style="flex:1"><div class="hab-name">${h.l}</div>${h.tip?`<div class="hab-tip">${h.tip}</div>`:''}</div></div>`;
 }
 function openMoPanelFromWeek(dk,day,y,m){ nav('month',document.querySelector('.nav-item:nth-child(7)')); setTimeout(()=>openMoPanel(dk,day,y,m),100); }
 
@@ -1332,7 +1393,7 @@ function renderMonth(){
   const firstDow=new Date(moY,moM,1).getDay(), firstOff=(firstDow+6)%7;
   const total=new Date(moY,moM+1,0).getDate(), prev=new Date(moY,moM,0).getDate();
   const DN=['一','二','三','四','五','六','日'];
-  let h=DN.map((d,i)=>`<div class="cal-header" style="${i===6?'color:var(--red)':i===5?'color:#2563EB':''}">${d}</div>`).join('');
+  let h=DN.map((d,i)=>`<div class="cal-hd" style="${i===6?'color:var(--red)':i===5?'color:#2563EB':''}">${d}</div>`).join('');
   for(let i=0;i<firstOff;i++) h+=`<div class="cal-cell other-month"><div class="cal-date">${prev-firstOff+1+i}</div></div>`;
   for(let d=1;d<=total;d++){
     const dk=`${moY}-${String(moM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -1342,7 +1403,7 @@ function renderMonth(){
     const evs=(D.ev&&D.ev[dk])||[];
     const hasJnl=D.journals&&D.journals.some(j=>j.date===dk);
     let cls='cal-cell'; if(isT)cls+=' today'; if(isHol||isSun)cls+=' holiday';
-    let dateCls='cal-date'; if(isSat)dateCls+=' sat'; if(isSun||isHol)dateCls+=' hol';
+    let dateCls='cal-dn'; if(isSat)dateCls+=' sat'; if(isSun||isHol)dateCls+=' hol';
     h+=`<div class="${cls}" onclick="openMoPanel('${dk}',${d},${moY},${moM})">
       <div class="${dateCls}">${isT?`<span>${d}</span>`:d}${rd?`<span style="font-size:10px;margin-left:3px">${rd[0]}</span>`:''}</div>
       ${main?`<div class="cal-task-text" style="color:var(--green);font-weight:700">🎯 ${main}</div>`:''}
@@ -1386,7 +1447,7 @@ function openMoPanel(dk,day,y,m){
   setTimeout(()=>document.getElementById('moPanelEvText')?.focus(),100);
 }
 function closeMoPanel(){ document.getElementById('moPanel').classList.remove('open'); selMoDate=null; }
-function renderMoPanelBody(dk){ const el=document.getElementById('moPanelBody'); if(!el)return; const evs=(D.ev&&D.ev[dk])||[]; el.innerHTML=evs.length?evs.map(e=>`<div class="timeline-item" onclick="openEditEv(${e.id},'${dk}')"><div class="timeline-time">${e.t||'全天'}</div><div class="timeline-body"><span class="timeline-label">${e.tx}</span></div></div>`).join(''):'<div style="font-size:13px;color:#999">還沒有行程</div>'; }
+function renderMoPanelBody(dk){ const el=document.getElementById('moPanelBody'); if(!el)return; const evs=(D.ev&&D.ev[dk])||[]; el.innerHTML=evs.length?evs.map(e=>`<div class="tl-item" onclick="openEditEv(${e.id},'${dk}')"><div class="tl-time">${e.t||'全天'}</div><div class="tl-body"><span class="tl-label">${e.tx}</span></div></div>`).join(''):'<div style="font-size:13px;color:#999">還沒有行程</div>'; }
 function addMoPanelEv(){ if(!selMoDate)return; const tx=document.getElementById('moPanelEvText').value.trim(), t=document.getElementById('moPanelTime').value; if(!tx)return; if(!D.ev)D.ev={}; if(!D.ev[selMoDate])D.ev[selMoDate]=[]; D.ev[selMoDate].push({t,tx,id:id()}); D.ev[selMoDate].sort((a,b)=>(a.t||'').localeCompare(b.t||'')); document.getElementById('moPanelEvText').value=''; document.getElementById('moPanelTime').value=''; renderMoPanelBody(selMoDate); renderMonth(); if(selMoDate===TODAY)renderEv(); sv(); toast('行程已新增 ✓'); }
 function saveMoPanel(){ if(!selMoDate)return; if(!D.tasks)D.tasks={}; if(!D.tasks[selMoDate])D.tasks[selMoDate]={}; D.tasks[selMoDate].mainTask=document.getElementById('moPanelMain').value.trim(); sv(); renderMonth(); if(selMoDate===TODAY)renderTasks(); toast('已儲存 ✓'); }
 function renderSelfCheck(){
@@ -1394,7 +1455,7 @@ function renderSelfCheck(){
   const mk=moKey(), sc=(D.selfCheck&&D.selfCheck[mk])||{};
   el.innerHTML=SELF_CHECK_QS.map(q=>{
     const ans=sc[q.id], note=sc[q.id+'_note']||'';
-    return`<div class="check-item"><div class="check-q"><span class="check-q-text">${q.q}</span><div class="check-btns"><button class="check-btn yes ${ans==='yes'?'active':''}" onclick="setSC('${q.id}','yes')">有</button><button class="check-btn no ${ans==='no'?'active':''}" onclick="setSC('${q.id}','no')">沒有</button></div></div>${ans?`<div class="check-note"><div style="font-size:12px;color:${ans==='yes'?'var(--red)':'var(--green)'};margin-bottom:6px">${ans==='yes'?q.warn:'很好！保持這個覺察 ✓'}</div><textarea class="textarea" rows="2" placeholder="${ans==='yes'?'是哪些事件...':'寫下你的觀察...'}" oninput="saveSCNote('${q.id}',this.value)" style="font-size:13px">${note}</textarea></div>`:''}</div>`;
+    return`<div class="sc-item"><div class="sc-q"><span class="sc-q-text">${q.q}</span><div class="sc-btns"><button class="check-btn yes ${ans==='yes'?'on':''}" onclick="setSC('${q.id}','yes')">有</button><button class="check-btn no ${ans==='no'?'on':''}" onclick="setSC('${q.id}','no')">沒有</button></div></div>${ans?`<div class="check-note"><div style="font-size:12px;color:${ans==='yes'?'var(--red)':'var(--green)'};margin-bottom:6px">${ans==='yes'?q.warn:'很好！保持這個覺察 ✓'}</div><textarea class="textarea" rows="2" placeholder="${ans==='yes'?'是哪些事件...':'寫下你的觀察...'}" oninput="saveSCNote('${q.id}',this.value)" style="font-size:13px">${note}</textarea></div>`:''}</div>`;
   }).join('');
 }
 function setSC(qid,val){ const mk=moKey(); if(!D.selfCheck)D.selfCheck={}; if(!D.selfCheck[mk])D.selfCheck[mk]={}; D.selfCheck[mk][qid]=D.selfCheck[mk][qid]===val?undefined:val; sv(); renderSelfCheck(); }
@@ -1404,10 +1465,10 @@ function saveSCNote(qid,val){ const mk=moKey(); if(!D.selfCheck)D.selfCheck={}; 
 // 目標
 // ══════════════════════════════════════════════
 function renderGoals(){
-  const goalRow=(g,tf,df)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)"><div class="timeline-check ${g.done?'done':''}" onclick="${tf}(${g.id})">${g.done?'✓':''}</div><div style="flex:1"><span style="${g.done?'text-decoration:line-through;color:#999':''}">${g.tx}</span></div><button class="btn-icon" onclick="${df}(${g.id})" style="font-size:14px">✕</button></div>`;
+  const goalRow=(g,tf,df)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)"><div class="tl-check ${g.done?'done':''}" onclick="${tf}(${g.id})">${g.done?'✓':''}</div><div style="flex:1"><span style="${g.done?'text-decoration:line-through;color:#999':''}">${g.tx}</span></div><button class="btn-icon" onclick="${df}(${g.id})" style="font-size:14px">✕</button></div>`;
   const wl=document.getElementById('wgList'); if(wl) wl.innerHTML=(D.wg||[]).map(g=>goalRow(g,'togWG','delWG')).join('')||'<div class="empty" style="padding:12px 0"><div class="empty-text">還沒有週目標</div></div>';
   const ml=document.getElementById('mgList'); if(ml) ml.innerHTML=(D.mg||[]).map(g=>goalRow(g,'togMG','delMG')).join('')||'<div class="empty" style="padding:12px 0"><div class="empty-text">還沒有月目標</div></div>';
-  const yl=document.getElementById('ygList'); if(yl) yl.innerHTML=(D.yg||[]).map(g=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-weight:700">${g.tx}</div><div style="font-size:12px;color:#999;margin-top:2px">${g.cat||''}</div><div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="progress-bar" style="flex:1"><div class="progress-fill" id="yf${g.id}" style="width:${g.p||0}%"></div></div><span style="font-size:13px;color:#999" id="yp${g.id}">${g.p||0}%</span></div><input type="range" min="0" max="100" value="${g.p||0}" oninput="updYG(${g.id},this.value)" style="width:100%;margin-top:4px;accent-color:var(--accent)"></div><button class="btn-icon" onclick="delYG(${g.id})" style="font-size:14px">✕</button></div>`).join('')||'<div class="empty" style="padding:12px 0"><div class="empty-text">還沒有年度目標</div></div>';
+  const yl=document.getElementById('ygList'); if(yl) yl.innerHTML=(D.yg||[]).map(g=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-weight:700">${g.tx}</div><div style="font-size:12px;color:#999;margin-top:2px">${g.cat||''}</div><div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="progress" style="flex:1"><div class="progress-fill fill-green" id="yf${g.id}" style="width:${g.p||0}%"></div></div><span style="font-size:13px;color:#999" id="yp${g.id}">${g.p||0}%</span></div><input type="range" min="0" max="100" value="${g.p||0}" oninput="updYG(${g.id},this.value)" style="width:100%;margin-top:4px;accent-color:var(--accent)"></div><button class="btn-icon" onclick="delYG(${g.id})" style="font-size:14px">✕</button></div>`).join('')||'<div class="empty" style="padding:12px 0"><div class="empty-text">還沒有年度目標</div></div>';
 }
 function addWG(){ const tx=document.getElementById('wgTxt').value.trim(); if(!tx)return; if(!D.wg)D.wg=[]; D.wg.push({tx,done:false,id:id()}); document.getElementById('wgTxt').value=''; document.getElementById('addWGForm').style.display='none'; sv(); renderGoals(); }
 function togWG(gid){ const g=(D.wg||[]).find(g=>g.id===gid); if(g)g.done=!g.done; sv(); renderGoals(); }
@@ -1430,7 +1491,7 @@ function renderJournals(){
   if(!list.length){ el.innerHTML='<div class="empty"><div class="empty-icon">🌙</div><div class="empty-text">還沒有日誌記錄<br>今晚就開始寫第一篇吧</div></div>'; return; }
   el.innerHTML=list.map(j=>{
     const gr=(j.gratitude||[]).filter(x=>x);
-    return`<div class="record-item"><div class="record-header"><div><div class="record-title">${j.date}</div>${j.energyFor?`<div class="record-date" style="margin-top:2px">能量給了：${j.energyFor}</div>`:''}</div><div class="record-actions"><button class="btn btn-ghost btn-sm" onclick="editJnl(${j.id})">✏️</button><button class="btn-icon" onclick="delJnl(${j.id})">✕</button></div></div><div class="record-body">${j.q1?`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:#999">讓我有感覺的事</span><div>${j.q1}</div></div>`:''} ${gr.length?`<div style="margin-top:8px;padding:10px 12px;background:var(--gold-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--gold)">🙏 感恩</span>${gr.map((g,i)=>`<div style="margin-top:4px">${i+1}. ${g}</div>`).join('')}</div>`:''} ${j.selfMsg?`<div style="margin-top:8px;font-style:italic;color:var(--accent-dark)">${j.selfMsg}</div>`:''}</div></div>`;
+    return`<div class="record"><div class="record-hd"><div><div class="record-title">${j.date}</div>${j.energyFor?`<div class="record-date" style="margin-top:2px">能量給了：${j.energyFor}</div>`:''}</div><div class="record-actions"><button class="btn btn-ghost btn-sm" onclick="editJnl(${j.id})">✏️</button><button class="btn-icon" onclick="delJnl(${j.id})">✕</button></div></div><div class="record-body">${j.q1?`<div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:#999">讓我有感覺的事</span><div>${j.q1}</div></div>`:''} ${gr.length?`<div style="margin-top:8px;padding:10px 12px;background:var(--gold-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--gold)">🙏 感恩</span>${gr.map((g,i)=>`<div style="margin-top:4px">${i+1}. ${g}</div>`).join('')}</div>`:''} ${j.selfMsg?`<div style="margin-top:8px;font-style:italic;color:var(--accent-dark)">${j.selfMsg}</div>`:''}</div></div>`;
   }).join('');
 }
 function filterJnl(f,el){ jnlFilter=f; document.querySelectorAll('#pg-journal .tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); renderJournals(); }
@@ -1469,7 +1530,7 @@ function renderBooks(){
   let list=[...(D.books||[])].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   if(bookFilter!=='all') list=list.filter(b=>b.status===bookFilter);
   if(!list.length){ el.innerHTML='<div class="empty"><div class="empty-icon">📚</div><div class="empty-text">還沒有讀書記錄</div></div>'; return; }
-  el.innerHTML=list.map(b=>`<div class="record-item"><div class="record-header"><div><div class="record-title">${b.title}</div><div class="record-date" style="margin-top:3px"><span class="tag ${b.status==='已讀完'?'tag-green':b.status==='閱讀中'?'tag-accent':'tag-gray'}">${b.status||''}</span> <span style="color:#999">${b.cat||''} · ${b.date||''}</span></div></div><div class="record-actions"><button class="btn btn-ghost btn-sm" onclick="editBook(${b.id})">✏️</button><button class="btn-icon" onclick="delBook(${b.id})">✕</button></div></div><div class="record-body">${b.ideas?`<div style="margin-bottom:8px;padding:10px 12px;background:var(--accent-light);border-radius:6px"><div style="font-size:11px;font-weight:700;color:var(--accent-dark);margin-bottom:4px">3個有用觀念</div>${b.ideas.replace(/\n/g,'<br>')}</div>`:''} ${b.note?`<div style="margin-bottom:6px">${b.note}</div>`:''} ${b.action?`<div style="padding:8px 12px;background:var(--green-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--green)">行動計劃：</span>${b.action}</div>`:''}</div></div>`).join('');
+  el.innerHTML=list.map(b=>`<div class="record"><div class="record-hd"><div><div class="record-title">${b.title}</div><div class="record-date" style="margin-top:3px"><span class="tag ${b.status==='已讀完'?'tag-green':b.status==='閱讀中'?'tag-accent':'tag-gray'}">${b.status||''}</span> <span style="color:#999">${b.cat||''} · ${b.date||''}</span></div></div><div class="record-actions"><button class="btn btn-ghost btn-sm" onclick="editBook(${b.id})">✏️</button><button class="btn-icon" onclick="delBook(${b.id})">✕</button></div></div><div class="record-body">${b.ideas?`<div style="margin-bottom:8px;padding:10px 12px;background:var(--accent-light);border-radius:6px"><div style="font-size:11px;font-weight:700;color:var(--accent-dark);margin-bottom:4px">3個有用觀念</div>${b.ideas.replace(/\n/g,'<br>')}</div>`:''} ${b.note?`<div style="margin-bottom:6px">${b.note}</div>`:''} ${b.action?`<div style="padding:8px 12px;background:var(--green-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--green)">行動計劃：</span>${b.action}</div>`:''}</div></div>`).join('');
 }
 function filterBook(f,el){ bookFilter=f; document.querySelectorAll('#pg-book .tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); renderBooks(); }
 function saveBook(){
@@ -1593,8 +1654,8 @@ function renderStocks(){
     const slP=price>0?(price*(1+sl/100)).toFixed(1):'';
     const t1P=price>0?(price*(1+tp1/100)).toFixed(1):'';
     const t2P=price>0?(price*(1+tp2/100)).toFixed(1):'';
-    return`<div class="record-item">
-      <div class="record-header">
+    return`<div class="record">
+      <div class="record-hd">
         <div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
             <span class="record-title">${s.code||'—'}</span>
@@ -1613,7 +1674,7 @@ function renderStocks(){
           ${slP?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--red-light);border:1px solid var(--red);color:var(--red)">停損 ${slP}</span>`:''}
           ${t1P?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--green-light);border:1px solid var(--green);color:var(--green)">停利1 ${t1P}</span>`:''}
           ${t2P?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--gold-light);border:1px solid var(--gold);color:var(--gold)">停利2 ${t2P}</span>`:''}
-          ${s.mood?`<span class="tag tag-gray">${s.mood}</span>`:''}
+          ${s.mood?`<span class="badge badge-gray">${s.mood}</span>`:''}
         </div>`:''}
         ${s.kline||s.market?`<div style="font-size:12px;color:#666;margin-bottom:6px">${[s.kline,s.market].filter(x=>x).join(' · ')}</div>`:''}
         ${s.reason?`<div style="padding:9px 12px;background:var(--bg);border-radius:6px;font-size:13px;margin-bottom:8px">進場：${s.reason}</div>`:''}
@@ -1633,9 +1694,9 @@ function renderStockStat(){
   const moods={}; stocks.forEach(s=>{ moods[s.mood]=(moods[s.mood]||0)+1; });
   const topMood=Object.entries(moods).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
   el.innerHTML=`<div class="grid-3" style="margin-bottom:14px">
-    <div class="stat-box"><div class="stat-num" style="color:${total>=0?'var(--green)':'var(--red)'}">${total>=0?'+':''}${Math.round(total).toLocaleString()}</div><div class="stat-label">總損益（元）</div></div>
-    <div class="stat-box"><div class="stat-num" style="color:var(--green)">${wins}</div><div class="stat-label">獲利次數</div></div>
-    <div class="stat-box"><div class="stat-num" style="color:var(--red)">${losses}</div><div class="stat-label">虧損次數</div></div>
+    <div class="stat-card"><div class="stat-card-num" style="color:${total>=0?'var(--green)':'var(--red)'}">${total>=0?'+':''}${Math.round(total).toLocaleString()}</div><div class="stat-card-label">總損益（元）</div></div>
+    <div class="stat-card"><div class="stat-card-num" style="color:var(--green)">${wins}</div><div class="stat-card-label">獲利次數</div></div>
+    <div class="stat-card"><div class="stat-card-num" style="color:var(--red)">${losses}</div><div class="stat-card-label">虧損次數</div></div>
   </div>
   <div style="font-size:13px;color:#666;padding:10px 12px;background:var(--bg);border-radius:6px;margin-bottom:10px">最常見心理：<strong>${topMood}</strong></div>
   <div style="padding:12px;background:var(--accent-light);border-radius:6px;font-family:var(--serif);font-size:13px;color:var(--accent-dark);text-align:center;line-height:1.8">「不是每筆交易都要賺錢，<br>但每筆交易都要學到東西。」</div>`;
@@ -1651,7 +1712,7 @@ function renderSvcs(){
   if(svcFilter==='VIP老客')list=list.filter(s=>s.client==='VIP老客');
   if(svcFilter==='insight')list=list.filter(s=>s.insight&&s.insight.trim());
   if(!list.length){ el.innerHTML='<div class="empty"><div class="empty-icon">💆‍♀️</div><div class="empty-text">還沒有服務記錄</div></div>'; return; }
-  el.innerHTML=list.map(s=>`<div class="record-item"><div class="record-header"><div><div class="record-title">${s.type||''} · ${s.client||''}</div><div class="record-date">${s.date||''} · ${s.energy||''}${s.income?` · $${s.income}`:''}</div></div><div class="record-actions"><button class="btn btn-ghost btn-sm" onclick="editSvc(${s.id})">✏️</button><button class="btn-icon" onclick="delSvc(${s.id})">✕</button></div></div><div class="record-body">${s.obs?`<div style="margin-bottom:8px">${s.obs}</div>`:''} ${s.insight?`<div style="margin-bottom:6px;padding:8px 12px;background:var(--accent-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--accent-dark)">💡 靈感素材：</span>${s.insight}</div>`:''} ${s.tech?`<div style="margin-bottom:6px;padding:8px 12px;background:var(--green-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--green)">🔧 技術：</span>${s.tech}</div>`:''} ${s.brand?`<div style="padding:8px 12px;background:var(--gold-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--gold)">💼 品牌：</span>${s.brand}</div>`:''}</div></div>`).join('');
+  el.innerHTML=list.map(s=>`<div class="record"><div class="record-hd"><div><div class="record-title">${s.type||''} · ${s.client||''}</div><div class="record-date">${s.date||''} · ${s.energy||''}${s.income?` · $${s.income}`:''}</div></div><div class="record-actions"><button class="btn btn-ghost btn-sm" onclick="editSvc(${s.id})">✏️</button><button class="btn-icon" onclick="delSvc(${s.id})">✕</button></div></div><div class="record-body">${s.obs?`<div style="margin-bottom:8px">${s.obs}</div>`:''} ${s.insight?`<div style="margin-bottom:6px;padding:8px 12px;background:var(--accent-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--accent-dark)">💡 靈感素材：</span>${s.insight}</div>`:''} ${s.tech?`<div style="margin-bottom:6px;padding:8px 12px;background:var(--green-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--green)">🔧 技術：</span>${s.tech}</div>`:''} ${s.brand?`<div style="padding:8px 12px;background:var(--gold-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--gold)">💼 品牌：</span>${s.brand}</div>`:''}</div></div>`).join('');
 }
 function filterSvc(f,el){ svcFilter=f; document.querySelectorAll('#pg-service .tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); renderSvcs(); }
 function saveSvc(){
@@ -1675,7 +1736,7 @@ function renderIdeas(){
   const el=document.getElementById('ideaList'); if(!el)return;
   const ideas=D.ideas||[];
   if(!ideas.length){ el.innerHTML='<div class="empty"><div class="empty-icon">💡</div><div class="empty-text">把靈感記錄在這裡</div></div>'; return; }
-  el.innerHTML=ideas.map(i=>`<div class="record-item" style="margin-bottom:8px"><div style="display:flex;align-items:flex-start;gap:10px"><span class="tag tag-gray" style="flex-shrink:0">${i.cat}</span><div style="flex:1"><div style="font-size:14px">${i.tx}</div><div style="font-size:11px;color:#999;margin-top:2px">${i.date||''}</div></div><button class="btn-icon" onclick="delIdea(${i.id})">✕</button></div></div>`).join('');
+  el.innerHTML=ideas.map(i=>`<div class="record" style="margin-bottom:8px"><div style="display:flex;align-items:flex-start;gap:10px"><span class="badge badge-gray" style="flex-shrink:0">${i.cat}</span><div style="flex:1"><div style="font-size:14px">${i.tx}</div><div style="font-size:11px;color:#999;margin-top:2px">${i.date||''}</div></div><button class="btn-icon" onclick="delIdea(${i.id})">✕</button></div></div>`).join('');
 }
 function addIdea(){ const cat=document.getElementById('ideaCat')?.value, tx=document.getElementById('ideaTxt')?.value.trim(); if(!tx)return; if(!D.ideas)D.ideas=[]; D.ideas.unshift({cat,tx,id:id(),date:TODAY}); document.getElementById('ideaTxt').value=''; sv(); renderIdeas(); toast('💡 靈感已記錄！'); }
 function delIdea(iid){ D.ideas=(D.ideas||[]).filter(i=>i.id!==iid); sv(); renderIdeas(); }
@@ -1745,7 +1806,7 @@ ${[['2026年5月','🌊','清掃舊能量','Rahu-Mars衝擊最強。容易煩躁
 </div>
 <div>
 <div class="card"><div class="card-header"><span class="card-title">⭐ 必做5件事（做到就100分）</span></div><div class="card-body">
-${[['🏥','完整健康檢查 1 次','7月底前','最優先'],['🌙','守住 21:30/5:30 作息','每天',''],['🔒','前夫家邊界守住＋諮詢律師','6月底前','重要'],['🚫','不做任何重大新承諾','8月底前',''],['✍️','每週寫一段公開內容','每週','']].map(([e,t,d,tag])=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:22px;flex-shrink:0">${e}</span><div style="flex:1"><div style="font-weight:700">${t}</div><div style="font-size:12px;color:#999;margin-top:2px">${d}</div></div>${tag?`<span class="tag tag-red">${tag}</span>`:''}</div>`).join('')}
+${[['🏥','完整健康檢查 1 次','7月底前','最優先'],['🌙','守住 21:30/5:30 作息','每天',''],['🔒','前夫家邊界守住＋諮詢律師','6月底前','重要'],['🚫','不做任何重大新承諾','8月底前',''],['✍️','每週寫一段公開內容','每週','']].map(([e,t,d,tag])=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:22px;flex-shrink:0">${e}</span><div style="flex:1"><div style="font-weight:700">${t}</div><div style="font-size:12px;color:#999;margin-top:2px">${d}</div></div>${tag?`<span class="badge badge-red">${tag}</span>`:''}</div>`).join('')}
 </div></div>
 <div class="card"><div class="card-header"><span class="card-title">🎯 5大面向行動</span></div><div class="card-body">
 ${[['◇ 自己（最優先）','守住作息・每週一次我的時間・完整健康檢查・不做重大決定'],['○ 家庭（守邊界）','前夫家邊界處理乾淨・伴侶財務界線清楚・每週孩子單獨時間'],['● 事業（不擴張）','暫緩營業登記・每週一篇公開內容・記錄服務觀察・思考Moome3.0'],['◉ 財富（建立緩衝）','個人帳戶獨立・開始建立緊急儲備（6-12個月）・記帳每天3分鐘'],['✿ 健康（為16年打底）','完整健康檢查・每週3次運動・照顧月經週期・每月1次身體投資']].map(([face,items])=>`<div style="padding:11px 0;border-bottom:1px solid var(--border)"><div style="font-weight:700;margin-bottom:5px">${face}</div><div style="font-size:13px;color:#666;line-height:1.7">${items}</div></div>`).join('')}
@@ -1776,6 +1837,7 @@ function renderAll(){
 }
 
 window.addEventListener('load',()=>{
+  const ttl0=document.getElementById('topTitle'); if(ttl0) ttl0.innerHTML='🏠 日計劃';
   renderToday();
   loadCloud();
 });
