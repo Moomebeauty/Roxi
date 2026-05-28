@@ -656,21 +656,144 @@ body{font-family:var(--f);background:var(--bg);color:var(--ink);line-height:1.7;
 <!-- ══ 股票交易 ══ -->
 <div class="pg" id="pg-stock">
   <div class="pg-ttl">股票交易日記</div>
-  <div class="pg-sub">「◉ 財富・智慧複利取代體力換錢」</div>
+  <div class="pg-sub" style="font-family:var(--fs);color:var(--bark);font-style:normal;font-size:14px">「不是每筆交易都要賺錢，但每筆交易都要學到東西。」</div>
+
   <div class="g2">
+  <!-- 左欄：新增表單 -->
   <div>
-    <div class="card"><div class="ch"><span class="ct-ttl">📈 新增交易記錄</span></div><div class="cb">
-      <div class="fgrp"><label>日期</label><input type="date" class="inp" id="stDate"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="fgrp"><label>股票代號/名稱</label><input type="text" class="inp" id="stCode" placeholder="例：2330 台積電"></div><div class="fgrp"><label>操作</label><select class="inp" id="stType"><option>買進</option><option>賣出</option><option>觀察</option></select></div></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><div class="fgrp"><label>價格</label><input type="number" class="inp" id="stPrice" placeholder="0"></div><div class="fgrp"><label>股數</label><input type="number" class="inp" id="stQty" placeholder="0"></div><div class="fgrp"><label>損益(元)</label><input type="number" class="inp" id="stPnl" placeholder="0"></div></div>
-      <div class="fgrp"><label>進場理由</label><textarea class="ta" id="stReason" rows="2" placeholder="為什麼買/賣？"></textarea></div>
-      <div class="fgrp"><label>心情狀態</label><select class="inp" id="stMood"><option>冷靜理性</option><option>略有猶豫</option><option>追漲衝動</option><option>恐懼殺出</option><option>貪婪加碼</option></select></div>
-      <div class="fgrp"><label>事後復盤</label><textarea class="ta" id="stReview" rows="2" placeholder="這筆交易我學到了什麼？"></textarea></div>
-      <button class="btn btn-p" onclick="addStock()">儲存</button>
-    </div></div>
+    <div class="card">
+      <div class="ch"><span class="ct-ttl">📈 新增 / 編輯交易記錄</span></div>
+      <div class="cb">
+
+        <!-- 基本資訊 -->
+        <div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:10px;letter-spacing:.05em">📋 基本資訊</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="fgrp"><label>買進日期</label><input type="date" class="inp" id="stDate"></div>
+          <div class="fgrp"><label>操作類型</label><select class="inp" id="stType"><option>買進</option><option>賣出</option><option>觀察</option></select></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="fgrp"><label>股票代號/名稱</label><input type="text" class="inp" id="stCode" placeholder="例：2330 台積電"></div>
+          <div class="fgrp"><label>本次部位佔總資產 %</label><input type="number" class="inp" id="stPosition" placeholder="例：10" step="0.1"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div class="fgrp"><label>買進價格（元）</label><input type="number" class="inp" id="stPrice" placeholder="0" oninput="calcRiskLevels()"></div>
+          <div class="fgrp"><label>股數（張×1000）</label><input type="number" class="inp" id="stQty" placeholder="0" oninput="calcRiskLevels()"></div>
+          <div class="fgrp"><label>最大可承受虧損（元）</label><input type="number" class="inp" id="stMaxLoss" placeholder="0"></div>
+        </div>
+
+        <!-- 進場理由 -->
+        <div class="fgrp"><label>進場理由</label><textarea class="ta" id="stReason" rows="2" placeholder="為什麼買？技術面・基本面・消息面..."></textarea></div>
+
+        <!-- 技術面資訊 -->
+        <div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:10px;letter-spacing:.05em;margin-top:4px">📊 技術面 / 籌碼</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="fgrp"><label>K線位置</label>
+            <select class="inp" id="stKline">
+              <option value="">請選擇</option>
+              <option>5日線之上</option><option>5日線之下</option>
+              <option>月線之上</option><option>月線之下</option>
+              <option>季線之上</option><option>季線之下</option>
+              <option>突破壓力區</option><option>跌破支撐區</option>
+            </select>
+          </div>
+          <div class="fgrp"><label>當天大盤狀況</label>
+            <select class="inp" id="stMarket">
+              <option value="">請選擇</option>
+              <option>大漲（+1%以上）</option><option>小漲</option>
+              <option>平盤</option><option>小跌</option><option>大跌（-1%以下）</option>
+            </select>
+          </div>
+        </div>
+        <div class="fgrp"><label>法人籌碼（外資/投信近5日買賣超）</label>
+          <input type="text" class="inp" id="stChip" placeholder="例：外資連買3日+5000張，投信賣超">
+        </div>
+
+        <!-- 風險控管 -->
+        <div style="border:2px solid #C44040;border-radius:11px;padding:15px 17px;margin-bottom:14px;background:#FEF8F8">
+          <div style="font-size:13px;font-weight:700;color:#C44040;margin-bottom:12px;letter-spacing:.05em">🛡️ 風險控管</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+            <div class="fgrp" style="margin-bottom:0">
+              <label style="color:#C44040">停損（預設 -10%）</label>
+              <div style="display:flex;align-items:center;gap:6px">
+                <input type="number" class="inp" id="stSL" placeholder="-10" step="0.1" style="border-color:#C44040" oninput="calcRiskLevels()">
+                <span style="font-size:13px;color:#C44040;flex-shrink:0">%</span>
+              </div>
+              <div id="stSLPrice" style="font-size:12px;color:#C44040;margin-top:4px;font-weight:600"></div>
+            </div>
+            <div class="fgrp" style="margin-bottom:0">
+              <label style="color:var(--mossD)">第一停利（預設 +20%）</label>
+              <div style="display:flex;align-items:center;gap:6px">
+                <input type="number" class="inp" id="stTP1" placeholder="20" step="0.1" style="border-color:var(--moss)" oninput="calcRiskLevels()">
+                <span style="font-size:13px;color:var(--mossD);flex-shrink:0">%</span>
+              </div>
+              <div id="stTP1Price" style="font-size:12px;color:var(--mossD);margin-top:4px;font-weight:600"></div>
+            </div>
+            <div class="fgrp" style="margin-bottom:0">
+              <label style="color:var(--amberD)">第二停利（預設 +40%）</label>
+              <div style="display:flex;align-items:center;gap:6px">
+                <input type="number" class="inp" id="stTP2" placeholder="40" step="0.1" style="border-color:var(--amber)" oninput="calcRiskLevels()">
+                <span style="font-size:13px;color:var(--amberD);flex-shrink:0">%</span>
+              </div>
+              <div id="stTP2Price" style="font-size:12px;color:var(--amberD);margin-top:4px;font-weight:600"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 進場心理 -->
+        <div class="fgrp">
+          <label>進場心理狀態</label>
+          <select class="inp" id="stMood">
+            <option>冷靜分析後決定</option>
+            <option>有點怕錯過（FOMO）</option>
+            <option>看到別人在賺想跟</option>
+            <option>純粹想試試看</option>
+            <option>有信心會漲</option>
+            <option>其實有點賭</option>
+          </select>
+        </div>
+
+        <!-- 出場記錄 -->
+        <div style="border:1.5px solid var(--bdr);border-radius:11px;padding:15px 17px;margin-bottom:14px;background:var(--bg2)">
+          <div style="font-size:13px;font-weight:600;color:var(--bark);margin-bottom:12px">📤 出場記錄（可分批填寫）</div>
+          <div id="exitRows"></div>
+          <button onclick="addExitRow()" class="btn btn-s btn-sm" style="font-size:12px;margin-top:8px">＋ 新增一批賣出</button>
+        </div>
+
+        <!-- 事後復盤 -->
+        <div style="border:1.5px solid var(--chai);border-radius:11px;padding:15px 17px;margin-bottom:14px;background:var(--milk)">
+          <div style="font-size:13px;font-weight:600;color:var(--bark);margin-bottom:4px">📝 我學到什麼？</div>
+          <div style="font-size:12px;color:var(--inkL);margin-bottom:12px">最重要的部分——每筆交易都要有復盤</div>
+          <div class="fgrp"><label>1. 我的判斷對了嗎？哪裡對、哪裡錯？</label><textarea class="ta" id="stR1" rows="3" placeholder="當時的判斷是...，實際上..."></textarea></div>
+          <div class="fgrp"><label>2. 我有遵守紀律嗎？（停損/停利）</label><textarea class="ta" id="stR2" rows="3" placeholder="停損點有沒有守住？有沒有抱太久..."></textarea></div>
+          <div class="fgrp"><label>3. 我的情緒有影響決策嗎？</label><textarea class="ta" id="stR3" rows="3" placeholder="恐慌賣出？貪心加碼？被FOMO帶走..."></textarea></div>
+          <div class="fgrp" style="margin-bottom:0"><label>4. 下次遇到類似情況我會怎麼做？</label><textarea class="ta" id="stR4" rows="3" placeholder="具體的改進行動是..."></textarea></div>
+        </div>
+
+        <input type="hidden" id="stEditId" value="">
+        <div style="display:flex;gap:9px">
+          <button class="btn btn-p" onclick="addStock()" style="flex:1" id="stSaveBtn">💾 儲存交易</button>
+          <button class="btn btn-s" onclick="clearStockForm()" style="font-size:12px">清除</button>
+        </div>
+      </div>
+    </div>
     <div class="card"><div class="ch"><span class="ct-ttl">📊 損益統計</span></div><div class="cb" id="stockStat"></div></div>
   </div>
-  <div><div class="card"><div class="ch"><span class="ct-ttl">📝 交易記錄</span><div class="tabs" style="margin-bottom:0"><div class="tab on" onclick="filterStock('all',this)">全部</div><div class="tab" onclick="filterStock('買進',this)">買進</div><div class="tab" onclick="filterStock('賣出',this)">賣出</div><div class="tab" onclick="filterStock('觀察',this)">觀察</div></div></div><div class="cb" id="stockList"></div></div></div>
+
+  <!-- 右欄：記錄清單 -->
+  <div>
+    <div class="card">
+      <div class="ch">
+        <span class="ct-ttl">📝 交易記錄</span>
+        <div class="tabs" style="margin-bottom:0">
+          <div class="tab on" onclick="filterStock('all',this)">全部</div>
+          <div class="tab" onclick="filterStock('買進',this)">買進</div>
+          <div class="tab" onclick="filterStock('賣出',this)">賣出</div>
+          <div class="tab" onclick="filterStock('觀察',this)">觀察</div>
+        </div>
+      </div>
+      <div class="cb" id="stockList"></div>
+    </div>
+  </div>
   </div>
 </div>
 
@@ -1161,7 +1284,7 @@ function getMon(d){const dt=new Date(d),dow=dt.getDay(),off=dow===0?-6:1-dow;dt.
 function getWkDates(off){const mon=getMon(NOW);const b=new Date(mon);b.setDate(mon.getDate()+off*7);return Array.from({length:7},(_,i)=>{const d=new Date(b);d.setDate(b.getDate()+i);return d;});}
 
 const PAGE_TITLES={'today':'日計劃','week':'週計劃','month':'月計劃','goals':'目標追蹤','journal':'每日日誌','book':'讀書日記','stock':'股票交易日記','service':'服務觀察筆記','ideas':'素材庫','destiny':'事業天命','now':'現在 → 2026.8 行動導覽'};
-function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rWX();rRoxi();rDayTimeline();rBizList();rTasks();rEv();setMode(tlMode);}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();rSelfCheck();loadMoReview();}if(id==='journal'){initJournalForm();rJournals();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){rDestTimeline();rMoomeGuidance();}if(id==='now'){rNowPage();}}
+function nav(id,el){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');if(el)el.classList.add('on');document.getElementById('topTitle').textContent=PAGE_TITLES[id]||'';if(id==='today'){rWX();rRoxi();rDayTimeline();rBizList();rTasks();rEv();setMode(tlMode);}if(id==='week')rWeekPlan();if(id==='month'){rMoPlan();rMoHabs();rSelfCheck();loadMoReview();}if(id==='journal'){initJournalForm();rJournals();}if(id==='book')rBooks();if(id==='stock'){rStocks();rStockStat();setTimeout(initStockForm,100);}if(id==='service')rSvcs();if(id==='ideas')rIdeas2();if(id==='destiny'){rDestTimeline();rMoomeGuidance();}if(id==='now'){rNowPage();}}
 function tf(id){const el=document.getElementById(id);if(!el)return;const op=el.style.display==='block';el.style.display=op?'none':'block';if(!op){const i=el.querySelector('input[type=text],input[type=time],textarea');if(i)setTimeout(()=>i.focus(),50);}}
 function openMo(id){document.getElementById(id).classList.add('open');}
 function closeMo(id){document.getElementById(id).classList.remove('open');moId=null;moDk2=null;}
@@ -1657,27 +1780,283 @@ function rBooks(){const el=document.getElementById('bookList');if(!el)return;con
 function delBook(id){D.books=D.books.filter(b=>b.id!==id);sv();rBooks();}
 
 // ── 股票交易 ──
-function addStock(){const code=document.getElementById('stCode').value.trim();if(!code){toast('請填寫股票代號');return;}if(!D.stocks)D.stocks=[];const pnl=parseFloat(document.getElementById('stPnl').value)||0;D.stocks.unshift({id:Date.now(),date:document.getElementById('stDate').value||TODAY,code,type:document.getElementById('stType').value,price:parseFloat(document.getElementById('stPrice').value)||0,qty:parseInt(document.getElementById('stQty').value)||0,pnl,reason:document.getElementById('stReason').value.trim(),mood:document.getElementById('stMood').value,review:document.getElementById('stReview').value.trim()});['stCode','stPrice','stQty','stPnl','stReason','stReview'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});sv();rStocks();rStockStat();toast('📈 交易記錄已儲存！');}
-function filterStock(f,el){stockFilter=f;document.querySelectorAll('#pg-stock .tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');rStocks();}
-function rStocks(){const el=document.getElementById('stockList');if(!el)return;const stocks=D.stocks||[];const filtered=stockFilter==='all'?stocks:stocks.filter(s=>s.type===stockFilter);if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--inkL)"><div style="font-size:36px;margin-bottom:10px">📈</div>還沒有交易記錄</div>';return;}el.innerHTML=filtered.map(s=>{const pnl=s.pnl||0;return`<div class="jnl-row">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px"><div><div style="font-size:15px;font-weight:700;color:var(--bark)">${s.code}</div><div style="font-size:12px;color:var(--inkL);margin-top:1px">${s.date}</div></div><div style="display:flex;align-items:center;gap:7px"><span style="padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${s.type==='買進'?'var(--coLL)':s.type==='賣出'?'var(--blushL)':'var(--bg2)'};color:${s.type==='買進'?'var(--bark)':s.type==='賣出'?'var(--blushD)':'var(--inkM)'}">${s.type}</span>${pnl!==0?`<span style="font-size:14px;font-weight:700;color:${pnl>0?'var(--mossD)':'var(--blushD)'}">${pnl>0?'+':''}${pnl.toLocaleString()}</span>`:''}<button class="btn-del" onclick="delStock(${s.id})">✕</button></div></div>
-  <div style="font-size:13px;color:var(--inkM);margin-bottom:4px">成交：${s.price}元 × ${s.qty}股 · 心態：${s.mood}</div>
-  ${s.reason?`<div style="font-size:13px;color:var(--bark);margin-bottom:4px;padding:8px 11px;background:var(--coLL);border-radius:7px">進場理由：${s.reason}</div>`:''}
-  ${s.review?`<div style="font-size:13px;color:var(--mossD);padding:8px 11px;background:var(--mossL);border-radius:7px">復盤：${s.review}</div>`:''}
-</div>`}).join('');}
-function rStockStat(){const el=document.getElementById('stockStat');if(!el)return;const stocks=D.stocks||[];if(!stocks.length){el.innerHTML='<div style="font-size:14px;color:var(--inkL)">尚無交易記錄</div>';return;}const totalPnl=stocks.reduce((a,s)=>a+(s.pnl||0),0);const wins=stocks.filter(s=>s.type==='賣出'&&s.pnl>0).length;const losses=stocks.filter(s=>s.type==='賣出'&&s.pnl<0).length;const moodCount={};stocks.forEach(s=>{moodCount[s.mood]=(moodCount[s.mood]||0)+1;});const topMood=Object.entries(moodCount).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="padding:11px;background:${totalPnl>=0?'var(--mossL)':'var(--blushL)'};border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:${totalPnl>=0?'var(--mossD)':'var(--blushD)'}">${totalPnl>=0?'+':''}${totalPnl.toLocaleString()}</div><div style="font-size:11px;color:var(--inkM)">總損益</div></div><div style="padding:11px;background:var(--coLL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:var(--bark)">${stocks.length}</div><div style="font-size:11px;color:var(--inkM)">總筆數</div></div><div style="padding:11px;background:var(--mossL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:var(--mossD)">${wins}</div><div style="font-size:11px;color:var(--inkM)">獲利次數</div></div><div style="padding:11px;background:var(--blushL);border-radius:10px;text-align:center"><div style="font-family:var(--fs);font-size:20px;font-weight:900;color:var(--blushD)">${losses}</div><div style="font-size:11px;color:var(--inkM)">虧損次數</div></div></div><div style="margin-top:10px;padding:10px 13px;background:var(--milk);border-radius:10px;font-size:13px;color:var(--bark)">最常見交易心態：<strong>${topMood}</strong></div>`;}
-function delStock(id){D.stocks=D.stocks.filter(s=>s.id!==id);sv();rStocks();rStockStat();}
 
-// ── 服務觀察 ──
-function addSvc(){const obs=document.getElementById('svcObs').value.trim();if(!obs){toast('請填寫觀察內容');return;}if(!D.services)D.services=[];D.services.unshift({id:Date.now(),date:document.getElementById('svcDate').value||TODAY,type:document.getElementById('svcType').value,client:document.getElementById('svcClient').value,obs,insight:document.getElementById('svcInsight').value.trim(),tech:document.getElementById('svcTech').value.trim(),brand:document.getElementById('svcBrand').value.trim(),energy:document.getElementById('svcEnergy').value,income:parseFloat(document.getElementById('svcIncome').value)||0});['svcObs','svcInsight','svcTech','svcBrand','svcIncome'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});sv();rSvcs();toast('💆‍♀️ 服務筆記已儲存！');}
-function filterSvc(f,el){svcFilter=f;document.querySelectorAll('#pg-service .tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');rSvcs();}
-function rSvcs(){const el=document.getElementById('svcList');if(!el)return;const svcs=D.services||[];let filtered=svcs;if(svcFilter==='VIP老客')filtered=svcs.filter(s=>s.client==='VIP老客');else if(svcFilter==='insight')filtered=svcs.filter(s=>s.insight&&s.insight.trim());if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--inkL)"><div style="font-size:36px;margin-bottom:10px">💆‍♀️</div>還沒有服務記錄</div>';return;}el.innerHTML=filtered.map(s=>`<div class="jnl-row">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px"><div><div style="font-size:15px;font-weight:700;color:var(--bark)">${s.type} · ${s.client}</div><div style="font-size:12px;color:var(--inkL);margin-top:1px">${s.date} · 能量：${s.energy}${s.income?` · 收入：$${s.income.toLocaleString()}`:''}</div></div><button class="btn-del" onclick="delSvc(${s.id})">✕</button></div>
-  <div style="font-size:13px;color:var(--bark);margin-bottom:6px;line-height:1.6">${s.obs}</div>
-  ${s.insight?`<div style="font-size:13px;color:var(--bark);padding:8px 11px;background:var(--coLL);border-radius:7px;margin-bottom:5px"><strong>💡 靈感素材：</strong>${s.insight}</div>`:''}
-  ${s.tech?`<div style="font-size:13px;color:var(--mossD);padding:8px 11px;background:var(--mossL);border-radius:7px;margin-bottom:5px"><strong>🔧 技術：</strong>${s.tech}</div>`:''}
-  ${s.brand?`<div style="font-size:13px;color:var(--hazeD);padding:8px 11px;background:var(--hazeL);border-radius:7px"><strong>💼 品牌思考：</strong>${s.brand}</div>`:''}
-</div>`).join('');}
+// ── 出場記錄動態列 ──
+let exitRowCount = 0;
+function addExitRow(){
+  const container = document.getElementById('exitRows');
+  if(!container) return;
+  const i = exitRowCount++;
+  const row = document.createElement('div');
+  row.id = 'exitRow_'+i;
+  row.style.cssText = 'border:1px solid var(--bdr);border-radius:9px;padding:12px;margin-bottom:8px;background:#fff;position:relative';
+  row.innerHTML = `<div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:8px">第${i+1}批賣出</div>
+    <button onclick="removeExitRow(${i})" style="position:absolute;top:9px;right:10px;background:none;border:none;color:var(--inkL);cursor:pointer;font-size:15px">✕</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:8px">
+      <div class="fgrp" style="margin-bottom:0"><label>賣出日期</label><input type="date" class="inp" id="ex_date_${i}" style="font-size:13px"></div>
+      <div class="fgrp" style="margin-bottom:0"><label>賣出價格（元）</label><input type="number" class="inp" id="ex_price_${i}" placeholder="0" style="font-size:13px"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px">
+      <div class="fgrp" style="margin-bottom:0"><label>賣出張數</label><input type="number" class="inp" id="ex_qty_${i}" placeholder="0" style="font-size:13px"></div>
+      <div class="fgrp" style="margin-bottom:0"><label>損益（元）</label><input type="number" class="inp" id="ex_pnl_${i}" placeholder="0" style="font-size:13px"></div>
+      <div class="fgrp" style="margin-bottom:0"><label>持有天數</label><input type="number" class="inp" id="ex_days_${i}" placeholder="0" style="font-size:13px"></div>
+    </div>`;
+  container.appendChild(row);
+}
+function removeExitRow(i){
+  const el = document.getElementById('exitRow_'+i);
+  if(el) el.remove();
+}
+function collectExitRows(){
+  const rows = [];
+  document.querySelectorAll('[id^="exitRow_"]').forEach(row=>{
+    const i = row.id.split('_')[1];
+    const date  = document.getElementById('ex_date_'+i)?.value||'';
+    const price = parseFloat(document.getElementById('ex_price_'+i)?.value)||0;
+    const qty   = parseFloat(document.getElementById('ex_qty_'+i)?.value)||0;
+    const pnl   = parseFloat(document.getElementById('ex_pnl_'+i)?.value)||0;
+    const days  = parseInt(document.getElementById('ex_days_'+i)?.value)||0;
+    if(date||price||qty) rows.push({date,price,qty,pnl,days});
+  });
+  return rows;
+}
+
+// ── 風險計算 ──
+function calcRiskLevels(){
+  const price = parseFloat(document.getElementById('stPrice')?.value)||0;
+  const qty   = parseFloat(document.getElementById('stQty')?.value)||0;
+  const sl    = parseFloat(document.getElementById('stSL')?.value)||-10;
+  const tp1   = parseFloat(document.getElementById('stTP1')?.value)||20;
+  const tp2   = parseFloat(document.getElementById('stTP2')?.value)||40;
+  if(price>0){
+    const slPrice  = (price*(1+sl/100)).toFixed(2);
+    const tp1Price = (price*(1+tp1/100)).toFixed(2);
+    const tp2Price = (price*(1+tp2/100)).toFixed(2);
+    const slLoss   = qty>0 ? Math.abs(((sl/100)*price*qty*1000)).toLocaleString() : '';
+    const sp = document.getElementById('stSLPrice');
+    const t1 = document.getElementById('stTP1Price');
+    const t2 = document.getElementById('stTP2Price');
+    if(sp) sp.textContent = `停損價：${slPrice}元${slLoss?'（約損-'+slLoss+'元）':''}`;
+    if(t1) t1.textContent = `停利價：${tp1Price}元`;
+    if(t2) t2.textContent = `停利價：${tp2Price}元`;
+  }
+}
+
+// ── 表單清除 ──
+function clearStockForm(){
+  ['stDate','stCode','stPrice','stQty','stMaxLoss','stReason','stKline','stMarket','stChip',
+   'stSL','stTP1','stTP2','stR1','stR2','stR3','stR4','stEditId','stPosition'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    if(el.tagName==='SELECT')el.selectedIndex=0;
+    else el.value='';
+  });
+  document.getElementById('stSLPrice').textContent='';
+  document.getElementById('stTP1Price').textContent='';
+  document.getElementById('stTP2Price').textContent='';
+  document.getElementById('exitRows').innerHTML='';
+  exitRowCount=0;
+  const btn=document.getElementById('stSaveBtn');
+  if(btn)btn.textContent='💾 儲存交易';
+}
+
+// ── 加入預設值 ──
+function initStockForm(){
+  const slEl=document.getElementById('stSL');
+  const tp1El=document.getElementById('stTP1');
+  const tp2El=document.getElementById('stTP2');
+  const dtEl=document.getElementById('stDate');
+  if(slEl&&!slEl.value)slEl.value='-10';
+  if(tp1El&&!tp1El.value)tp1El.value='20';
+  if(tp2El&&!tp2El.value)tp2El.value='40';
+  if(dtEl&&!dtEl.value)dtEl.value=TODAY;
+}
+
+function addStock(){
+  const code=document.getElementById('stCode')?.value.trim();
+  if(!code){toast('請填寫股票代號');return;}
+  const editId=document.getElementById('stEditId')?.value;
+  const exits=collectExitRows();
+  const totalPnl=exits.reduce((a,e)=>a+e.pnl,0);
+  if(!D.stocks)D.stocks=[];
+  const entry={
+    id: editId?parseInt(editId):Date.now(),
+    date: document.getElementById('stDate')?.value||TODAY,
+    code,
+    type: document.getElementById('stType')?.value||'買進',
+    price: parseFloat(document.getElementById('stPrice')?.value)||0,
+    qty:   parseFloat(document.getElementById('stQty')?.value)||0,
+    position: parseFloat(document.getElementById('stPosition')?.value)||0,
+    maxLoss: parseFloat(document.getElementById('stMaxLoss')?.value)||0,
+    reason: document.getElementById('stReason')?.value.trim()||'',
+    kline:  document.getElementById('stKline')?.value||'',
+    market: document.getElementById('stMarket')?.value||'',
+    chip:   document.getElementById('stChip')?.value.trim()||'',
+    sl:  parseFloat(document.getElementById('stSL')?.value)||-10,
+    tp1: parseFloat(document.getElementById('stTP1')?.value)||20,
+    tp2: parseFloat(document.getElementById('stTP2')?.value)||40,
+    mood: document.getElementById('stMood')?.value||'',
+    exits,
+    pnl: totalPnl||parseFloat(document.getElementById('stPnl')?.value)||0,
+    r1: document.getElementById('stR1')?.value.trim()||'',
+    r2: document.getElementById('stR2')?.value.trim()||'',
+    r3: document.getElementById('stR3')?.value.trim()||'',
+    r4: document.getElementById('stR4')?.value.trim()||'',
+  };
+  if(editId){
+    const idx=D.stocks.findIndex(s=>s.id===parseInt(editId));
+    if(idx>=0)D.stocks[idx]=entry;
+    else D.stocks.unshift(entry);
+  }else{
+    D.stocks.unshift(entry);
+  }
+  clearStockForm();
+  sv();rStocks();rStockStat();toast('📈 交易記錄已儲存！');
+}
+
+function editStock(id){
+  const s=D.stocks.find(s=>s.id===id);
+  if(!s)return;
+  const map={stDate:'date',stCode:'code',stPrice:'price',stQty:'qty',stPosition:'position',
+    stMaxLoss:'maxLoss',stReason:'reason',stKline:'kline',stMarket:'market',stChip:'chip',
+    stSL:'sl',stTP1:'tp1',stTP2:'tp2',stR1:'r1',stR2:'r2',stR3:'r3',stR4:'r4'};
+  Object.entries(map).forEach(([elId,key])=>{
+    const el=document.getElementById(elId);
+    if(el&&s[key]!==undefined)el.value=s[key];
+  });
+  // select
+  const typeEl=document.getElementById('stType');if(typeEl)typeEl.value=s.type||'買進';
+  const moodEl=document.getElementById('stMood');if(moodEl)moodEl.value=s.mood||'';
+  // 出場記錄
+  document.getElementById('exitRows').innerHTML='';exitRowCount=0;
+  (s.exits||[]).forEach(e=>{
+    addExitRow();
+    const i=exitRowCount-1;
+    const ef={ex_date_:e.date,ex_price_:e.price,ex_qty_:e.qty,ex_pnl_:e.pnl,ex_days_:e.days};
+    Object.entries(ef).forEach(([k,v])=>{const el=document.getElementById(k+i);if(el)el.value=v||'';});
+  });
+  document.getElementById('stEditId').value=id;
+  const btn=document.getElementById('stSaveBtn');if(btn)btn.textContent='💾 更新交易';
+  calcRiskLevels();
+  window.scrollTo({top:0,behavior:'smooth'});
+  toast('已載入，修改後按更新儲存');
+}
+
+function filterStock(f,el){
+  stockFilter=f;
+  document.querySelectorAll('#pg-stock .tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');rStocks();
+}
+
+function rStocks(){
+  const el=document.getElementById('stockList');if(!el)return;
+  const stocks=D.stocks||[];
+  let list=[...stocks].sort((a,b)=>b.date.localeCompare(a.date));
+  if(stockFilter!=='all')list=list.filter(s=>s.type===stockFilter);
+  if(!list.length){
+    el.innerHTML=`<div style="text-align:center;padding:40px 20px"><div style="font-size:36px;margin-bottom:12px">📈</div><div style="font-size:14px;color:var(--inkM)">還沒有交易記錄<br>記錄你的第一筆交易</div></div>`;
+    return;
+  }
+  el.innerHTML=list.map(s=>{
+    const pnl=s.pnl||0;
+    const buyPrice=s.price||0;
+    const slPrice=buyPrice>0?(buyPrice*(1+(s.sl||−10)/100)).toFixed(0):'—';
+    const tp1Price=buyPrice>0?(buyPrice*(1+(s.tp1||20)/100)).toFixed(0):'—';
+    const tp2Price=buyPrice>0?(buyPrice*(1+(s.tp2||40)/100)).toFixed(0):'—';
+    const exits=s.exits||[];
+    const totalExitPnl=exits.reduce((a,e)=>a+(e.pnl||0),0);
+    const displayPnl=totalExitPnl||pnl;
+    return`<div class="jnl-row">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--bark)">${s.code}</span>
+            <span style="padding:2px 10px;border-radius:11px;font-size:12px;font-weight:600;background:${s.type==='買進'?'var(--mossL)':s.type==='賣出'?'var(--blushL)':'var(--bg2)'};color:${s.type==='買進'?'var(--mossD)':s.type==='賣出'?'var(--blushD)':'var(--inkM)'}">${s.type}</span>
+            ${displayPnl!==0?`<span style="font-size:14px;font-weight:700;color:${displayPnl>0?'var(--mossD)':'var(--blushD)'}">${displayPnl>0?'+':''}${displayPnl.toLocaleString()}元</span>`:''}
+          </div>
+          <div style="font-size:12px;color:var(--inkL)">${s.date} · ${s.price}元 × ${s.qty}${s.qty?'張':''} ${s.position?`· 部位${s.position}%`:''}</div>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-s btn-sm" onclick="editStock(${s.id})" style="font-size:12px">✏️ 編輯</button>
+          <button class="btn-del" onclick="delStock(${s.id})">✕</button>
+        </div>
+      </div>
+      <!-- 風險控管顯示 -->
+      ${buyPrice>0?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px">
+        <span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;background:#FEF2F2;border:1px solid #C44040;color:#C44040">停損 ${slPrice}元</span>
+        <span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;background:var(--mossL);border:1px solid var(--moss);color:var(--mossD)">停利1 ${tp1Price}元</span>
+        <span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;background:var(--amberL);border:1px solid var(--amber);color:var(--amberD)">停利2 ${tp2Price}元</span>
+        ${s.mood?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;background:var(--hazeL);border:1px solid var(--haze);color:var(--hazeD)">${s.mood}</span>`:''}
+      </div>`:''}
+      <!-- 技術面 -->
+      ${s.kline||s.market?`<div style="font-size:12px;color:var(--inkM);margin-bottom:8px">${[s.kline,s.market].filter(x=>x).join('・')}</div>`:''}
+      ${s.chip?`<div style="font-size:12px;color:var(--inkM);margin-bottom:8px">法人：${s.chip}</div>`:''}
+      <!-- 進場理由 -->
+      ${s.reason?`<div style="font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:9px;padding:9px 12px;background:var(--bg2);border-radius:8px">進場理由：${s.reason}</div>`:''}
+      <!-- 出場記錄 -->
+      ${exits.length?`<div style="margin-bottom:9px;padding:10px 13px;background:var(--bg2);border-radius:9px;border:1px solid var(--bdr)">
+        <div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:7px">📤 出場記錄</div>
+        ${exits.map((e,i)=>`<div style="font-size:12px;color:var(--inkM);margin-bottom:4px;display:flex;gap:10px;flex-wrap:wrap">
+          <span style="font-weight:600">第${i+1}批</span>
+          <span>${e.date||'—'}</span><span>${e.price}元</span><span>${e.qty}張</span><span>持有${e.days}天</span>
+          <span style="font-weight:700;color:${e.pnl>0?'var(--mossD)':'var(--blushD)'}">${e.pnl>0?'+':''}${e.pnl.toLocaleString()}元</span>
+        </div>`).join('')}
+      </div>`:''}
+      <!-- 復盤 -->
+      ${s.r1||s.r2||s.r3||s.r4?`<div style="padding:11px 14px;background:var(--milk);border-radius:9px;border:1px solid var(--mist)">
+        <div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:8px">📝 復盤</div>
+        ${s.r1?`<div style="font-size:12px;color:var(--inkM);margin-bottom:5px;line-height:1.6"><span style="color:var(--bark);font-weight:600">判斷：</span>${s.r1}</div>`:''}
+        ${s.r2?`<div style="font-size:12px;color:var(--inkM);margin-bottom:5px;line-height:1.6"><span style="color:var(--bark);font-weight:600">紀律：</span>${s.r2}</div>`:''}
+        ${s.r3?`<div style="font-size:12px;color:var(--inkM);margin-bottom:5px;line-height:1.6"><span style="color:var(--bark);font-weight:600">情緒：</span>${s.r3}</div>`:''}
+        ${s.r4?`<div style="font-size:12px;color:var(--inkM);line-height:1.6"><span style="color:var(--bark);font-weight:600">下次：</span>${s.r4}</div>`:''}
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function rStockStat(){
+  const el=document.getElementById('stockStat');if(!el)return;
+  const stocks=D.stocks||[];
+  if(!stocks.length){el.innerHTML='<div style="font-size:14px;color:var(--inkL)">尚無交易記錄</div>';return;}
+  const allPnl=stocks.map(s=>{
+    const exits=s.exits||[];
+    const ep=exits.reduce((a,e)=>a+(e.pnl||0),0);
+    return ep||s.pnl||0;
+  });
+  const totalPnl=allPnl.reduce((a,b)=>a+b,0);
+  const wins=allPnl.filter(p=>p>0).length;
+  const losses=allPnl.filter(p=>p<0).length;
+  const moodCount={};stocks.forEach(s=>{moodCount[s.mood]=(moodCount[s.mood]||0)+1;});
+  const topMood=Object.entries(moodCount).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
+  el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+    <div style="padding:12px;background:${totalPnl>=0?'var(--mossL)':'var(--blushL)'};border-radius:10px;text-align:center">
+      <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:${totalPnl>=0?'var(--mossD)':'var(--blushD)'}">${totalPnl>=0?'+':''}${totalPnl.toLocaleString()}</div>
+      <div style="font-size:11px;color:var(--inkM);margin-top:3px">總損益</div>
+    </div>
+    <div style="padding:12px;background:var(--milk);border-radius:10px;text-align:center">
+      <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:var(--bark)">${stocks.length}</div>
+      <div style="font-size:11px;color:var(--inkM);margin-top:3px">總筆數</div>
+    </div>
+    <div style="padding:12px;background:var(--mossL);border-radius:10px;text-align:center">
+      <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:var(--mossD)">${wins}</div>
+      <div style="font-size:11px;color:var(--inkM);margin-top:3px">獲利</div>
+    </div>
+    <div style="padding:12px;background:var(--blushL);border-radius:10px;text-align:center">
+      <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:var(--blushD)">${losses}</div>
+      <div style="font-size:11px;color:var(--inkM);margin-top:3px">虧損</div>
+    </div>
+  </div>
+  <div style="padding:10px 13px;background:var(--milk);border-radius:9px;font-size:13px;color:var(--inkM)">
+    最常見心理：<strong style="color:var(--bark)">${topMood}</strong>
+  </div>
+  <div style="margin-top:10px;padding:11px 14px;background:var(--amberL);border-radius:9px;border:1px solid var(--amber)">
+    <div style="font-family:var(--fs);font-size:13px;color:var(--amberD);line-height:1.8;text-align:center">「不是每筆交易都要賺錢，<br>但每筆交易都要學到東西。」</div>
+  </div>`;
+}
+
+function delStock(id){D.stocks=(D.stocks||[]).filter(s=>s.id!==id);sv();rStocks();rStockStat();toast('已刪除');}
+
+
 function delSvc(id){D.services=D.services.filter(s=>s.id!==id);sv();rSvcs();}
 
 // ── 素材庫 ──
