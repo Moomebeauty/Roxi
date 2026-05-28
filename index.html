@@ -1771,7 +1771,7 @@ function grSum2(){
 // ── 讀書日記 ──
 function addBook(){const title=document.getElementById('bookTitle').value.trim();if(!title){toast('請填寫書名');return;}if(!D.books)D.books=[];D.books.unshift({id:Date.now(),date:TODAY,title,cat:document.getElementById('bookCat').value,status:document.getElementById('bookStatus').value,ideas:document.getElementById('bookIdeas').value.trim(),note:document.getElementById('bookNote').value.trim(),action:document.getElementById('bookAction').value.trim()});['bookTitle','bookIdeas','bookNote','bookAction'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});sv();rBooks();toast('📚 讀書記錄已儲存！');}
 function filterBook(f,el){bookFilter=f;document.querySelectorAll('#pg-book .tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');rBooks();}
-function rBooks(){const el=document.getElementById('bookList');if(!el)return;const books=D.books||[];const filtered=bookFilter==='all'?books:books.filter(b=>b.status===bookFilter);if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--inkL)"><div style="font-size:36px;margin-bottom:10px">📚</div>還沒有讀書記錄</div>';return;}el.innerHTML=filtered.map(b=>`<div class="jnl-row">
+function rBooks(){const el=document.getElementById('bookList');if(!el)return;D.books=(D.books||[]).map(b=>normBook(b));const books=D.books;const filtered=bookFilter==='all'?books:books.filter(b=>b.status===bookFilter);if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--inkL)"><div style="font-size:36px;margin-bottom:10px">📚</div>還沒有讀書記錄</div>';return;}el.innerHTML=filtered.map(b=>`<div class="jnl-row">
   <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:16px;font-weight:700;color:var(--bark);font-family:var(--fs)">${b.title}</div><div style="font-size:12px;color:var(--inkL);margin-top:2px">${b.date} · ${b.cat}</div></div><div style="display:flex;align-items:center;gap:7px"><span style="padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${b.status==='已讀完'?'var(--mossL)':b.status==='閱讀中'?'var(--coLL)':'var(--bg2)'};color:${b.status==='已讀完'?'var(--mossD)':b.status==='閱讀中'?'var(--bark)':'var(--inkM)'}">${b.status}</span><button class="btn-del" onclick="delBook(${b.id})">✕</button></div></div>
   ${b.ideas?`<div style="font-size:13px;color:var(--bark);margin-bottom:6px;padding:10px 12px;background:var(--coLL);border-radius:8px;border-left:3px solid var(--co)"><strong>3個有用觀念：</strong><br>${b.ideas.replace(/\n/g,'<br>')}</div>`:''}
   ${b.note?`<div style="font-size:13px;color:var(--inkM);line-height:1.6;margin-bottom:4px">${b.note}</div>`:''}
@@ -1915,12 +1915,9 @@ function addStock(){
 }
 
 function editStock(id){
-  const s=D.stocks.find(s=>s.id===id);
+  let s=D.stocks.find(s=>s.id===id||String(s.id)===String(id));
   if(!s)return;
-  // 確保舊版資料有新欄位
-  if(!s.exits)s.exits=[];
-  if(!s.r1)s.r1=s.review||'';
-  if(!s.r2)s.r2='';if(!s.r3)s.r3='';if(!s.r4)s.r4='';
+  s=normStock(s);
   const map={stDate:'date',stCode:'code',stPrice:'price',stQty:'qty',stPosition:'position',
     stMaxLoss:'maxLoss',stReason:'reason',stKline:'kline',stMarket:'market',stChip:'chip',
     stSL:'sl',stTP1:'tp1',stTP2:'tp2',stR1:'r1',stR2:'r2',stR3:'r3',stR4:'r4'};
@@ -1952,80 +1949,152 @@ function filterStock(f,el){
   el.classList.add('on');rStocks();
 }
 
+function normStock(s){
+  // 永久相容函數：任何版本的股票資料都能正常顯示
+  if(!s) return s;
+  s.exits = Array.isArray(s.exits) ? s.exits : [];
+  s.type  = s.type  || s['操作'] || s.操作 || '買進';
+  s.code  = s.code  || s.stCode || s['股票'] || '—';
+  s.date  = s.date  || s.stDate || s['日期'] || '';
+  s.price = parseFloat(s.price  || s.stPrice || s['價格'] || 0);
+  s.qty   = parseFloat(s.qty    || s.stQty   || s['股數'] || 0);
+  s.pnl   = parseFloat(s.pnl   || s.損益 || 0);
+  s.mood  = s.mood  || s.stMood || s['心態'] || s['情緒'] || '';
+  s.reason= s.reason|| s.stReason||s['理由']||s['進場理由']||'';
+  s.sl    = s.sl  !== undefined ? s.sl  : -10;
+  s.tp1   = s.tp1 !== undefined ? s.tp1 :  20;
+  s.tp2   = s.tp2 !== undefined ? s.tp2 :  40;
+  s.r1    = s.r1 || s.review || s['復盤'] || '';
+  s.r2    = s.r2 || '';
+  s.r3    = s.r3 || '';
+  s.r4    = s.r4 || '';
+  s.kline  = s.kline  || '';
+  s.market = s.market || '';
+  s.chip   = s.chip   || '';
+  s.position= s.position || 0;
+  s.maxLoss = s.maxLoss  || 0;
+  if(!s.id) s.id = Date.now() + Math.random();
+  return s;
+}
+
+// ── 永久相容函數：確保任何版本資料都能顯示 ──
+function normBook(b){
+  if(!b)return b;
+  b.id     = b.id     || Date.now()+Math.random();
+  b.date   = b.date   || b['日期'] || TODAY;
+  b.title  = b.title  || b['書名'] || b.bookTitle || '（未命名）';
+  b.cat    = b.cat    || b['類別'] || b.bookCat || '';
+  b.status = b.status || b['狀態'] || b.bookStatus || '';
+  b.ideas  = b.ideas  || b.bookIdeas || b['觀念'] || '';
+  b.note   = b.note   || b.bookNote || b['心得'] || '';
+  b.action = b.action || b.bookAction || b['行動'] || '';
+  return b;
+}
+function normSvc(s){
+  if(!s)return s;
+  s.id      = s.id      || Date.now()+Math.random();
+  s.date    = s.date    || TODAY;
+  s.type    = s.type    || s.svcType || '';
+  s.client  = s.client  || s.svcClient || '';
+  s.obs     = s.obs     || s.svcObs || '';
+  s.insight = s.insight || s.svcInsight || '';
+  s.tech    = s.tech    || s.svcTech || '';
+  s.brand   = s.brand   || s.svcBrand || '';
+  s.energy  = s.energy  || '';
+  s.income  = parseFloat(s.income || s.svcIncome || 0);
+  return s;
+}
+function normJnl(j){
+  if(!j)return j;
+  j.id       = j.id   || Date.now()+Math.random();
+  j.date     = j.date || TODAY;
+  j.q1       = j.q1   || j.reviewQs?.rq1 || '';
+  j.q2       = j.q2   || j.reviewQs?.rq2 || '';
+  j.q3       = j.q3   || j.reviewQs?.rq3 || '';
+  j.q4       = j.q4   || j.reviewQs?.rq4 || '';
+  j.q5       = j.q5   || j.reviewQs?.rq5 || '';
+  j.body     = j.body || j.bodyScan || '';
+  j.gratitude= Array.isArray(j.gratitude)?j.gratitude:
+               (Array.isArray(j.items)?j.items:[]).filter(x=>x);
+  j.energyTags  = Array.isArray(j.energyTags)?j.energyTags:[];
+  j.energyCustom= j.energyCustom || '';
+  j.selfMsg     = j.selfMsg || '';
+  return j;
+}
+
 function rStocks(){
-  const el=document.getElementById('stockList');if(!el)return;
-  // 相容舊版資料：確保每筆記錄有必要欄位
-  (D.stocks||[]).forEach(s=>{
-    if(!s.exits)s.exits=[];
-    if(!s.r1)s.r1=s.review||s.復盤||'';
-    if(!s.r2)s.r2='';if(!s.r3)s.r3='';if(!s.r4)s.r4='';
-    if(!s.type&&s.操作)s.type=s.操作;
-    if(!s.type)s.type='買進';
-    if(!s.code&&s.stCode)s.code=s.stCode;
-    if(!s.date&&s.交易日期)s.date=s.交易日期;
-    if(!s.price)s.price=parseFloat(s.成交價||0);
-    if(!s.mood)s.mood=s.心情||s.stMood||'';
-    if(s.pnl===undefined)s.pnl=parseFloat(s.損益||0);
-  });
-  const stocks=D.stocks||[];
-  let list=[...stocks].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const el=document.getElementById('stockList');
+  if(!el)return;
+  if(!D.stocks)D.stocks=[];
+  // 先 normalize 所有資料
+  D.stocks=D.stocks.map(s=>normStock(s));
+  let list=[...D.stocks].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   if(stockFilter!=='all')list=list.filter(s=>s.type===stockFilter);
   if(!list.length){
-    el.innerHTML=`<div style="text-align:center;padding:40px 20px"><div style="font-size:36px;margin-bottom:12px">📈</div><div style="font-size:14px;color:var(--inkM)">還沒有交易記錄<br>記錄你的第一筆交易</div></div>`;
+    el.innerHTML=`<div style="text-align:center;padding:40px 20px">
+      <div style="font-size:36px;margin-bottom:12px">📈</div>
+      <div style="font-size:14px;color:var(--inkM)">還沒有交易記錄<br>在左邊填寫第一筆交易</div>
+    </div>`;
     return;
   }
   el.innerHTML=list.map(s=>{
-    const pnl=s.pnl||0;
     const buyPrice=s.price||0;
-    const slPrice=buyPrice>0?(buyPrice*(1+(s.sl||-10)/100)).toFixed(0):'—';
-    const tp1Price=buyPrice>0?(buyPrice*(1+(s.tp1||20)/100)).toFixed(0):'—';
-    const tp2Price=buyPrice>0?(buyPrice*(1+(s.tp2||40)/100)).toFixed(0):'—';
     const exits=s.exits||[];
-    const totalExitPnl=exits.reduce((a,e)=>a+(e.pnl||0),0);
-    const displayPnl=totalExitPnl||pnl;
-    return`<div class="jnl-row">
+    const exitPnl=exits.reduce((a,e)=>a+(parseFloat(e.pnl)||0),0);
+    const displayPnl=exitPnl||s.pnl||0;
+    const slPrice=buyPrice>0?(buyPrice*(1+(s.sl||0)/100)).toFixed(0):'';
+    const tp1Price=buyPrice>0?(buyPrice*(1+(s.tp1||0)/100)).toFixed(0):'';
+    const tp2Price=buyPrice>0?(buyPrice*(1+(s.tp2||0)/100)).toFixed(0):'';
+    // 所有欄位都先 toString 防止 undefined 渲染錯誤
+    const safeCode  = String(s.code||'—');
+    const safeDate  = String(s.date||'');
+    const safeType  = String(s.type||'買進');
+    const safeReason= String(s.reason||'');
+    const safeMood  = String(s.mood||'');
+    const safeKline = String(s.kline||'');
+    const safeMarket= String(s.market||'');
+    const safeChip  = String(s.chip||'');
+    const safeR1    = String(s.r1||'');
+    const safeR2    = String(s.r2||'');
+    const safeR3    = String(s.r3||'');
+    const safeR4    = String(s.r4||'');
+    const typeBg    = safeType==='買進'?'var(--mossL)':safeType==='賣出'?'var(--blushL)':'var(--bg2)';
+    const typeC     = safeType==='買進'?'var(--mossD)':safeType==='賣出'?'var(--blushD)':'var(--inkM)';
+    const pnlC      = displayPnl>0?'var(--mossD)':displayPnl<0?'var(--blushD)':'var(--inkM)';
+    return `<div class="jnl-row">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
         <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <span style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--bark)">${s.code}</span>
-            <span style="padding:2px 10px;border-radius:11px;font-size:12px;font-weight:600;background:${s.type==='買進'?'var(--mossL)':s.type==='賣出'?'var(--blushL)':'var(--bg2)'};color:${s.type==='買進'?'var(--mossD)':s.type==='賣出'?'var(--blushD)':'var(--inkM)'}">${s.type}</span>
-            ${displayPnl!==0?`<span style="font-size:14px;font-weight:700;color:${displayPnl>0?'var(--mossD)':'var(--blushD)'}">${displayPnl>0?'+':''}${displayPnl.toLocaleString()}元</span>`:''}
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <span style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--bark)">${safeCode}</span>
+            <span style="padding:2px 10px;border-radius:11px;font-size:12px;font-weight:600;background:${typeBg};color:${typeC}">${safeType}</span>
+            ${displayPnl!==0?`<span style="font-size:14px;font-weight:700;color:${pnlC}">${displayPnl>0?'+':''}${Math.round(displayPnl).toLocaleString()}元</span>`:''}
           </div>
-          <div style="font-size:12px;color:var(--inkL)">${s.date} · ${s.price}元 × ${s.qty}${s.qty?'張':''} ${s.position?`· 部位${s.position}%`:''}</div>
+          <div style="font-size:12px;color:var(--inkL)">${safeDate}${buyPrice?` · 買${buyPrice}元`:''}${s.qty?` × ${s.qty}張`:''}${s.position?` · 部位${s.position}%`:''}</div>
         </div>
-        <div style="display:flex;gap:7px">
+        <div style="display:flex;gap:7px;flex-shrink:0">
           <button class="btn btn-s btn-sm" onclick="editStock(${s.id})" style="font-size:12px">✏️ 編輯</button>
           <button class="btn-del" onclick="delStock(${s.id})">✕</button>
         </div>
       </div>
-      <!-- 風險控管顯示 -->
-      ${buyPrice>0?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px">
-        <span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;background:#FEF2F2;border:1px solid #C44040;color:#C44040">停損 ${slPrice}元</span>
-        <span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;background:var(--mossL);border:1px solid var(--moss);color:var(--mossD)">停利1 ${tp1Price}元</span>
-        <span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;background:var(--amberL);border:1px solid var(--amber);color:var(--amberD)">停利2 ${tp2Price}元</span>
-        ${s.mood?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;background:var(--hazeL);border:1px solid var(--haze);color:var(--hazeD)">${s.mood}</span>`:''}
+      ${(slPrice||tp1Price||tp2Price)?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px">
+        ${slPrice?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;background:#FEF2F2;border:1px solid #C44040;color:#C44040">停損 ${slPrice}元</span>`:''}
+        ${tp1Price?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;background:var(--mossL);border:1px solid var(--moss);color:var(--mossD)">停利1 ${tp1Price}元</span>`:''}
+        ${tp2Price?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;background:var(--amberL);border:1px solid var(--amber);color:var(--amberD)">停利2 ${tp2Price}元</span>`:''}
+        ${safeMood?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;background:var(--hazeL);border:1px solid var(--haze);color:var(--hazeD)">${safeMood}</span>`:''}
       </div>`:''}
-      <!-- 技術面 -->
-      ${s.kline||s.market?`<div style="font-size:12px;color:var(--inkM);margin-bottom:8px">${[s.kline,s.market].filter(x=>x).join('・')}</div>`:''}
-      ${s.chip?`<div style="font-size:12px;color:var(--inkM);margin-bottom:8px">法人：${s.chip}</div>`:''}
-      <!-- 進場理由 -->
-      ${s.reason?`<div style="font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:9px;padding:9px 12px;background:var(--bg2);border-radius:8px">進場理由：${s.reason}</div>`:''}
-      <!-- 出場記錄 -->
+      ${safeKline||safeMarket?`<div style="font-size:12px;color:var(--inkM);margin-bottom:7px">${[safeKline,safeMarket].filter(x=>x).join(' · ')}</div>`:''}
+      ${safeChip?`<div style="font-size:12px;color:var(--inkM);margin-bottom:7px">法人：${safeChip}</div>`:''}
+      ${safeReason?`<div style="font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:9px;padding:9px 12px;background:var(--bg2);border-radius:8px">進場理由：${safeReason}</div>`:''}
       ${exits.length?`<div style="margin-bottom:9px;padding:10px 13px;background:var(--bg2);border-radius:9px;border:1px solid var(--bdr)">
         <div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:7px">📤 出場記錄</div>
-        ${exits.map((e,i)=>`<div style="font-size:12px;color:var(--inkM);margin-bottom:4px;display:flex;gap:10px;flex-wrap:wrap">
-          <span style="font-weight:600">第${i+1}批</span>
-          <span>${e.date||'—'}</span><span>${e.price}元</span><span>${e.qty}張</span><span>持有${e.days}天</span>
-          <span style="font-weight:700;color:${e.pnl>0?'var(--mossD)':'var(--blushD)'}">${e.pnl>0?'+':''}${e.pnl.toLocaleString()}元</span>
-        </div>`).join('')}
+        ${exits.map((e,i)=>{const ep=parseFloat(e.pnl||0);return`<div style="font-size:12px;color:var(--inkM);margin-bottom:4px;display:flex;gap:10px;flex-wrap:wrap"><span style="font-weight:600">第${i+1}批</span><span>${e.date||''}</span>${e.price?`<span>${e.price}元</span>`:''}${e.qty?`<span>${e.qty}張</span>`:''}${e.days?`<span>持有${e.days}天</span>`:''}<span style="font-weight:700;color:${ep>0?'var(--mossD)':'var(--blushD)'}">${ep>0?'+':''}${Math.round(ep).toLocaleString()}元</span></div>`;}).join('')}
       </div>`:''}
-      <!-- 復盤 -->
-      ${s.r1||s.r2||s.r3||s.r4?`<div style="padding:11px 14px;background:var(--milk);border-radius:9px;border:1px solid var(--mist)">
+      ${safeR1||safeR2||safeR3||safeR4?`<div style="padding:11px 14px;background:var(--milk);border-radius:9px;border:1px solid var(--mist)">
         <div style="font-size:12px;font-weight:600;color:var(--bark);margin-bottom:8px">📝 復盤</div>
-        ${s.r1?`<div style="font-size:12px;color:var(--inkM);margin-bottom:5px;line-height:1.6"><span style="color:var(--bark);font-weight:600">判斷：</span>${s.r1}</div>`:''}
-        ${s.r2?`<div style="font-size:12px;color:var(--inkM);margin-bottom:5px;line-height:1.6"><span style="color:var(--bark);font-weight:600">紀律：</span>${s.r2}</div>`:''}
-        ${s.r3?`<div style="font-size:12px;color:var(--inkM);margin-bottom:5px;line-height:1.6"><span style="color:var(--bark);font-weight:600">情緒：</span>${s.r3}</div>`:''}
-        ${s.r4?`<div style="font-size:12px;color:var(--inkM);line-height:1.6"><span style="color:var(--bark);font-weight:600">下次：</span>${s.r4}</div>`:''}
+        ${safeR1?`<div style="font-size:12px;color:var(--inkM);margin-bottom:5px;line-height:1.6"><span style="color:var(--bark);font-weight:600">判斷：</span>${safeR1}</div>`:''}
+        ${safeR2?`<div style="font-size:12px;color:var(--inkM);margin-bottom:5px;line-height:1.6"><span style="color:var(--bark);font-weight:600">紀律：</span>${safeR2}</div>`:''}
+        ${safeR3?`<div style="font-size:12px;color:var(--inkM);margin-bottom:5px;line-height:1.6"><span style="color:var(--bark);font-weight:600">情緒：</span>${safeR3}</div>`:''}
+        ${safeR4?`<div style="font-size:12px;color:var(--inkM);line-height:1.6"><span style="color:var(--bark);font-weight:600">下次：</span>${safeR4}</div>`:''}
       </div>`:''}
     </div>`;
   }).join('');
@@ -2033,11 +2102,11 @@ function rStocks(){
 
 function rStockStat(){
   const el=document.getElementById('stockStat');if(!el)return;
-  const stocks=D.stocks||[];
+  const stocks=(D.stocks||[]).map(s=>normStock(s));
   if(!stocks.length){el.innerHTML='<div style="font-size:14px;color:var(--inkL)">尚無交易記錄</div>';return;}
   const allPnl=stocks.map(s=>{
     const exits=s.exits||[];
-    const ep=exits.reduce((a,e)=>a+(e.pnl||0),0);
+    const ep=exits.reduce((a,e)=>a+(parseFloat(e.pnl)||0),0);
     return ep||parseFloat(s.pnl||0)||0;
   });
   const totalPnl=allPnl.reduce((a,b)=>a+b,0);
@@ -2790,7 +2859,8 @@ function rJournals(){
   const el=document.getElementById('jnlList');
   if(!el)return;
   if(!D.journals)D.journals=[];
-  let list=[...D.journals].sort((a,b)=>b.date.localeCompare(a.date));
+  D.journals=D.journals.map(j=>normJnl(j));
+  let list=[...D.journals].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   if(jnlFilter==='hasGratitude') list=list.filter(j=>j.gratitude&&j.gratitude.length);
   if(jnlFilter==='hasInsight') list=list.filter(j=>j.q1&&j.q1.trim());
   if(!list.length){
