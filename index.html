@@ -1180,24 +1180,122 @@ function sll(){try{return ek(JSON.parse(localStorage.getItem(SK))||df());}catch{
 function svl(){try{localStorage.setItem(SK,JSON.stringify(D));}catch{}}
 async function loadCloud(){
   ss('⟳ 同步中...');
+
+  // ── 第一步：永遠先讀 localStorage，保住本地資料 ──
+  const localData = sll();
+  const hasLocal = (localData.stocks||[]).length > 0
+    || (localData.journals||[]).length > 0
+    || (localData.books||[]).length > 0
+    || (localData.services||[]).length > 0
+    || Object.keys(localData.gratitude||{}).length > 0
+    || Object.keys(localData.tasks||{}).length > 0;
+
+  // 先用本地資料顯示，讓使用者不要等
+  if(hasLocal){
+    D = ek(Object.assign({}, df(), localData));
+    rAll();
+    ss('✓ 本地資料已載入');
+  }
+
+  // ── 第二步：嘗試從 Firebase 讀取，用「合併」而非「覆蓋」──
   try{
-    const r=await db.collection('p').doc(DOC).get();
-    if(r.exists){D=ek(Object.assign({},df(),r.data()));}
-    else{
-      D=sll();
-      // 遷移舊版資料
+    const r = await db.collection('p').doc(DOC).get();
+    if(r.exists){
+      const cloudData = r.data();
+      // 合併：陣列取較多的那個，物件合併
+      const merged = ek(Object.assign({}, df(), cloudData));
+      // 股票/日誌/讀書/服務：取本地和雲端的聯集（以 id 去重）
+      const mergeArr = (local, cloud) => {
+        const all = [...(cloud||[]), ...(local||[])];
+        const seen = new Set();
+        return all.filter(item => {
+          const k = String(item.id||JSON.stringify(item));
+          if(seen.has(k)) return false;
+          seen.add(k); return true;
+        });
+      };
+      merged.stocks   = mergeArr(localData.stocks,   cloudData.stocks);
+      merged.journals = mergeArr(localData.journals,  cloudData.journals);
+      merged.books    = mergeArr(localData.books,     cloudData.books);
+      merged.services = mergeArr(localData.services,  cloudData.services);
+      merged.ideas    = mergeArr(localData.ideas,     cloudData.ideas);
+      // 物件型：合併兩份
+      ['ev','tasks','gratitude','weekRoles','weekSlots','weekEnergy','habits','todaySlots','dayPlan','bizDaily','selfCheck','moReview'].forEach(k=>{
+        merged[k] = Object.assign({}, localData[k]||{}, cloudData[k]||{});
+      });
+      D = merged;
+    } else {
+      // Firebase 沒有資料，用本地
+      D = ek(Object.assign({}, df(), localData));
+      // 嘗試遷移舊版
       for(const ok of['roxi_v12','roxi_v11']){
-        try{const od=await db.collection('p').doc(ok).get();if(od.exists){const d2=od.data();D=ek(Object.assign({},df(),d2,{books:[],stocks:[],services:[]}));toast('☁️ 已讀取舊版記錄！');break;}}catch{}
-        const ls=localStorage.getItem(ok);if(ls){try{const d2=JSON.parse(ls);D=ek(Object.assign({},df(),d2,{books:[],stocks:[],services:[]}));toast('✅ 已讀取本地舊版記錄！');break;}catch{}}
+        try{
+          const od = await db.collection('p').doc(ok).get();
+          if(od.exists){
+            const d2 = od.data();
+            ['stocks','journals','books','services','ideas'].forEach(k=>{
+              if((d2[k]||[]).length > (D[k]||[]).length) D[k] = d2[k];
+            });
+            toast('☁️ 已讀取舊版記錄！');
+            break;
+          }
+        }catch{}
+        const ls = localStorage.getItem(ok);
+        if(ls){
+          try{
+            const d2 = JSON.parse(ls);
+            ['stocks','journals','books','services','ideas'].forEach(k=>{
+              if((d2[k]||[]).length > (D[k]||[]).length) D[k] = d2[k];
+            });
+            toast('✅ 已讀取舊版本地記錄！');
+            break;
+          }catch{}
+        }
       }
-      await saveCloud();
     }
-    svl();ss('✓ 已同步');
-  }catch(e){D=sll();ss('⚠ 離線模式');}
+    svl();
+    await saveCloud();
+    ss('✓ 已同步');
+  } catch(e){
+    // Firebase 失敗：保持用本地資料
+    if(!hasLocal) D = ek(Object.assign({}, df(), localData));
+    ss('⚠ 離線模式・本地資料已載入');
+    toast('⚠ 離線中，資料已從本地讀取');
+  }
+
   rAll();
-  db.collection('p').doc(DOC).onSnapshot(s=>{if(s.exists){const c=s.data();if(c&&JSON.stringify(c)!==JSON.stringify(D)){D=ek(Object.assign({},df(),c));svl();rAll();ss('✓ 已同步');}}},()=>{});
+
+  // ── 第三步：監聽 Firebase 即時更新 ──
+  db.collection('p').doc(DOC).onSnapshot(s=>{
+    if(s.exists){
+      const cloudData = s.data();
+      // 即時更新時也合併，不覆蓋
+      const mergeArr = (local, cloud) => {
+        const all = [...(cloud||[]), ...(local||[])];
+        const seen = new Set();
+        return all.filter(item => {
+          const k = String(item.id||JSON.stringify(item));
+          if(seen.has(k)) return false;
+          seen.add(k); return true;
+        });
+      };
+      ['stocks','journals','books','services','ideas'].forEach(k=>{
+        D[k] = mergeArr(D[k], cloudData[k]);
+      });
+      ['ev','tasks','gratitude','weekRoles','weekSlots','weekEnergy','habits','todaySlots','dayPlan','bizDaily','selfCheck','moReview'].forEach(k=>{
+        if(cloudData[k]) D[k] = Object.assign({}, D[k]||{}, cloudData[k]);
+      });
+      svl(); rAll(); ss('✓ 已同步');
+    }
+  }, ()=>{});
 }
-function sv(){svl();ss('⟳ 儲存...');clearTimeout(syncT);syncT=setTimeout(saveCloud,1500);}
+
+function sv(){
+  svl(); // 永遠先存本地
+  ss('⟳ 儲存...');
+  clearTimeout(syncT);
+  syncT=setTimeout(saveCloud,2000);
+}
 async function saveCloud(){try{await db.collection('p').doc(DOC).set(D);ss('✓ 已同步');}catch{ss('⚠ 僅本地');}}
 function saveAll(){saveCloud();toast('☁️ 已同步！');}
 
