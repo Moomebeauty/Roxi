@@ -2005,7 +2005,17 @@ function toggleReviewCard(id){const el=document.getElementById(id);if(el)el.styl
 
 function startNewReview(){
   reviewEditId = null;
-  reviewData = { id: uid(), successSteps:[], whySuccess:[], improvements:[], abilities:[], reminders:[], entries:[], exits:[] };
+  reviewData = {
+    id: uid(),
+    entries: [{date:'',price:'',qty:'',unit:'share'}],
+    exits:   [{date:'',price:'',qty:'',unit:'share',pnl:''}],
+    whySuccess: [{myDid:'',teachPoint:''}],
+    formulaSteps: [{label:'',desc:''}],
+    improvements: [{fact:'',nextTime:'',conclusion:''}],
+    abilities: [{name:'',desc:''}],
+    nextActions: [''],
+    reminders: ['','',''],
+  };
   renderReviewForm();
 }
 function editReview(rid){
@@ -2013,6 +2023,15 @@ function editReview(rid){
   if(!rv) return;
   reviewEditId = rid;
   reviewData = JSON.parse(JSON.stringify(rv));
+  // 確保有必要的陣列
+  if(!reviewData.entries||!reviewData.entries.length) reviewData.entries=[{date:'',price:'',qty:'',unit:'share'}];
+  if(!reviewData.exits||!reviewData.exits.length)   reviewData.exits=[{date:'',price:'',qty:'',unit:'share',pnl:''}];
+  if(!reviewData.whySuccess||!reviewData.whySuccess.length) reviewData.whySuccess=[{myDid:'',teachPoint:''}];
+  if(!reviewData.formulaSteps||!reviewData.formulaSteps.length) reviewData.formulaSteps=[{label:'',desc:''}];
+  if(!reviewData.improvements||!reviewData.improvements.length) reviewData.improvements=[{fact:'',nextTime:'',conclusion:''}];
+  if(!reviewData.abilities||!reviewData.abilities.length) reviewData.abilities=[{name:'',desc:''}];
+  if(!reviewData.nextActions||!reviewData.nextActions.length) reviewData.nextActions=[''];
+  if(!reviewData.reminders||reviewData.reminders.length<3) reviewData.reminders=['','',''];
   renderReviewForm();
 }
 function delReview(rid){
@@ -2022,11 +2041,14 @@ function delReview(rid){
 }
 
 function renderReviewForm(){
-  const listArea = document.getElementById('reviewListArea');
-  const formArea = document.getElementById('reviewFormArea');
-  if(listArea) listArea.style.display='none';
-  if(formArea){ formArea.style.display='block'; formArea.innerHTML = buildReviewForm(); }
+  // 確保 reviewContent 存在
+  const rc = document.getElementById('reviewContent');
+  if(!rc) return;
+  // 直接整個替換 reviewContent 為表單
+  rc.innerHTML = '<div id="reviewFormArea">' + buildReviewForm() + '</div>';
   window.scrollTo({top:0,behavior:'smooth'});
+  // 計算初始值
+  rvCalc();
 }
 
 function buildReviewForm(){
@@ -2518,10 +2540,6 @@ function saveReview(){
 }
 function cancelReview(){
   reviewEditId=null; reviewData={};
-  const listArea=document.getElementById('reviewListArea');
-  const formArea=document.getElementById('reviewFormArea');
-  if(listArea)listArea.style.display='';
-  if(formArea){formArea.style.display='none';formArea.innerHTML='';}
   renderReviewPage();
 }
 
