@@ -1077,6 +1077,29 @@ body{
 </div><!-- /layout -->
 
 <!-- Modal 編輯行程 -->
+<!-- API Key Modal -->
+<div class="modal-overlay" id="apiKeyModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">🤖 AI 分析設定</div>
+    <div style="font-size:13px;color:var(--text-2);line-height:1.8;margin-bottom:16px">
+      AI 分析功能需要 Anthropic API Key。你的 key 只存在你自己的瀏覽器裡，不會傳到任何地方。
+    </div>
+    <div style="background:var(--blue-bg);border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--blue);line-height:1.7">
+      📌 取得 API Key：前往 <strong>console.anthropic.com</strong> → 登入 → API Keys → Create Key
+    </div>
+    <div class="form-group">
+      <label class="label">Anthropic API Key</label>
+      <input type="password" class="input" id="apiKeyInput" placeholder="sk-ant-api03-...">
+    </div>
+    <div id="apiKeyStatus" style="font-size:12px;margin-bottom:12px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('apiKeyModal')">取消</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearApiKey()" style="color:var(--red)">清除</button>
+      <button class="btn btn-primary btn-sm" onclick="saveApiKey()">儲存</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="evModal">
   <div class="modal">
     <div class="modal-title">編輯行程</div>
@@ -1989,1057 +2012,105 @@ function toggleThCard(id){
   el.style.display=el.style.display==='none'?'block':'none';
 }
 
-// 題材 AI 解說
-async function runThemeAI(){
+// 題材自動解說（免費版）
+function runThemeAI(){
   const name=document.getElementById('thName')?.value.trim();
   if(!name){toast('請先填寫題材名稱');return;}
   const what=document.getElementById('thWhat')?.value.trim()||'';
   const why=document.getElementById('thWhy')?.value.trim()||'';
-  const stocks=document.getElementById('thStocks')?.value.trim()||'';
   const risk=document.getElementById('thRisk')?.value.trim()||'';
+  const cycle=document.getElementById('thCycle')?.value||'';
   const resultEl=document.getElementById('themeAiResult');
   const textEl=document.getElementById('themeAiText');
   resultEl.style.display='block';
-  textEl.innerHTML='<span style="color:var(--purple)">🤖 解說中，請稍候…</span>';
 
-  const prompt=`你是一位有經驗的台灣股市投資教練，專門幫助初學者理解股票題材。
-請用簡單白話的繁體中文，幫我解說以下這個股票題材。
+  let lines=[];
 
-題材名稱：${name}
-相關族群：${stocks||'（未填）'}
-我的理解：${what||'（未填）'}
-我認為漲的原因：${why||'（未填）'}
-我認為的風險：${risk||'（未填）'}
+  // 基本解說框架
+  lines.push(`<div style="padding:10px 13px;background:var(--blue-bg);border-radius:8px;border-left:3px solid var(--blue);margin-bottom:8px">
+    <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:5px">📖 題材記錄確認</div>
+    <div style="font-size:13px;color:var(--text-2);line-height:1.8">
+      題材：<b>${name}</b>${cycle?`<br>週期評估：<b>${cycle}</b>`:''}
+      ${what?`<br>你的理解：${what.slice(0,80)}${what.length>80?'…':''}`:'<br>⚠ 建議填寫「這個題材是什麼」，用自己的話說明白是理解的第一步。'}
+    </div>
+  </div>`);
 
-請從以下角度解說（每點3-5句話，用我能懂的語言，不要太專業術語）：
-
-1. 📖 這個題材的本質是什麼？（用最簡單的話解釋「為什麼市場在炒這個」）
-2. 🔗 錢的流向邏輯（為什麼資金會追這個題材？是真的有業績？還是炒概念？）
-3. 📈 怎麼看題材強不強？（有哪些指標或訊號可以判斷這個題材還在不在？）
-4. ⚠️ 最常見的陷阱（初學者在這類題材最容易犯什麼錯？）
-5. 💡 給初學者的一個建議（如果要參與這個題材，最重要的一件事是什麼？）`;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})
-    });
-    const data=await res.json();
-    const text=data.content?.[0]?.text||'解說失敗，請稍後再試';
-    const formatted=text.replace(/\n/g,'<br>');
-    textEl.innerHTML=formatted;
-    // 存入當前編輯的題材
-    const editId=parseInt(document.getElementById('thEditId')?.value)||0;
-    if(editId){
-      const idx=(D.themes||[]).findIndex(t=>t.id===editId);
-      if(idx>=0){D.themes[idx].aiNote=formatted;sv();}
+  // 週期提醒
+  if(cycle){
+    const cycleAdvice={
+      '剛啟動（早期佈局）':'市場還沒廣泛關注，風險較高但潛在報酬也大。建議：小部位試單，等趨勢確認再加碼。',
+      '主升段（趨勢明確）':'最好的進場時機，籌碼面和基本面都在配合。建議：可以標準部位，設好停損。',
+      '高點震盪（要小心）':'⚠ 題材已被廣泛討論，後進的散戶通常在高點。建議：不追高，有持股可考慮減碼。',
+      '退燒中（別追）':'⚠ 題材降溫，資金已開始離開。建議：這時進場通常是虧損的，等下一個題材。',
+      '長期趨勢（多年持續）':'結構性趨勢，適合分批布局、長期持有。建議：不必在意短期波動，看3-5年。',
+      '觀察中（還不確定）':'題材還不明確，需要更多訊號確認。建議：先觀察不行動，等趨勢明確再進場。',
+    };
+    const advice=cycleAdvice[cycle];
+    if(advice){
+      const cycleC={'剛啟動（早期佈局）':'var(--green)','主升段（趨勢明確）':'var(--green)','高點震盪（要小心）':'var(--orange)','退燒中（別追）':'var(--red)','長期趨勢（多年持續）':'var(--blue)','觀察中（還不確定）':'var(--text-3)'}[cycle]||'var(--text-3)';
+      lines.push(`<div style="padding:10px 13px;background:var(--bg);border-radius:8px;border-left:3px solid ${cycleC};margin-bottom:8px">
+        <div style="font-size:12px;font-weight:700;color:${cycleC};margin-bottom:4px">📅 週期建議</div>
+        <div style="font-size:13px;color:var(--text-2);line-height:1.7">${advice}</div>
+      </div>`);
     }
-  }catch(e){
-    textEl.innerHTML='<span style="color:var(--red)">⚠ 解說失敗：'+e.message+'</span>';
+  }
+
+  // 漲跌邏輯填寫提醒
+  if(!why){
+    lines.push(`<div style="padding:10px 13px;background:var(--gold-bg);border-radius:8px;border-left:3px solid var(--gold);margin-bottom:8px">
+      <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:4px">💡 最重要的問題還沒填</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.7">
+        「為什麼股票會因為這個題材上漲？」是學題材最關鍵的問題。<br>
+        是因為業績真的會成長？還是只是概念炒作？<br>
+        搞清楚這個，你就能判斷什麼時候要跑。
+      </div>
+    </div>`);
+  } else {
+    const hasKeywords={
+      real:['業績','EPS','訂單','營收','毛利','獲利','實際'].some(k=>why.includes(k)),
+      concept:['概念','炒作','想像','預期','未來','可能'].some(k=>why.includes(k)),
+    };
+    lines.push(`<div style="padding:10px 13px;background:var(--green-bg);border-radius:8px;border-left:3px solid var(--green);margin-bottom:8px">
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">📈 題材漲跌邏輯評估</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.7">
+        ${hasKeywords.real?'✓ 你的分析有提到業績面，這是最紮實的依據。':'💡 建議思考：這個題材有沒有實際業績支撐（訂單、EPS成長）？'}
+        ${hasKeywords.concept&&!hasKeywords.real?'<br>⚠ 目前偏概念性描述，概念題材退燒快，要有明確的出場計畫。':''}
+      </div>
+    </div>`);
+  }
+
+  // 風險填寫提醒
+  if(!risk){
+    lines.push(`<div style="padding:10px 13px;background:var(--red-bg);border-radius:8px;border-left:3px solid var(--red);margin-bottom:8px">
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:4px">⚠ 風險欄位還沒填</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.7">
+        每個題材都有讓它失效的條件。想清楚「什麼情況下這個題材會結束」，<br>
+        你才能在對的時候出場，而不是死抱著跌到底。
+      </div>
+    </div>`);
+  }
+
+  // 學習提醒
+  const filledCount=[what,why,risk].filter(x=>x).length;
+  lines.push(`<div style="padding:10px 13px;background:var(--purple-bg);border-radius:8px;border-left:3px solid var(--purple)">
+    <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:4px">📚 學習完整度：${filledCount}/3</div>
+    <div style="font-size:13px;color:var(--text-2);line-height:1.7">
+      題材筆記的核心三問：<br>
+      ${what?'✓':'○'} 這個題材是什麼（理解）<br>
+      ${why?'✓':'○'} 為什麼股票會漲（邏輯）<br>
+      ${risk?'✓':'○'} 什麼時候會結束（出場條件）<br>
+      <b>三個都能回答，才算真正看懂這個題材。</b>
+    </div>
+  </div>`);
+
+  const result=lines.join('');
+  textEl.innerHTML=result;
+
+  // 存入編輯中的題材
+  const editId=parseInt(document.getElementById('thEditId')?.value)||0;
+  if(editId){
+    const idx=(D.themes||[]).findIndex(t=>t.id===editId);
+    if(idx>=0){D.themes[idx].aiNote=result;sv();}
   }
 }
-
-function renderStocks(){
-  const el=document.getElementById('stList'); if(!el)return;
-  let list=[...(D.stocks||[])].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  if(stockFilter!=='all')list=list.filter(s=>s.type===stockFilter);
-  if(!list.length){ el.innerHTML='<div class="empty"><div class="empty-icon">📈</div><div class="empty-text">還沒有交易記錄<br>在左邊填寫第一筆</div></div>'; return; }
-  el.innerHTML=list.map(s=>{
-    const price=s.price||0,sl=s.sl||-10,tp1=s.tp1||20,tp2=s.tp2||40;
-    const exits=s.exits||[];
-    const totalPnl=exits.reduce((a,e)=>a+(e.pnl||0),0)||s.pnl||0;
-    const slP=price>0?(price*(1+sl/100)).toFixed(1):'';
-    const t1P=price>0?(price*(1+tp1/100)).toFixed(1):'';
-    const t2P=price>0?(price*(1+tp2/100)).toFixed(1):'';
-    const typeC=s.type==='買進'?'var(--green)':s.type==='賣出'?'var(--red)':'var(--text-3)';
-    const typeBg=s.type==='買進'?'var(--green-bg)':s.type==='賣出'?'var(--red-bg)':'var(--bg)';
-    const pnlC=totalPnl>0?'var(--green)':totalPnl<0?'var(--red)':'var(--text-3)';
-    const cardId='stcard_'+s.id;
-    // 買進理由預覽（向下相容）
-    const buyReason=s.whyBuy||s.reason||'';
-    const reasonPreview=buyReason.length>50?buyReason.slice(0,50)+'…':buyReason;
-
-    return `<div class="record" style="padding:0;overflow:hidden;margin-bottom:12px">
-      <!-- 頂部：一眼看重點 -->
-      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;cursor:pointer;background:var(--white)" onclick="toggleStCard('${cardId}')">
-        <span style="font-family:var(--serif);font-size:17px;font-weight:700;color:var(--text)">${s.code||'—'}</span>
-        <span style="padding:2px 9px;border-radius:12px;font-size:12px;font-weight:700;background:${typeBg};color:${typeC}">${s.type||'買進'}</span>
-        <span style="font-size:12px;color:var(--text-3)">${s.date||''}</span>
-        ${price?`<span style="font-size:13px;color:var(--text-2)"><b>${price}</b>元${s.qty?` × ${s.qty}張`:''}</span>`:''}
-        ${totalPnl!==0?`<span style="font-size:16px;font-weight:700;color:${pnlC};margin-left:auto">${totalPnl>0?'+':''}${Math.round(totalPnl).toLocaleString()}元</span>`:'<span style="margin-left:auto"></span>'}
-        <div style="display:flex;gap:5px;flex-shrink:0">
-          <button class="btn-icon" onclick="event.stopPropagation();editStock(${s.id})" title="編輯">✏️</button>
-          <button class="btn-icon" onclick="event.stopPropagation();delStock(${s.id})" title="刪除">✕</button>
-        </div>
-      </div>
-
-      <!-- 風控標籤 -->
-      ${slP||t1P||t2P||s.mood?`<div style="padding:0 16px 10px;display:flex;gap:6px;flex-wrap:wrap">
-        ${slP?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--red-bg);border:1px solid var(--red-light);color:var(--red)">停損 ${slP}</span>`:''}
-        ${t1P?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--green-bg);border:1px solid var(--green-light);color:var(--green)">停利1 ${t1P}</span>`:''}
-        ${t2P?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--gold-bg);border:1px solid var(--gold-light);color:var(--gold)">停利2 ${t2P}</span>`:''}
-        ${s.mood?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;background:var(--bg);border:1px solid var(--border);color:var(--text-3)">${s.mood}</span>`:''}
-        ${s.pos?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;background:var(--blue-bg);border:1px solid var(--blue-light);color:var(--blue)">部位${s.pos}%</span>`:''}
-      </div>`:''}
-
-      <!-- 買進理由預覽 -->
-      ${reasonPreview?`<div style="padding:0 16px 12px;font-size:13px;color:var(--text-2);line-height:1.5"><span style="font-size:11px;font-weight:700;color:var(--text-3)">進場：</span>${reasonPreview}</div>`:''}
-
-      <!-- 展開內容 -->
-      <div id="${cardId}" style="display:none;border-top:1px solid var(--border)">
-
-        <!-- 決策思考區 -->
-        <div style="padding:14px 16px;background:var(--bg)">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            ${s.whyBuy||s.reason?`<div style="padding:10px 12px;background:var(--green-bg);border-radius:8px;border-left:3px solid var(--green)"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px">✅ 為什麼買</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.whyBuy||s.reason}</div></div>`:''}
-            ${s.whyNot?`<div style="padding:10px 12px;background:var(--red-bg);border-radius:8px;border-left:3px solid var(--red)"><div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px">❌ 為什麼不買（的顧慮）</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.whyNot}</div></div>`:''}
-            ${s.expect?`<div style="padding:10px 12px;background:var(--blue-bg);border-radius:8px;border-left:3px solid var(--blue)"><div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px">🎯 預期狀態</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.expect}</div></div>`:''}
-            ${s.method?`<div style="padding:10px 12px;background:var(--purple-bg);border-radius:8px;border-left:3px solid var(--purple)"><div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:4px">💭 心法</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.method}</div></div>`:''}
-          </div>
-          ${s.remind?`<div style="margin-top:10px;padding:9px 12px;background:var(--gold-bg);border-radius:8px;border-left:3px solid var(--gold)"><div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:3px">⚠️ 提醒自己</div><div style="font-size:13px;color:var(--text-2)">${s.remind}</div></div>`:''}
-          ${s.kline||s.market||s.chip?`<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--text-2)">${s.kline?`<span><b style="color:var(--text-3)">K線</b> ${s.kline}</span>`:''}${s.market?`<span><b style="color:var(--text-3)">大盤</b> ${s.market}</span>`:''}${s.chip?`<span><b style="color:var(--text-3)">法人</b> ${s.chip}</span>`:''}</div>`:''}
-        </div>
-
-        <!-- 出場 + 賣出決策 -->
-        ${exits.length||s.whySell||s.whyNotSell?`<div style="padding:14px 16px;border-top:1px solid var(--border)">
-          ${exits.length?`<div style="font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:8px">📤 出場記錄</div>
-            <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
-              ${exits.map((e,i)=>{const ep=e.pnl||0;return`<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:var(--bg);border-radius:7px;font-size:12px;flex-wrap:wrap"><span style="color:var(--text-3)">第${i+1}批</span><b>${e.date||''}</b><span>${e.price||''}元 × ${e.qty||''}張</span>${e.days?`<span style="color:var(--text-3)">持有${e.days}天</span>`:''}<span style="font-weight:700;color:${ep>0?'var(--green)':'var(--red)'};margin-left:auto">${ep>0?'+':''}${Math.round(ep).toLocaleString()}元</span></div>`;}).join('')}
-          </div>`:''}
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            ${s.whySell?`<div style="padding:9px 12px;background:var(--green-bg);border-radius:8px;border-left:3px solid var(--green)"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:3px">💰 為什麼賣</div><div style="font-size:13px;color:var(--text-2);line-height:1.5">${s.whySell}</div></div>`:''}
-            ${s.whyNotSell?`<div style="padding:9px 12px;background:var(--orange-bg);border-radius:8px;border-left:3px solid var(--orange)"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:3px">🤔 為什麼不賣</div><div style="font-size:13px;color:var(--text-2);line-height:1.5">${s.whyNotSell}</div></div>`:''}
-          </div>
-        </div>`:''}
-
-        <!-- 復盤 -->
-        ${s.verify||s.reflect||s.learn||s.r1||s.r2||s.r4?`<div style="padding:14px 16px;border-top:1px solid var(--border);background:var(--orange-bg)">
-          <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:10px">📝 復盤</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            ${(s.verify||s.r1)?`<div style="padding:9px 12px;background:var(--white);border-radius:8px"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:3px">判斷的驗證</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.verify||s.r1}</div></div>`:''}
-            ${(s.reflect||s.r2)?`<div style="padding:9px 12px;background:var(--white);border-radius:8px"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:3px">反省</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.reflect||s.r2}</div></div>`:''}
-            ${(s.learn||s.r4)?`<div style="padding:9px 12px;background:var(--white);border-radius:8px"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:3px">我學到什麼</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.learn||s.r4}</div></div>`:''}
-          </div>
-        </div>`:''}
-
-        <!-- AI 分析區 -->
-        <div style="padding:14px 16px;border-top:1px solid var(--border);background:var(--purple-bg)">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <div style="font-size:12px;font-weight:700;color:var(--purple)">🤖 AI 分析與建議</div>
-            <button class="btn btn-sm" style="background:var(--purple);color:white;font-size:11px" onclick="runStockAI(${s.id})">✨ 請 AI 分析</button>
-          </div>
-          <div id="stAI_${s.id}" style="font-size:13px;color:var(--text-2);line-height:1.85;min-height:40px">
-            ${s.aiAnalysis?s.aiAnalysis:'<span style="color:var(--text-3);font-style:italic">點「請 AI 分析」，讓 Claude 幫你分析這筆交易的邏輯、風險和學習點。</span>'}
-          </div>
-        </div>
-
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ══ 股票 AI 分析 ══
-async function runStockAI(sid){
-  const s=(D.stocks||[]).find(s=>s.id===sid);
-  if(!s)return;
-  const el=document.getElementById('stAI_'+sid);
-  if(!el)return;
-  el.innerHTML='<span style="color:var(--purple)">🤖 分析中，請稍候…</span>';
-
-  const prompt=`你是一位有經驗的股票投資教練，請針對以下這筆交易記錄，給出具體的分析和建議。用繁體中文回答，語氣親切但直接，重點是幫助投資人成長。
-
-【交易基本資訊】
-股票：${s.code} | 操作：${s.type} | 日期：${s.date}
-買進價：${s.price||'—'}元 | 股數：${s.qty||'—'}張 | 部位：${s.pos||'—'}%
-停損設定：${s.sl||'—'}% | 第一停利：${s.tp1||'—'}% | 第二停利：${s.tp2||'—'}%
-K線位置：${s.kline||'未填'} | 大盤狀況：${s.market||'未填'} | 法人籌碼：${s.chip||'未填'}
-進場心理：${s.mood||'未填'}
-
-【決策思考】
-為什麼買：${s.whyBuy||s.reason||'未填'}
-預期狀態：${s.expect||'未填'}
-風險顧慮（為什麼不買）：${s.whyNot||'未填'}
-心法：${s.method||'未填'}
-提醒自己：${s.remind||'未填'}
-
-【出場 & 賣出決策】
-為什麼賣：${s.whySell||'未填'}
-為什麼不賣：${s.whyNotSell||'未填'}
-${(s.exits||[]).length?'出場記錄：'+s.exits.map((e,i)=>`第${i+1}批 ${e.date} ${e.price}元 損益${e.pnl}元 持有${e.days}天`).join('、'):''}
-
-【復盤】
-判斷驗證：${s.verify||s.r1||'未填'}
-反省：${s.reflect||s.r2||'未填'}
-學到什麼：${s.learn||s.r4||'未填'}
-
-請從以下幾個角度分析（每點2-4句話就好，不要太長）：
-1. 🎯 進場邏輯分析：這個進場理由的強度如何？有哪些優點和盲點？
-2. ⚖️ 風險控管評估：停損停利設定是否合理？部位大小適當嗎？
-3. 💭 心理面觀察：進場心理狀態有沒有影響判斷？
-4. ✅ 做得好的地方：這筆交易有什麼值得肯定的決策？
-5. 📚 學習點和建議：最重要的一個學習點是什麼？下次可以怎麼改善？
-6. ⚡ 一句話總結：用一句話給這筆交易打個結論。`;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    const data=await res.json();
-    const text=data.content?.[0]?.text||'分析失敗，請稍後再試';
-    // 儲存 AI 分析結果
-    const stIdx=(D.stocks||[]).findIndex(st=>st.id===sid);
-    if(stIdx>=0)D.stocks[stIdx].aiAnalysis=text.replace(/\n/g,'<br>');
-    sv();
-    el.innerHTML=text.replace(/\n/g,'<br>');
-  }catch(e){
-    el.innerHTML='<span style="color:var(--red)">⚠ 分析失敗：'+e.message+'</span>';
-  }
-}
-
-function toggleStCard(id){
-  const el=document.getElementById(id);
-  if(!el)return;
-  const isOpen=el.style.display!=='none';
-  el.style.display=isOpen?'none':'block';
-}
-
-function toggleStCard(id){
-  const el=document.getElementById(id);
-  if(!el)return;
-  el.style.display=el.style.display==='none'?'block':'none';
-}
-
-function renderStockStat(){
-  const el=document.getElementById('stStat'); if(!el)return;
-  const stocks=D.stocks||[];
-  if(!stocks.length){ el.innerHTML='<div style="font-size:14px;color:#999">尚無交易記錄</div>'; return; }
-  const pnls=stocks.map(s=>{ const ex=s.exits||[]; return ex.reduce((a,e)=>a+(e.pnl||0),0)||s.pnl||0; });
-  const total=pnls.reduce((a,b)=>a+b,0);
-  const wins=pnls.filter(p=>p>0).length, losses=pnls.filter(p=>p<0).length;
-  const moods={}; stocks.forEach(s=>{ moods[s.mood]=(moods[s.mood]||0)+1; });
-  const topMood=Object.entries(moods).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
-  el.innerHTML=`<div class="grid-3" style="margin-bottom:14px">
-    <div class="stat-card"><div class="stat-card-num" style="color:${total>=0?'var(--green)':'var(--red)'}">${total>=0?'+':''}${Math.round(total).toLocaleString()}</div><div class="stat-card-label">總損益（元）</div></div>
-    <div class="stat-card"><div class="stat-card-num" style="color:var(--green)">${wins}</div><div class="stat-card-label">獲利次數</div></div>
-    <div class="stat-card"><div class="stat-card-num" style="color:var(--red)">${losses}</div><div class="stat-card-label">虧損次數</div></div>
-  </div>
-  <div style="font-size:13px;color:#666;padding:10px 12px;background:var(--bg);border-radius:6px;margin-bottom:10px">最常見心理：<strong>${topMood}</strong></div>
-  <div style="padding:12px;background:var(--accent-light);border-radius:6px;font-family:var(--serif);font-size:13px;color:var(--accent-dark);text-align:center;line-height:1.8">「不是每筆交易都要賺錢，<br>但每筆交易都要學到東西。」</div>`;
-}
-
-// ══════════════════════════════════════════════
-// 服務觀察
-// ══════════════════════════════════════════════
-function renderSvcs(){
-  const el=document.getElementById('svcList'); if(!el)return;
-  document.getElementById('svcDate').value=document.getElementById('svcDate').value||TODAY;
-  let list=[...(D.services||[])].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  if(svcFilter==='VIP老客')list=list.filter(s=>s.client==='VIP老客');
-  if(svcFilter==='insight')list=list.filter(s=>s.insight&&s.insight.trim());
-  if(!list.length){ el.innerHTML='<div class="empty"><div class="empty-icon">💆‍♀️</div><div class="empty-text">還沒有服務記錄</div></div>'; return; }
-  el.innerHTML=list.map(s=>`<div class="record"><div class="record-hd"><div><div class="record-title">${s.type||''} · ${s.client||''}</div><div class="record-date">${s.date||''} · ${s.energy||''}${s.income?` · $${s.income}`:''}</div></div><div class="record-actions"><button class="btn btn-ghost btn-sm" onclick="editSvc(${s.id})">✏️</button><button class="btn-icon" onclick="delSvc(${s.id})">✕</button></div></div><div class="record-body">${s.obs?`<div style="margin-bottom:8px">${s.obs}</div>`:''} ${s.insight?`<div style="margin-bottom:6px;padding:8px 12px;background:var(--accent-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--accent-dark)">💡 靈感素材：</span>${s.insight}</div>`:''} ${s.tech?`<div style="margin-bottom:6px;padding:8px 12px;background:var(--green-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--green)">🔧 技術：</span>${s.tech}</div>`:''} ${s.brand?`<div style="padding:8px 12px;background:var(--gold-light);border-radius:6px"><span style="font-size:11px;font-weight:700;color:var(--gold)">💼 品牌：</span>${s.brand}</div>`:''}</div></div>`).join('');
-}
-function filterSvc(f,el){ svcFilter=f; document.querySelectorAll('#pg-service .tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); renderSvcs(); }
-function saveSvc(){
-  const obs=document.getElementById('svcObs')?.value.trim(); if(!obs){toast('請填寫觀察內容');return;}
-  const editId=parseInt(document.getElementById('svcEditId')?.value)||0;
-  const entry={id:editId||id(),date:document.getElementById('svcDate')?.value||TODAY,type:document.getElementById('svcType')?.value||'',client:document.getElementById('svcClient')?.value||'',obs,insight:document.getElementById('svcInsight')?.value.trim()||'',tech:document.getElementById('svcTech')?.value.trim()||'',brand:document.getElementById('svcBrand')?.value.trim()||'',energy:document.getElementById('svcEnergy')?.value||'',income:parseFloat(document.getElementById('svcIncome')?.value)||0};
-  if(!D.services)D.services=[];
-  if(editId){ const idx=D.services.findIndex(s=>s.id===editId); if(idx>=0)D.services[idx]=entry; else D.services.unshift(entry); }
-  else D.services.unshift(entry);
-  ['svcObs','svcInsight','svcTech','svcBrand','svcIncome'].forEach(k=>{ const el=document.getElementById(k); if(el)el.value=''; });
-  document.getElementById('svcEditId').value=''; document.getElementById('svcSaveBtn').textContent='💾 儲存筆記';
-  sv(); renderSvcs(); toast('💆‍♀️ 服務筆記已儲存！');
-}
-function editSvc(sid){ const s=(D.services||[]).find(s=>s.id===sid); if(!s)return; document.getElementById('svcDate').value=s.date||TODAY; document.getElementById('svcType').value=s.type||'做臉'; document.getElementById('svcClient').value=s.client||'VIP老客'; document.getElementById('svcObs').value=s.obs||''; document.getElementById('svcInsight').value=s.insight||''; document.getElementById('svcTech').value=s.tech||''; document.getElementById('svcBrand').value=s.brand||''; document.getElementById('svcEnergy').value=s.energy||'充滿活力'; document.getElementById('svcIncome').value=s.income||''; document.getElementById('svcEditId').value=sid; document.getElementById('svcSaveBtn').textContent='💾 更新筆記'; window.scrollTo({top:0,behavior:'smooth'}); toast('已載入，修改後按更新'); }
-function delSvc(sid){ D.services=(D.services||[]).filter(s=>s.id!==sid); sv(); renderSvcs(); }
-
-// ══════════════════════════════════════════════
-// 素材庫
-// ══════════════════════════════════════════════
-function renderIdeas(){
-  const el=document.getElementById('ideaList'); if(!el)return;
-  const ideas=D.ideas||[];
-  if(!ideas.length){ el.innerHTML='<div class="empty"><div class="empty-icon">💡</div><div class="empty-text">把靈感記錄在這裡</div></div>'; return; }
-  el.innerHTML=ideas.map(i=>`<div class="record" style="margin-bottom:8px"><div style="display:flex;align-items:flex-start;gap:10px"><span class="badge badge-gray" style="flex-shrink:0">${i.cat}</span><div style="flex:1"><div style="font-size:14px">${i.tx}</div><div style="font-size:11px;color:#999;margin-top:2px">${i.date||''}</div></div><button class="btn-icon" onclick="delIdea(${i.id})">✕</button></div></div>`).join('');
-}
-function addIdea(){ const cat=document.getElementById('ideaCat')?.value, tx=document.getElementById('ideaTxt')?.value.trim(); if(!tx)return; if(!D.ideas)D.ideas=[]; D.ideas.unshift({cat,tx,id:id(),date:TODAY}); document.getElementById('ideaTxt').value=''; sv(); renderIdeas(); toast('💡 靈感已記錄！'); }
-function delIdea(iid){ D.ideas=(D.ideas||[]).filter(i=>i.id!==iid); sv(); renderIdeas(); }
-
-// ══════════════════════════════════════════════
-// 事業天命（靜態顯示）
-// ══════════════════════════════════════════════
-function renderDestiny(){
-  document.getElementById('destinyContent').innerHTML=`
-<div class="section-title">✨ 事業天命</div>
-<div class="section-sub">沐蜜 Moome 只是起點，不是終點。</div>
-
-<!-- 核心結論 -->
-<div style="background:linear-gradient(135deg,var(--orange-bg),#FFF8F0);border:2px solid var(--orange-light);border-radius:12px;padding:20px 24px;margin-bottom:20px">
-  <div style="font-family:var(--serif);font-size:15px;color:var(--accent-dark);line-height:2.1">
-    「我不是來『做美容項目』的，我是來『創造美學儀式』的。<br>
-    不要分散，要集中。不要追潮流，要做天命。<br>
-    不要往外擴規模，要往上提升價值。<br>
-    <strong>同樣一個我，越來越值錢——這才是我的路。</strong>」
-  </div>
-</div>
-
-<div class="grid-2">
-<!-- 左欄 -->
-<div>
-
-<!-- 我是誰 -->
-<div class="card card-orange">
-  <div class="card-header"><span class="card-title">🌟 我是誰・我的天命公式</span></div>
-  <div class="card-body">
-    <div style="font-size:14px;color:var(--text-2);line-height:1.85;margin-bottom:16px">
-      我不是一個普通的美容師，我是一個正在沉睡的「美學系統建立者」。美容只是我的載體，不是我的天花板。<br><br>
-      我的天命是：用滋養之手＋美學＋儀式感，療癒來找我的人——然後把這份能力，從「親手做」慢慢變成「智慧傳遞」。
-    </div>
-    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px">
-      ${[
-        ['🌿','天生讓人信任、被照顧、放鬆的氣場','不用刻意，自動運作'],
-        ['🤲','一雙有「滋養能量」的手','做臉、按摩時客人感受最深'],
-        ['✨','對美的高標準與天生的美學品味','讓人記住的獨特氣質'],
-      ].map(([e,t,d])=>`<div style="display:flex;align-items:flex-start;gap:12px;padding:11px 14px;background:var(--orange-bg);border-radius:8px">
-        <span style="font-size:20px;flex-shrink:0">${e}</span>
-        <div><div style="font-size:13px;font-weight:700;color:var(--accent-dark)">${t}</div><div style="font-size:12px;color:var(--text-3);margin-top:2px">${d}</div></div>
-      </div>`).join('')}
-    </div>
-    <div style="padding:12px 14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--text-2);font-weight:700;text-align:center;line-height:1.7">
-      三者合起來 ＝ 「以美學儀式滋養女性的療癒者」<br>
-      <span style="font-size:12px;font-weight:400;color:var(--text-3)">最佳載體是做臉，最佳表達是「創造一場儀式」</span>
-    </div>
-  </div>
-</div>
-
-<!-- 服務項目分配 -->
-<div class="card card-teal">
-  <div class="card-header"><span class="card-title">💆‍♀️ 服務項目該怎麼分配心力</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${[
-        ['🏆','做臉','主力・重點押注','var(--green)','var(--green-bg)',
-         '天命最強匹配，已累積多年專業。要從「服務」升級成「美學儀式」，提高單價，做成品牌核心。心力的一半放這裡。'],
-        ['🥈','霧眉霧唇','補充＋品牌入口','var(--blue)','var(--blue-bg)',
-         '高單價、作品看得見、好行銷，當「吸引新客的入口」，引導客人深化到做臉。趁這一兩年密集練習衝作品。未來會慢慢把重心轉回做臉。'],
-        ['🥉','美體按摩','值得進修・選對方向','var(--teal)','var(--teal-bg)',
-         '手有天賦，按摩適合。但要學「療癒型」（能量按摩・女性療癒・頭臉・芳療），不要學商業快速型。當做臉的延伸，不要當單獨主力——純按摩太耗身體。'],
-        ['⚠️','除毛','逐步淡出','var(--orange)','var(--orange-bg)',
-         '跟天命能量不合，沒有升級空間。慢慢把它過渡掉，把時間留給做臉升級。'],
-        ['❌','美睫','不要進修','var(--red)','var(--red-bg)',
-         '不符合強項、傷眼睛和身體、投資報酬比低。把學費和時間拿去投資做臉升級，回報大很多。'],
-      ].map(([rank,name,tag,c,bg,desc])=>`<div style="border-radius:9px;overflow:hidden;border:1px solid var(--border)">
-        <div style="padding:10px 14px;background:${bg};display:flex;align-items:center;gap:10px">
-          <span style="font-size:18px">${rank}</span>
-          <div style="flex:1"><span style="font-size:14px;font-weight:700;color:var(--text)">${name}</span><span style="font-size:11px;color:${c};font-weight:700;margin-left:8px">${tag}</span></div>
-        </div>
-        <div style="padding:10px 14px;background:var(--white);font-size:13px;color:var(--text-2);line-height:1.65">${desc}</div>
-      </div>`).join('')}
-    </div>
-  </div>
-</div>
-
-<!-- 事業進化路徑 -->
-<div class="card card-purple">
-  <div class="card-header"><span class="card-title">🌱 事業進化路徑</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div style="padding:14px;border:1px solid var(--border);border-radius:8px"><div style="font-size:11px;color:var(--text-3);margin-bottom:4px">現在</div><div style="font-size:15px;font-weight:700">1.0 服務型工匠</div><div style="font-size:13px;color:var(--text-2);margin-top:3px">持續做服務（底層，永遠不放棄）</div></div>
-      <div style="text-align:center;color:var(--text-3);font-size:18px">↓</div>
-      <div style="padding:14px;border:1.5px solid var(--orange);border-radius:8px;background:var(--orange-bg)"><div style="font-size:11px;color:var(--orange);margin-bottom:4px">進行中</div><div style="font-size:15px;font-weight:700;color:var(--accent-dark)">2.0 美學品牌主</div><div style="font-size:13px;color:var(--text-2);margin-top:3px">寫作・拍影片・內容・個人品牌</div></div>
-      <div style="text-align:center;color:var(--text-3);font-size:18px">↓</div>
-      <div style="padding:14px;border:1.5px solid var(--gold);border-radius:8px;background:var(--gold-bg)"><div style="font-size:11px;color:var(--gold);margin-bottom:4px">2034+ 黃金期</div><div style="font-size:15px;font-weight:700;color:var(--gold)">3.0 智慧傳遞者</div><div style="font-size:13px;color:var(--text-2);margin-top:3px">教學・培訓・工作坊・美學系統建立</div></div>
-    </div>
-  </div>
-</div>
-
-</div>
-
-<!-- 右欄 -->
-<div>
-
-<!-- 該怎麼擴張 -->
-<div class="card card-red">
-  <div class="card-header"><span class="card-title">🎯 該怎麼擴張（最重要的觀念）</span></div>
-  <div class="card-body">
-    <div style="font-size:13px;font-weight:700;color:var(--accent-dark);margin-bottom:12px;padding:10px 14px;background:var(--orange-bg);border-radius:8px;text-align:center">
-      核心原則：往「上」擴，不往「外」擴。
-    </div>
-    <div style="margin-bottom:14px">
-      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:9px">❌ 不該做的擴張（往外）</div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        ${['不找員工','不開分店','不擴大團隊','不盲目增加服務項目'].map(t=>`<div style="padding:7px 12px;background:var(--red-bg);border-radius:6px;font-size:13px;color:var(--red);font-weight:700">🚫 ${t}</div>`).join('')}
-      </div>
-      <div style="margin-top:9px;padding:10px 13px;background:var(--bg);border-radius:7px;font-size:12px;color:var(--text-2);line-height:1.7">
-        管人・合夥・雇傭關係是高風險區。員工複製不了我的氣場和手感，硬找人只會稀釋品牌。管理的隱形累，會耗掉核心能量。
-      </div>
-    </div>
-    <div>
-      <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:9px">✅ 該做的擴張（往上）</div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        ${['提高單價','深化服務（從「用手換錢」到「美學儀式」）','篩選客戶，留下對的人','把我會的變成課程・內容・產品','建立個人品牌','創造不靠手的被動收入'].map(t=>`<div style="padding:7px 12px;background:var(--green-bg);border-radius:6px;font-size:13px;color:var(--green);font-weight:700">✓ ${t}</div>`).join('')}
-      </div>
-    </div>
-    <div style="margin-top:12px;padding:12px 14px;background:var(--purple-bg);border-radius:8px;font-size:13px;color:var(--purple);font-weight:700;line-height:1.7;text-align:center">
-      別人擴張：請更多人、服務更多客人 → 管理成本和痛苦翻倍<br>
-      我的擴張：同樣一個我，越來越值錢 → 更少人・更多錢・更輕鬆・品牌更強
-    </div>
-  </div>
-</div>
-
-<!-- 外包判斷標準 -->
-<div class="card card-blue">
-  <div class="card-header"><span class="card-title">🏠 現在的工作室模式・外包判斷</span></div>
-  <div class="card-body">
-    <div style="font-size:14px;color:var(--text-2);line-height:1.8;margin-bottom:14px">
-      「工作室＋住家＋一個人」這個模式其實就是我最舒服、最省力、最像我的形態。<strong>不要急著改變它。</strong>先把它做到極致——把單價提上來、把客人篩選好——再談升級空間。
-    </div>
-    <div style="margin-bottom:12px;padding:11px 14px;background:var(--blue-bg);border-radius:8px;font-size:13px;color:var(--blue);font-weight:700">
-      如果忙不過來：解法是「外包雜事」，不是「請員工」
-    </div>
-    <div style="display:flex;flex-direction:column;gap:7px">
-      <div style="padding:10px 13px;background:var(--green-bg);border-radius:7px">
-        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:3px">可以外包 ✓</div>
-        <div style="font-size:13px;color:var(--text-2)">預約系統・記帳・設計排版・採購補貨</div>
-      </div>
-      <div style="padding:10px 13px;background:var(--red-bg);border-radius:7px">
-        <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:3px">不能外包 🚫</div>
-        <div style="font-size:13px;color:var(--text-2)">親手碰客人的臉・自己寫的文字</div>
-      </div>
-    </div>
-    <div style="margin-top:12px;padding:10px 13px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--text-2);line-height:1.7;font-style:italic;text-align:center">
-      判斷標準：這件事換成別人做，客人感覺得出差別嗎？<br>感覺得出 → 自己做。感覺不出 → 丟出去。
-    </div>
-  </div>
-</div>
-
-<!-- 內容行銷方向 -->
-<div class="card card-gold">
-  <div class="card-header"><span class="card-title">✍️ 網路行銷・可以寫什麼</span></div>
-  <div class="card-body">
-    <div style="margin-bottom:12px;padding:10px 14px;background:var(--red-bg);border-radius:8px;font-size:13px;color:var(--red)">
-      ❌ 法規限制：不能講療效・不能放前後對比・不能用醫療字眼
-    </div>
-    <div style="margin-bottom:12px;font-size:12px;font-weight:700;color:var(--text-2);letter-spacing:.05em">✅ 可以寫的四個方向</div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
-      ${[
-        ['氛圍與儀式','工作環境的美感、服務過程的儀式感'],
-        ['保養觀念與生活方式','一般觀念、季節保養、睡眠飲食與皮膚關係（不針對個人療效）'],
-        ['個人品牌與觀點','我對美的看法、為什麼做這行、我的學習與成長'],
-        ['純美學素材','光、空間、物件、文字書寫'],
-      ].map(([t,d])=>`<div style="padding:9px 12px;background:var(--gold-bg);border-radius:7px;border-left:3px solid var(--gold)"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:2px">${t}</div><div style="font-size:12px;color:var(--text-2)">${d}</div></div>`).join('')}
-    </div>
-    <div style="padding:11px 14px;background:var(--purple-bg);border-radius:8px;font-size:13px;color:var(--purple);font-weight:700;line-height:1.7">
-      關鍵心法：不要寫「美容師說」（受法規限制）<br>要寫「我是誰・我看見什麼・我相信什麼」（不受限制，才能建立真正的品牌）
-    </div>
-  </div>
-</div>
-
-<!-- 變現路徑 -->
-<div class="card card-green">
-  <div class="card-header"><span class="card-title">💎 變現路徑（從用手換錢到智慧複利）</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${[
-        ['1','第一層・核心服務（親手做）','var(--orange)','var(--orange-bg)',
-         '做臉儀式化、提高單價。保留一個基礎款，推一個高價儀式款，讓客人自己往上選。'],
-        ['2','第二層・篩選深耕','var(--blue)','var(--blue-bg)',
-         '預約制＋會員制，服務固定一群對的人深度回購。寧可服務60個對的人很多次，不要服務300個過路客一次。'],
-        ['3','第三層・智慧財（後期啟動）','var(--purple)','var(--purple-bg)',
-         '課程・內容・產品。把我會的東西變成「不需要我親自做」也能賺錢的形式。'],
-      ].map(([n,t,c,bg,d])=>`<div style="display:flex;gap:12px;padding:12px 14px;background:${bg};border-radius:9px">
-        <div style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:${c};color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">${n}</div>
-        <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">${t}</div><div style="font-size:12px;color:var(--text-2);line-height:1.6">${d}</div></div>
-      </div>`).join('')}
-    </div>
-    <div style="margin-top:12px;padding:11px 14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--text-2);text-align:center;line-height:1.7">
-      精神：不是「做更多」，是「同樣的我，越來越值錢」
-    </div>
-  </div>
-</div>
-
-<!-- 時機 -->
-<div class="card card-purple" style="grid-column:1">
-  <div class="card-header"><span class="card-title">📅 時機：什麼時候做什麼</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:9px">
-      ${[
-        ['現在 – 8月','danger','不擴張，先深化',
-         '暫緩營業登記・不接大合作・不擴店。做臉開始品牌化、每週寫一段不講療效的美學日記、霧眉密集練習衝作品。'],
-        ['今年底 – 後年','good','打底期・建立基礎',
-         '做臉升級成儀式・提高單價・篩出VIP。持續寫作累積素材。營業登記可在11月後考慮。'],
-        ['35-38歲','danger','考驗期・守，不要動',
-         '不開課・不擴張・不大投資・不簽大約。守住單價・守住客戶・守住現金。寫作持續著就好。能穩穩走過去本身就是成功。'],
-        ['38-40歲','good','第一次收成・智慧變現啟動',
-         '把累積幾年的內容變成智慧財——線上課・付費社群・工作坊。一次製作、多次販售，開始有不靠手的收入。'],
-        ['41-44歲','golden','黃金綻放期・全面開展',
-         '產品線・品牌・更美的空間到位。收入結構從「服務為主」變成「服務＋智慧財＋產品」並進。這是事業真正綻放的時期。'],
-      ].map(([period,type,title,desc])=>{
-        const s={danger:{bg:'var(--red-bg)',bdr:'var(--red-light)',tc:'var(--red)',dot:'var(--red)'},good:{bg:'var(--green-bg)',bdr:'var(--green-light)',tc:'var(--green)',dot:'var(--green)'},golden:{bg:'var(--gold-bg)',bdr:'var(--gold-light)',tc:'var(--gold)',dot:'var(--gold)'}}[type]||{};
-        return '<div style="border-radius:9px;overflow:hidden;border:1.5px solid '+s.bdr+'">'
-          +'<div style="padding:10px 14px;background:'+s.bg+';display:flex;align-items:center;gap:10px">'
-          +'<div style="width:8px;height:8px;border-radius:50%;background:'+s.dot+';flex-shrink:0"></div>'
-          +'<div><div style="font-size:11px;color:'+s.tc+';font-weight:700;margin-bottom:2px">'+period+'</div>'
-          +'<div style="font-size:13px;font-weight:700;color:var(--text)">'+title+'</div></div></div>'
-          +'<div style="padding:10px 14px;background:var(--white);font-size:13px;color:var(--text-2);line-height:1.7">'+desc+'</div>'
-          +'</div>';
-      }).join('')}
-    </div>
-  </div>
-</div>
-
-</div>
-</div>
-`;
-}
-
-function renderInvest(){
-  document.getElementById('investContent').innerHTML=`
-<div class="section-title">💰 投資指引</div>
-<div class="section-sub">當你想要做投資的時候，先來這裡看看。把這頁讀完，再決定要不要行動。</div>
-
-<!-- 核心結論 -->
-<div style="background:linear-gradient(135deg,var(--orange-bg),#FFF8F0);border:2px solid var(--orange-light);border-radius:12px;padding:20px 24px;margin-bottom:20px">
-  <div style="font-family:var(--serif);font-size:15px;color:var(--accent-dark);line-height:2.1">
-    「我適合『慢慢變有錢』，不適合『快快致富』。<br>
-    沒有人靠研究個股變有錢，但很多人靠長期定期定額變有錢。<br>
-    我的核心是「紀律＋等待」，不是「判斷＋研究」。<br>
-    <strong>把研究股票的時間拿去把事業做好，三十年後的我會感謝今天的我。</strong>」
-  </div>
-</div>
-
-<div class="grid-2">
-<!-- 左欄 -->
-<div>
-
-<!-- 我的強項 vs 陷阱 -->
-<div class="card card-blue">
-  <div class="card-header"><span class="card-title">🧠 我的投資人格（誠實面對自己）</span></div>
-  <div class="card-body">
-    <div style="margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:var(--green);letter-spacing:.05em;margin-bottom:9px">✅ 我的強項</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        ${['有紀律、能堅持、能等待、不急著看到結果','長期視野——天生就是「慢慢變有錢」的人','累積複利——命盤底層的穩定性','不貪快，能扛住短期波動'].map(t=>`<div style="display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--green-bg);border-radius:7px;font-size:13px;color:var(--text-2)"><span style="color:var(--green);font-weight:700;flex-shrink:0">✓</span>${t}</div>`).join('')}
-      </div>
-    </div>
-    <div>
-      <div style="font-size:12px;font-weight:700;color:var(--red);letter-spacing:.05em;margin-bottom:9px">⚠️ 我的陷阱（要時時警惕）</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        ${['容易被「快速致富」的故事吸引','容易跟風追熱潮，群體狂熱時做錯決定','容易在資訊爆炸中迷失方向','情緒容易被市場帶走——看漲就想賣、看跌就想換'].map(t=>`<div style="display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--red-bg);border-radius:7px;font-size:13px;color:var(--text-2)"><span style="color:var(--red);font-weight:700;flex-shrink:0">✗</span>${t}</div>`).join('')}
-      </div>
-    </div>
-    <div style="margin-top:12px;padding:11px 14px;background:var(--purple-bg);border-radius:8px;font-size:13px;color:var(--purple);font-weight:700;text-align:center">
-      我有能力走「巴菲特型」，但天生也容易走「韭菜型」。<br>我的選擇決定我是哪一種。
-    </div>
-  </div>
-</div>
-
-<!-- 該做 vs 不該做 -->
-<div class="card card-green">
-  <div class="card-header"><span class="card-title">✅ 什麼該做</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:9px">
-      ${[
-        ['長期持有指數型 ETF','最適合我的方式。台股0050、0056，或美股大盤ETF。買了長期放著，不用每天看盤、不用研究財報、不用追熱門股。'],
-        ['定期定額、自動扣款','每月固定一筆錢自動投入，然後「不要看股價」。紀律是我最大的武器，定期定額正好發揮這個強項。'],
-        ['先存緊急儲備金，再投資','存到6-12個月生活費之後，才開始投資。沒有緊急金，不要碰投資。'],
-        ['永遠用閒錢','只投入「就算全賠掉也不影響生活」的錢。'],
-        ['把研究股票的時間投資在事業上','我的錢主要來自事業。與其研究個股，不如把沐蜜做得更好，回報大十倍。'],
-      ].map(([t,d])=>`<div style="padding:11px 14px;background:var(--green-bg);border-radius:8px;border-left:3px solid var(--green)"><div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px">✓ ${t}</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${d}</div></div>`).join('')}
-    </div>
-  </div>
-</div>
-
-<!-- 絕對不要做 -->
-<div class="card card-red">
-  <div class="card-header"><span class="card-title">🚫 什麼絕對不要做</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:8px">
-      ${[
-        ['不做短線・當沖・投機','完全不適合我，做了只會內耗、虧損。'],
-        ['不碰期權・期貨・權證・槓桿','這些放大風險的工具是我的紅線。'],
-        ['不借錢投資・不融資','絕對底線，沒有例外。'],
-        ['不聽明牌・不跟風熱門股','朋友報的、社群瘋的、群體在追的——我特別容易被影響，而且通常買在高點。看到就提醒自己：這正是我的陷阱。'],
-        ['看到「快速致富」訊息立刻關掉','「三個月翻倍」「下一個百倍幣」「月領5%」——99%是詐騙或誇大，而我天生容易被吸引。遇到就立刻關閉、不研究、不心動。'],
-        ['不頻繁進出','買了就放著，不要動。看漲想賣、看跌想換，是情緒在作祟，不是判斷。'],
-      ].map(([t,d])=>`<div style="padding:11px 14px;background:var(--red-bg);border-radius:8px;border-left:3px solid var(--red)"><div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:4px">🚫 ${t}</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${d}</div></div>`).join('')}
-    </div>
-  </div>
-</div>
-
-</div>
-
-<!-- 右欄 -->
-<div>
-
-<!-- 時機指南 -->
-<div class="card card-teal">
-  <div class="card-header"><span class="card-title">📅 什麼時候開始</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${[
-        ['⚠️ 現在 – 今年8月','danger','只學習，不行動',
-         '這段時間容易衝動、容易做後悔的金融決定。\n✓ 讀書、學基本知識、整理財務狀況\n✗ 不開戶・不下單・不入金'],
-        ['🌱 今年11月之後','good','可以小額開始',
-         '能量穩定後再開始。每月幾千塊的指數型ETF，重點是養成「不看波動」的紀律，不是賺多少。'],
-        ['⚠️ 35–38 歲','danger','守住，不要慌',
-         '考驗期。市場可能大震盪，耐受力被測試。\n✓ 已開始的定期定額堅持不停\n✓ 手上保留6-12個月現金\n✗ 不恐慌賣在低點・不開始新投資'],
-        ['📈 38–40 歲','good','判斷力成熟，可以拓展',
-         '可以增加金額、接觸更多元工具、開始研究個股（如果想）。開始有自己的投資觀點。'],
-        ['🌟 41–44 歲','golden','收成',
-         '如果從30多歲就開始定期定額，這時會開始看到複利的力量。累積的本金加上時間，會明顯長大。'],
-      ].map(([period,type,title,desc])=>{
-        const s={danger:{bg:'var(--red-bg)',bdr:'var(--red-light)',tc:'var(--red)',dot:'var(--red)'},good:{bg:'var(--green-bg)',bdr:'var(--green-light)',tc:'var(--green)',dot:'var(--green)'},golden:{bg:'var(--gold-bg)',bdr:'var(--gold-light)',tc:'var(--gold)',dot:'var(--gold)'}}[type]||{};
-        return '<div style="border-radius:9px;overflow:hidden;border:1.5px solid '+s.bdr+'">'
-          +'<div style="padding:10px 14px;background:'+s.bg+';display:flex;align-items:center;gap:10px">'
-          +'<div style="width:8px;height:8px;border-radius:50%;background:'+s.dot+';flex-shrink:0"></div>'
-          +'<div><div style="font-size:11px;color:'+s.tc+';font-weight:700;margin-bottom:2px">'+period+'</div>'
-          +'<div style="font-size:13px;font-weight:700;color:var(--text)">'+title+'</div></div></div>'
-          +'<div style="padding:10px 14px;background:var(--white);font-size:13px;color:var(--text-2);line-height:1.8;white-space:pre-line">'+desc+'</div>'
-          +'</div>';
-      }).join('')}
-    </div>
-  </div>
-</div>
-
-<!-- 分階段路線圖 -->
-<div class="card card-gold">
-  <div class="card-header"><span class="card-title">📈 投資路線圖（分階段）</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${[
-        ['1','打地基','剛開始那幾年','每月幾千到一萬，全部買大盤ETF。目標是養成「不看短期波動」的習慣。不碰個股・不碰幣・不碰複雜工具。','var(--blue)','var(--blue-bg)'],
-        ['2','累積期','考驗期那幾年','金額隨收入提高。重點是「通過紀律考驗」——市場震盪時不恐慌、不亂動。','var(--orange)','var(--orange-bg)'],
-        ['3','智慧期','判斷成熟後','可以開始研究價值型個股、長期持有的好公司。手上永遠留一部分現金。','var(--teal)','var(--teal-bg)'],
-        ['4','收成期','黃金期','複利開始顯現，進入「錢開始為我工作」的階段。','var(--gold)','var(--gold-bg)'],
-      ].map(([n,t,sub,d,c,bg])=>`<div style="display:flex;gap:12px;padding:12px 14px;background:${bg};border-radius:9px">
-        <div style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:${c};color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">${n}</div>
-        <div><div style="font-size:13px;font-weight:700;color:var(--text)">${t} <span style="font-size:11px;color:var(--text-3);font-weight:400">${sub}</span></div><div style="font-size:12px;color:var(--text-2);margin-top:3px;line-height:1.6">${d}</div></div>
-      </div>`).join('')}
-    </div>
-  </div>
-</div>
-
-<!-- 投資本質自問 -->
-<div class="card card-purple">
-  <div class="card-header"><span class="card-title">🪞 投資的本質——問問自己</span></div>
-  <div class="card-body">
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">投資不是「研究股票」，是「了解自己」。</div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      ${[
-        ['我會在恐慌時賣嗎？','管好情緒'],
-        ['我會在熱潮時追嗎？','守住紀律'],
-        ['我能堅持十年不動嗎？','長期視野'],
-        ['我會被「快速致富」誘惑嗎？','自我覺察'],
-      ].map(([q,tag])=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--purple-bg);border-radius:7px">
-        <span style="color:var(--purple);font-weight:700;font-size:13px;flex:1">${q}</span>
-        <span style="font-size:11px;padding:2px 9px;border-radius:12px;background:var(--purple);color:white;font-weight:700;flex-shrink:0">${tag}</span>
-      </div>`).join('')}
-    </div>
-    <div style="margin-top:12px;padding:11px 14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--text-2);line-height:1.7;text-align:center">
-      這些都不是股票知識——是自我修煉。<br>而我天生就有走這條路的潛力，只要不被自己的陷阱絆倒。
-    </div>
-  </div>
-</div>
-
-<!-- 推薦書單 -->
-<div class="card">
-  <div class="card-header"><span class="card-title">📚 先讀這幾本（2026.8前只學不動）</span></div>
-  <div class="card-body">
-    ${['《漫步華爾街》——指數投資最經典','《投資金律》——資產配置入門','《不被淘汰的勇氣》——長期投資心態','Mr. Market 先生（部落格）','綠角財經筆記（部落格）'].map(b=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-2)"><span style="color:var(--orange);flex-shrink:0">📖</span>${b}</div>`).join('')}
-  </div>
-</div>
-
-</div>
-</div>
-`;
-}
-
-// ══════════════════════════════════════════════
-// 關於房子
-// ══════════════════════════════════════════════
-function renderHouse(){
-  document.getElementById('houseContent').innerHTML=`
-<div class="section-title">🏠 關於房子</div>
-<div class="section-sub">我會有自己的房子，但不是現在。這是給未來的自己的行動指南。</div>
-
-<!-- 核心結論 -->
-<div style="background:linear-gradient(135deg,var(--orange-bg),#FFF8F0);border:2px solid var(--orange-light);border-radius:12px;padding:20px 24px;margin-bottom:20px">
-  <div style="font-family:var(--serif);font-size:16px;color:var(--accent-dark);line-height:2;margin-bottom:0">
-    「我會有自己的房子，但不是現在。<br>
-    先存錢、先累積、先成為真正的自己。<br>
-    等我內在篤定、事業綻放的那天，<br>
-    對的房子自然會出現，而我會一眼認出它。<br>
-    <strong>不要急。時間到了，它會來。</strong>」
-  </div>
-</div>
-
-<div class="grid-2">
-<!-- 左欄 -->
-<div>
-
-<!-- 時機地圖 -->
-<div class="card card-green">
-  <div class="card-header"><span class="card-title">📅 買房時機地圖</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-
-      <div style="border-radius:9px;overflow:hidden;border:2px solid var(--red-light)">
-        <div style="padding:11px 15px;background:var(--red-bg);display:flex;align-items:center;gap:10px">
-          <div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0"></div>
-          <div>
-            <div style="font-size:11px;color:var(--red);font-weight:700;margin-bottom:2px">⚠️ 現在 – 今年8月</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text)">絕對不要買</div>
-          </div>
-        </div>
-        <div style="padding:10px 15px;background:var(--white);font-size:13px;color:var(--text-2);line-height:1.7">能量轉換期，這時做的重大決定容易後悔。房貸是20-30年的事，現在綁住自己會困住未來的我。</div>
-      </div>
-
-      <div style="border-radius:9px;overflow:hidden;border:1.5px solid var(--red-light)">
-        <div style="padding:11px 15px;background:var(--red-bg);display:flex;align-items:center;gap:10px">
-          <div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0"></div>
-          <div>
-            <div style="font-size:11px;color:var(--red);font-weight:700;margin-bottom:2px">⚠️ 35–38 歲</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text)">不建議買・守住資金</div>
-          </div>
-        </div>
-        <div style="padding:10px 15px;background:var(--white);font-size:13px;color:var(--text-2);line-height:1.7">人生最大考驗期，經濟和關係都被檢驗，房市可能在高點。容易買貴、還貸壓力最大。任務是「守住已有的」，不是「背新的負債」。</div>
-      </div>
-
-      <div style="border-radius:9px;overflow:hidden;border:1.5px solid var(--gold-light)">
-        <div style="padding:11px 15px;background:var(--gold-bg);display:flex;align-items:center;gap:10px">
-          <div style="width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0"></div>
-          <div>
-            <div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:2px">🟡 38–40 歲</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text)">次佳時機・可以考慮</div>
-          </div>
-        </div>
-        <div style="padding:10px 15px;background:var(--white);font-size:13px;color:var(--text-2);line-height:1.7">經濟基礎已穩，判斷力成熟。如果遇到「真心喜歡、價格合理、地點完美」的房子，可以認真考慮。</div>
-      </div>
-
-      <div style="border-radius:9px;overflow:hidden;border:2px solid var(--green-light)">
-        <div style="padding:11px 15px;background:var(--green-bg);display:flex;align-items:center;gap:10px">
-          <div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
-          <div>
-            <div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:2px">⭐ 41–44 歲</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text)">最佳時機・等這個時間</div>
-          </div>
-        </div>
-        <div style="padding:10px 15px;background:var(--white);font-size:13px;color:var(--text-2);line-height:1.7">事業綻放、經濟最穩、內在最篤定的時期。這時出現的房子，會是「一走進去就覺得回家」的那種。我會買到對的房子。</div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- 我會住什麼樣的房子 -->
-<div class="card card-orange">
-  <div class="card-header"><span class="card-title">🌿 命盤顯示我會住的房子</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${[
-        ['🎨','美的家，不是投資的房','重視美感・舒適・有儀式感的空間。以「自住、好住、養得起感情」為核心。不追市場、不貪價差。'],
-        ['🏛️','老屋翻新或有故事的房子','被有歷史感、有溫度、能讓我「親手把它變成自己樣子」的房子吸引，而不是冷冰冰的全新建案。'],
-        ['✨','家 + 美學空間一體','很有可能是樓下做沐蜜、樓上住，或前面工作後面住。我的家會是我的能量場，不只是住的地方。'],
-        ['🌿','南部或有自然感的郊區','需要有光・有空氣・安靜・有空間感的環境。台南、南部，或有自然感的郊區，最合我。'],
-      ].map(([e,t,d])=>'<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">'
-        +'<span style="font-size:22px;flex-shrink:0">'+e+'</span>'
-        +'<div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">'+t+'</div>'
-        +'<div style="font-size:13px;color:var(--text-2);line-height:1.6">'+d+'</div></div></div>').join('')}
-    </div>
-  </div>
-</div>
-
-<!-- 關於現在住的家 -->
-<div class="card card-teal">
-  <div class="card-header"><span class="card-title">💭 關於我現在租的這個家</span></div>
-  <div class="card-body">
-    <div style="font-size:14px;color:var(--text-2);line-height:1.85;margin-bottom:14px">
-      我很愛現在這個家，氣場很像我。但要記得：<br><br>
-      <strong style="color:var(--teal)">讓這個家「像我」的，是我用心生活的能力，不是這棟建築本身。</strong><br><br>
-      我走到哪裡，都會把那裡養成「像我的家」。這個能力跟著我走，不會因為搬家而消失。
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <div style="padding:10px 14px;background:var(--teal-bg);border-radius:8px;border-left:3px solid var(--teal);font-size:13px;color:var(--text-2);line-height:1.7">
-        <strong>如果想買現在這間：</strong>第一步不是算命，是「直接問房東賣不賣」。這一個問題的答案，比任何分析都準。
-      </div>
-      <div style="padding:10px 14px;background:var(--blue-bg);border-radius:8px;border-left:3px solid var(--blue);font-size:13px;color:var(--text-2);line-height:1.7">
-        <strong>如果房東願意賣但還沒準備好：</strong>談「長約 + 未來優先承購權」，先繼續住、保留以後買的權利。
-      </div>
-      <div style="padding:10px 14px;background:var(--green-bg);border-radius:8px;border-left:3px solid var(--green);font-size:13px;color:var(--text-2);line-height:1.7">
-        <strong>如果買不到：</strong>不要怕。我會在下一個地方，再養出一個一樣有溫度的家。
-      </div>
-    </div>
-    <div style="margin-top:14px;padding:12px 14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--text-3);font-style:italic;line-height:1.7">
-      我害怕的不是「失去這間房」，是「失去家的感覺」——而那個感覺是我給的，不是房子給的。
-    </div>
-  </div>
-</div>
-
-</div>
-
-<!-- 右欄 -->
-<div>
-
-<!-- 絕對紅線 -->
-<div class="card card-red">
-  <div class="card-header"><span class="card-title">🚫 絕對紅線（無論何時都要守）</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${[
-        ['不跟伴侶共同貸款買房','無論我多愛這個人——房子登記在我自己名下、我自己貸款、所有權和決定權都是我的。伴侶可以幫忙出生活費還貸，但不能共同持有、共同貸款。這是底線，沒有例外。'],
-        ['不用投資思維買房','不為了賺價差、不為了出租、不為了「以後會漲」而買。只有一個標準：我自己100%想住、願意住十年以上。'],
-        ['不借錢付頭期款・不槓桿','頭期款要用自己存的錢，不借錢付頭期。永遠用閒錢，不背超過收入三分之一的房貸。'],
-        ['不為了「應該」而買','別人都有房了、年紀到了、不買就買不到了——這些話術不適用於我。房子是我成為自己之後的結果，不是證明我成功的工具。'],
-      ].map(([t,d])=>'<div style="padding:12px 14px;border-radius:8px;background:var(--red-bg);border-left:3px solid var(--red)">'
-        +'<div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:5px">🚫 '+t+'</div>'
-        +'<div style="font-size:13px;color:var(--text-2);line-height:1.7">'+d+'</div></div>').join('')}
-    </div>
-  </div>
-</div>
-
-<!-- 現在到買房前該做的事 -->
-<div class="card card-blue">
-  <div class="card-header"><span class="card-title">✅ 現在到買房前，我該做的</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:9px">
-      ${[
-        ['1','先存緊急儲備金（最優先）','存到6-12個月生活費。這比存買房基金更優先。沒有緊急金，不要碰買房。','var(--green)','var(--green-bg)'],
-        ['2','每月固定存「買房基金」','就算每月只存幾千塊，重點是養成習慣。從35歲開始累積，到41歲就會夠。','var(--blue)','var(--blue-bg)'],
-        ['3','不要急著研究房市・看房','現在看新聞只會打亂判斷。慢慢收集「我喜歡什麼樣的空間」的感覺就好。我的時間還沒到。','var(--orange)','var(--orange-bg)'],
-        ['4','35-38歲考驗期：守住資金','這段時間的任務只有一個——不要虧・不要被「房價要漲」嚇到・守住累積的錢。','var(--red)','var(--red-bg)'],
-      ].map(([n,t,d,c,bg])=>'<div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:'+bg+';border-radius:8px">'
-        +'<div style="flex-shrink:0;width:26px;height:26px;border-radius:50%;background:'+c+';color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">'+n+'</div>'
-        +'<div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">'+t+'</div>'
-        +'<div style="font-size:12px;color:var(--text-2);line-height:1.6">'+d+'</div></div></div>').join('')}
-    </div>
-  </div>
-</div>
-
-<!-- 自問清單 -->
-<div class="card card-purple">
-  <div class="card-header"><span class="card-title">🔍 買房前自問清單</span></div>
-  <div class="card-body">
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">在你想要買房的那一刻，先問自己這幾個問題：</div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      ${[
-        '我是因為「真心想住」還是「應該要有房」而想買？',
-        '我現在的財務狀況穩定嗎？緊急儲備金夠嗎？',
-        '這個房子是登記在我自己名下、我自己貸款嗎？',
-        '我是用閒錢買，還是需要借錢付頭期款？',
-        '我能接受住這裡超過十年嗎？',
-        '這是我100%想住的地方，還是「感覺合理」而已？',
-        '我的事業和收入夠穩定，承擔得起這筆房貸嗎？',
-      ].map((q,i)=>'<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:var(--purple-bg);border-radius:7px">'
-        +'<span style="color:var(--purple);font-weight:700;flex-shrink:0;font-size:13px">Q'+( i+1)+'</span>'
-        +'<span style="font-size:13px;color:var(--text-2);line-height:1.5">'+q+'</span></div>').join('')}
-    </div>
-    <div style="margin-top:12px;padding:11px 14px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--text-3);line-height:1.7;text-align:center">
-      如果有任何一題答案讓你猶豫——<br>先不要行動。答案清晰了再說。
-    </div>
-  </div>
-</div>
-
-</div>
-</div>
-`;
-}
-
-// ══════════════════════════════════════════════
-// 現在 → 2026.8
-// ══════════════════════════════════════════════
-function renderNow826(){
-  document.getElementById('now826Content').innerHTML=`
-<div class="section-title">🧭 現在 → 2026.8 行動導覽</div>
-<div class="section-sub">這三個月是「結帳期＋準備期」，不是擴張期。策略只有一個字：守。</div>
-
-<!-- 核心結論 -->
-<div style="background:linear-gradient(135deg,var(--orange-bg),#FFF8F0);border:2px solid var(--orange-light);border-radius:12px;padding:20px 24px;margin-bottom:20px">
-  <div style="font-family:var(--serif);font-size:15px;color:var(--accent-dark);line-height:2.1">
-    「這三個月不是要我衝，是要我穩。<br>
-    守住自己、清理舊帳、準備好——<br>
-    <strong>穩住的人，才能在 8 月之後真正起飛。</strong><br>
-    三個月的等待，換來接下來十年的對的方向。」
-  </div>
-</div>
-
-<!-- 先有心理準備 -->
-<div style="background:var(--blue-bg);border:1px solid var(--blue-light);border-radius:10px;padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start">
-  <span style="font-size:24px;flex-shrink:0">💭</span>
-  <div>
-    <div style="font-size:14px;font-weight:700;color:var(--blue);margin-bottom:8px">這段時間可能會有這些感受（都是正常的）</div>
-    <div style="font-size:13px;color:var(--text-2);line-height:1.85">心情煩躁・容易失眠・對現狀不滿但說不出哪裡不滿・舊的人事物突然冒出來・跟身邊的人有些摩擦・身體有些小警訊・「想突破但不知道怎麼動」的卡感。<br><br>
-    <strong style="color:var(--blue)">但同時：</strong>就算內在很亂，我的工作和收入依然穩定、客人依然會預約我。我的事業底層很強，內在的亂動搖不了我天生的氣場和手藝。可以放心。</div>
-  </div>
-</div>
-
-<div class="grid-2">
-<!-- 左欄 -->
-<div>
-
-<!-- 該做的事 -->
-<div class="card card-green">
-  <div class="card-header"><span class="card-title">✅ 這三個月該做的事</span></div>
-  <div class="card-body">
-
-    <div style="margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:var(--text-2);letter-spacing:.05em;margin-bottom:9px">◇ 先顧好自己</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        ${['守住作息：固定早睡早起・早晨運動（這是接下來十六年的根基，不要因為任何事打破它）','每週留一次「我的時間」至少兩小時，誰都不能打擾，做自己想做的事','完成一次完整健康檢查（女性相關・乳房・甲狀腺・血液），不要省這筆錢'].map(t=>`<div style="display:flex;align-items:flex-start;gap:9px;padding:9px 12px;background:var(--green-bg);border-radius:7px;font-size:13px;color:var(--text-2)"><span style="color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px">✓</span><span>${t}</span></div>`).join('')}
-      </div>
-    </div>
-
-    <div style="margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:var(--text-2);letter-spacing:.05em;margin-bottom:9px">○ 守住家庭邊界</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        ${['前夫家的事處理乾淨：教育費守住協議・不回應越界訊息・必要時諮詢律師','跟伴侶財務界線清楚：各自獨立帳戶＋共同分攤，不開共同帳戶・不承諾大筆共財','每週留 1-2 小時單獨陪孩子，純粹陪伴，不指導不糾正'].map(t=>`<div style="display:flex;align-items:flex-start;gap:9px;padding:9px 12px;background:var(--green-bg);border-radius:7px;font-size:13px;color:var(--text-2)"><span style="color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px">✓</span><span>${t}</span></div>`).join('')}
-      </div>
-    </div>
-
-    <div style="margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:var(--text-2);letter-spacing:.05em;margin-bottom:9px">● 事業：不擴張，先深化</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        ${['每週寫一段公開內容（不講療效，寫氛圍・觀點・生活・美學，替未來的品牌暖身）','每次服務後寫幾行觀察筆記，累積未來的素材','每週花半小時想「沐蜜的核心理念」，慢慢寫下來','霧眉霧唇趁這段時間密集練習・衝作品'].map(t=>`<div style="display:flex;align-items:flex-start;gap:9px;padding:9px 12px;background:var(--green-bg);border-radius:7px;font-size:13px;color:var(--text-2)"><span style="color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px">✓</span><span>${t}</span></div>`).join('')}
-      </div>
-    </div>
-
-    <div>
-      <div style="font-size:12px;font-weight:700;color:var(--text-2);letter-spacing:.05em;margin-bottom:9px">◉ 財務：建立緩衝</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        ${['個人帳戶獨立清楚，事業收入全進自己名下','開始存緊急儲備金，目標 6-12 個月生活費','每天記帳三分鐘，特別留意「情緒性消費」和「為了人設的支出」'].map(t=>`<div style="display:flex;align-items:flex-start;gap:9px;padding:9px 12px;background:var(--green-bg);border-radius:7px;font-size:13px;color:var(--text-2)"><span style="color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px">✓</span><span>${t}</span></div>`).join('')}
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- 月份節奏 -->
-<div class="card card-blue">
-  <div class="card-header"><span class="card-title">📅 月份節奏</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${[
-        ['5月（這個月）','🌊','清掃舊能量','衝擊感最強，容易煩躁失眠。重點是穩住自己，不被牽動。','處理前夫家的事・預約健康檢查・開始每天三句日記','var(--blue)','var(--blue-bg)','var(--blue-light)'],
-        ['6月','🌿','沉澱思考','能量稍緩，適合內在整理。','寫「沐蜜核心理念」初稿・完成健康檢查・跟伴侶有一次「我們未來怎麼走」的真實對話','var(--teal)','var(--teal-bg)','var(--teal-light)'],
-        ['7月','🌀','放空等待','過渡前的臨界期，會覺得「卡住、沒方向」——這是正常的轉換徵兆，不要急著突破。','給自己 2-3 天獨處或短旅行・整理一個空間・把過去的「未完成感」寫下來放下','var(--purple)','var(--purple-bg)','var(--purple-light)'],
-        ['8月（最關鍵）','✨','迎接新階段','8月上中旬：能量斷層期，無為最好，多睡・多獨處・多安靜。8月下旬：新階段啟動，前後會感覺到能量轉換。月底：感受新方向浮現，仍不急著決定。','不做重大決定・多睡覺・多獨處・多安靜・感受新方向浮現','var(--gold)','var(--gold-bg)','var(--gold-light)'],
-      ].map(([mo,e,theme,feel,tasks,c,bg,bdr])=>`<div style="border-radius:9px;overflow:hidden;border:1.5px solid ${bdr}">
-        <div style="padding:10px 14px;background:${bg};display:flex;align-items:center;gap:10px">
-          <span style="font-size:20px">${e}</span>
-          <div><div style="font-size:11px;color:${c};font-weight:700;margin-bottom:2px">${mo}</div><div style="font-size:13px;font-weight:700;color:var(--text)">${theme}</div></div>
-        </div>
-        <div style="padding:10px 14px;background:var(--white)">
-          <div style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:8px">${feel}</div>
-          <div style="font-size:12px;font-weight:700;color:${c};margin-bottom:4px">任務</div>
-          <div style="font-size:12px;color:var(--text-2);line-height:1.7">${tasks}</div>
-        </div>
-      </div>`).join('')}
-    </div>
-  </div>
-</div>
-
-</div>
-
-<!-- 右欄 -->
-<div>
-
-<!-- 最少做這五件 -->
-<div class="card card-gold">
-  <div class="card-header"><span class="card-title">⭐ 最少做這五件（做到就及格）</span></div>
-  <div class="card-body">
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">如果覺得太多，至少把這五件做到。</div>
-    <div style="display:flex;flex-direction:column;gap:9px">
-      ${[
-        ['🏥','完整健康檢查一次','這幾個月內完成','最優先'],
-        ['🌙','守住早睡早起作息','每天'],
-        ['🔒','前夫家邊界守住＋必要時諮詢律師','6月底前','重要'],
-        ['🚫','不做任何重大新承諾','守到8月底'],
-        ['✍️','每週寫一段公開內容','每週一次'],
-      ].map(([e,t,d,tag])=>`<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--gold-bg);border-radius:8px;border:1px solid var(--gold-light)">
-        <span style="font-size:22px;flex-shrink:0">${e}</span>
-        <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text)">${t}</div><div style="font-size:12px;color:var(--text-3);margin-top:2px">${d}</div></div>
-        ${tag?`<span style="font-size:11px;padding:2px 9px;border-radius:12px;background:var(--red-bg);color:var(--red);font-weight:700;flex-shrink:0">${tag}</span>`:''}
-      </div>`).join('')}
-    </div>
-  </div>
-</div>
-
-<!-- 絕對不要做 -->
-<div class="card card-red">
-  <div class="card-header"><span class="card-title">🚫 絕對不要做的事</span></div>
-  <div class="card-body">
-    <div style="margin-bottom:14px">
-      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:9px;letter-spacing:.04em">重大決定（一律暫緩到8月後）</div>
-      <div style="display:flex;flex-wrap:wrap;gap:7px">
-        ${['不結婚/同居升級','不生育','不營業登記','不簽長租約','不大筆投資','不借錢給人','不跟伴侶共開帳戶','不答應前夫家越界要求','不去別的公司上班'].map(t=>`<span style="padding:5px 12px;border-radius:16px;background:var(--red-bg);border:1px solid var(--red-light);font-size:12px;font-weight:700;color:var(--red)">✗ ${t}</span>`).join('')}
-      </div>
-    </div>
-    <div>
-      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:9px;letter-spacing:.04em">行為</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        ${['不熬夜','不為了「不讓人失望」而答應自己不想做的事','不在情緒不好時衝動消費','不進入不必要的衝突和爭執'].map(t=>`<div style="padding:8px 12px;background:var(--red-bg);border-radius:7px;font-size:13px;color:var(--red);font-weight:500">✗ ${t}</div>`).join('')}
-      </div>
-    </div>
-    <div style="margin-top:12px;padding:10px 14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--text-2);line-height:1.7;text-align:center;font-style:italic">
-      任何「20-30年的長期承諾」「不能反悔的大決定」，這三個月一律暫緩。<br>等8月後能量穩定，再用「新版本的我」去決定。
-    </div>
-  </div>
-</div>
-
-<!-- 焦慮時的提醒 -->
-<div class="card card-purple">
-  <div class="card-header"><span class="card-title">💭 當我又開始焦慮・想衝動做決定時</span></div>
-  <div class="card-body">
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">提醒自己這幾句話：</div>
-    <div style="display:flex;flex-direction:column;gap:9px">
-      ${[
-        '不急。不解決也是一種解決。我可以慢慢來。',
-        '這件事是真的存在，但它不是緊急的，不是現在要處理的。',
-        '我有時間，我有力量，我會在對的時候做對的選擇。',
-      ].map(t=>`<div style="padding:11px 14px;background:var(--purple-bg);border-radius:8px;font-family:var(--serif);font-size:14px;color:var(--purple);line-height:1.7;border-left:3px solid var(--purple-light)">${t}</div>`).join('')}
-    </div>
-  </div>
-</div>
-
-</div>
-</div>
-`;
-}
-
-// ══════════════════════════════════════════════
-// 初始化
-// ══════════════════════════════════════════════
-function renderAll(){
-  const activePage=document.querySelector('.page.active');
-  if(!activePage)return;
-  const pid=activePage.id.replace('pg-','');
-  if(pid==='today')renderToday();
-  else if(pid==='week')renderWeek();
-  else if(pid==='month')renderMonth();
-  else if(pid==='goals')renderGoals();
-  else if(pid==='journal')renderJournals();
-  else if(pid==='book')renderBooks();
-  else if(pid==='stock'){renderStocks();renderStockStat();}
-  else if(pid==='service')renderSvcs();
-  else if(pid==='ideas')renderIdeas();
-}
-
-window.addEventListener('load',()=>{
-  const ttl0=document.getElementById('topTitle'); if(ttl0) ttl0.innerHTML='🏠 日計劃';
-  renderToday();
-  loadCloud();
-});
-// 頁面關閉前強制存本地
-window.addEventListener('beforeunload',()=>saveLocal());
-
-</script>
-</body>
-</html>
+>
