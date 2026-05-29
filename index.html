@@ -1185,6 +1185,7 @@ body{
 
 
 
+
 // ══════════════════════════════════════════════
 // 資料層 - 永遠先本地，再同步雲端
 // ══════════════════════════════════════════════
@@ -1953,596 +1954,522 @@ let themeFilter='all';
 // ══════════════════════════════════════════════
 // 完整交易復盤系統
 // ══════════════════════════════════════════════
-let reviewData = {}; // 目前編輯中的復盤
+let reviewData = {};
 let reviewEditId = null;
+let rvEntryCount = 1;
+let rvExitCount  = 1;
+let rvWSCount    = 1;
+let rvFSCount    = 1;
+let rvImpCount   = 1;
+let rvAbCount    = 1;
+let rvNACount    = 1;
 
 function renderReviewPage(){
-  const el = document.getElementById('reviewContent');
+  var el = document.getElementById('reviewContent');
   if(!el) return;
   if(!D.reviews) D.reviews = [];
-  const hasList = D.reviews.length > 0;
-  const listHTML = hasList
-    ? D.reviews.map(rv => reviewListCard(rv)).join('')
-    : '<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">還沒有復盤記錄<br>點「＋ 新增復盤」開始第一次復盤</div></div>';
-  el.innerHTML =
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">'
-    +'<div><div style="font-family:var(--serif);font-size:18px;font-weight:700">📊 完整交易復盤</div>'
-    +'<div style="font-size:13px;color:var(--text-3);margin-top:3px">每完成一筆交易，做一次完整復盤・這是散戶進化最快的方式</div></div>'
-    +'<button class="btn btn-primary" onclick="startNewReview()">＋ 新增復盤</button></div>'
-    +'<div id="reviewListArea">'+listHTML+'</div>'
-    +'<div id="reviewFormArea" style="display:none"></div>';
+  var html = '';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">';
+  html += '<div><div style="font-family:var(--serif);font-size:18px;font-weight:700">📊 完整交易復盤</div>';
+  html += '<div style="font-size:13px;color:var(--text-3);margin-top:3px">每完成一筆交易做一次完整復盤・這是散戶進化最快的方式</div></div>';
+  html += '<button class="btn btn-primary" onclick="startNewReview()">＋ 新增復盤</button></div>';
+  if(D.reviews.length === 0){
+    html += '<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">還沒有復盤記錄<br>點「＋ 新增復盤」開始第一次復盤</div></div>';
+  } else {
+    D.reviews.forEach(function(rv){
+      var pnl = parseFloat(rv.totalPnl)||0;
+      var pnlC = pnl>0?'var(--green)':pnl<0?'var(--red)':'var(--text-3)';
+      html += '<div class="record" style="padding:0;overflow:hidden;margin-bottom:12px">';
+      html += '<div style="padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">';
+      html += '<div style="flex:1"><div style="font-family:var(--serif);font-size:16px;font-weight:700">' + (rv.stockName||'—') + '</div>';
+      html += '<div style="font-size:12px;color:var(--text-3);margin-top:2px">' + (rv.entryDate||'') + ' → ' + (rv.exitDate||'') + (rv.holdDays?' ・ 持有'+rv.holdDays+'天':'') + '</div></div>';
+      if(pnl!==0) html += '<span style="font-size:18px;font-weight:700;color:'+pnlC+'">'+(pnl>0?'+':'')+Math.round(pnl).toLocaleString()+'元</span>';
+      if(rv.returnRate) html += '<span style="padding:3px 10px;border-radius:10px;font-size:12px;font-weight:700;background:'+(pnl>0?'var(--green-bg)':'var(--red-bg)')+';color:'+pnlC+'">'+rv.returnRate+'%</span>';
+      html += '<button class="btn btn-ghost btn-sm" onclick="editReview('+rv.id+')">✏️ 編輯</button>';
+      html += '<button class="btn-icon" onclick="delReview('+rv.id+')">✕</button>';
+      html += '</div>';
+      if(rv.summary){
+        html += '<div style="padding:10px 16px;border-top:1px solid var(--border);font-size:13px;color:var(--text-2);font-style:italic">' + rv.summary + '</div>';
+      }
+      html += '</div>';
+    });
+  }
+  el.innerHTML = html;
 }
-
-function reviewListCard(rv){
-  const pnl = parseFloat(rv.totalPnl)||0;
-  const pnlC = pnl>0?'var(--green)':pnl<0?'var(--red)':'var(--text-3)';
-  return `<div class="record" style="padding:0;overflow:hidden;margin-bottom:12px">
-    <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;flex-wrap:wrap" onclick="toggleReviewCard('rvcard_${rv.id}')">
-      <div style="flex:1">
-        <div style="font-family:var(--serif);font-size:16px;font-weight:700">${rv.stockName||'—'}</div>
-        <div style="font-size:12px;color:var(--text-3);margin-top:2px">${rv.entryDate||''} → ${rv.exitDate||''} ・ 持有${rv.holdDays||'?'}天</div>
-      </div>
-      ${pnl!==0?`<span style="font-size:18px;font-weight:700;color:${pnlC}">${pnl>0?'+':''}${Math.round(pnl).toLocaleString()}元</span>`:''}
-      ${rv.returnRate?`<span style="padding:3px 10px;border-radius:10px;font-size:12px;font-weight:700;background:${pnl>0?'var(--green-bg)':'var(--red-bg)'};color:${pnlC}">${rv.returnRate}%</span>`:''}
-      <div style="display:flex;gap:6px">
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();editReview(${rv.id})">✏️ 編輯</button>
-        <button class="btn-icon" onclick="event.stopPropagation();delReview(${rv.id})">✕</button>
-      </div>
-    </div>
-    <div id="rvcard_${rv.id}" style="display:none;border-top:1px solid var(--border);padding:14px 16px">
-      ${rv.successFormula?`<div style="font-size:12px;color:var(--text-3);margin-bottom:4px">成功公式</div><div style="font-size:13px;color:var(--text-2);margin-bottom:12px">${rv.successFormula}</div>`:''}
-      ${rv.summary?`<div style="padding:10px 13px;background:var(--orange-bg);border-radius:8px;font-size:13px;color:var(--accent-dark);font-family:var(--serif)">${rv.summary}</div>`:''}
-    </div>
-  </div>`;
-}
-function toggleReviewCard(id){const el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'block':'none';}
 
 function startNewReview(){
   reviewEditId = null;
+  rvEntryCount=1; rvExitCount=1; rvWSCount=1; rvFSCount=1; rvImpCount=1; rvAbCount=1; rvNACount=1;
   reviewData = {
     id: uid(),
-    entries: [{date:'',price:'',qty:'',unit:'share'}],
-    exits:   [{date:'',price:'',qty:'',unit:'share',pnl:''}],
-    whySuccess: [{myDid:'',teachPoint:''}],
-    formulaSteps: [{label:'',desc:''}],
-    improvements: [{fact:'',nextTime:'',conclusion:''}],
-    abilities: [{name:'',desc:''}],
-    nextActions: [''],
-    reminders: ['','',''],
+    stockName:'', mood:'',
+    entries:[{date:'',price:'',qty:'',unit:'share'}],
+    exits:[{date:'',price:'',qty:'',unit:'share'}],
+    whySuccess:[{myDid:'',teachPoint:''}],
+    formulaSteps:[{label:'',desc:''}],
+    failExtra:'',
+    improvements:[{fact:'',nextTime:'',conclusion:''}],
+    abilities:[{name:'',desc:''}],
+    truth1:'', truth2:'', truth3:'',
+    nextActions:[''],
+    reminders:['','',''],
+    summary:'',
+    totalPnl:0, returnRate:0, holdDays:'', entryDate:'', exitDate:'',
+    autoAnalysis:''
   };
   renderReviewForm();
 }
+
 function editReview(rid){
-  const rv = (D.reviews||[]).find(r=>r.id===rid);
+  var rv = (D.reviews||[]).find(function(r){return r.id===rid;});
   if(!rv) return;
   reviewEditId = rid;
   reviewData = JSON.parse(JSON.stringify(rv));
-  // 確保有必要的陣列
   if(!reviewData.entries||!reviewData.entries.length) reviewData.entries=[{date:'',price:'',qty:'',unit:'share'}];
-  if(!reviewData.exits||!reviewData.exits.length)   reviewData.exits=[{date:'',price:'',qty:'',unit:'share',pnl:''}];
+  if(!reviewData.exits||!reviewData.exits.length) reviewData.exits=[{date:'',price:'',qty:'',unit:'share'}];
   if(!reviewData.whySuccess||!reviewData.whySuccess.length) reviewData.whySuccess=[{myDid:'',teachPoint:''}];
   if(!reviewData.formulaSteps||!reviewData.formulaSteps.length) reviewData.formulaSteps=[{label:'',desc:''}];
   if(!reviewData.improvements||!reviewData.improvements.length) reviewData.improvements=[{fact:'',nextTime:'',conclusion:''}];
   if(!reviewData.abilities||!reviewData.abilities.length) reviewData.abilities=[{name:'',desc:''}];
   if(!reviewData.nextActions||!reviewData.nextActions.length) reviewData.nextActions=[''];
   if(!reviewData.reminders||reviewData.reminders.length<3) reviewData.reminders=['','',''];
+  rvEntryCount=reviewData.entries.length;
+  rvExitCount=reviewData.exits.length;
+  rvWSCount=reviewData.whySuccess.length;
+  rvFSCount=reviewData.formulaSteps.length;
+  rvImpCount=reviewData.improvements.length;
+  rvAbCount=reviewData.abilities.length;
+  rvNACount=reviewData.nextActions.length;
   renderReviewForm();
 }
+
 function delReview(rid){
   if(!confirm('確定要刪除這筆復盤？')) return;
-  D.reviews = (D.reviews||[]).filter(r=>r.id!==rid);
+  D.reviews=(D.reviews||[]).filter(function(r){return r.id!==rid;});
   sv(); renderReviewPage(); toast('已刪除');
 }
 
+function cancelReview(){
+  reviewEditId=null; reviewData={};
+  renderReviewPage();
+}
+
 function renderReviewForm(){
-  const rc = document.getElementById('reviewContent');
-  if(!rc) return;
-  // 確保清單區隱藏
-  const listArea = document.getElementById('reviewListArea');
-  const formArea = document.getElementById('reviewFormArea');
-  if(listArea) listArea.style.display='none';
-  if(formArea){
-    formArea.style.display='block';
-    formArea.innerHTML = buildReviewForm();
-  } else {
-    // reviewFormArea 不存在，直接整個替換
-    rc.innerHTML = '<div id="reviewFormArea">' + buildReviewForm() + '</div>';
+  var el = document.getElementById('reviewContent');
+  if(!el){ console.error('reviewContent not found'); return; }
+  var rv = reviewData;
+  var html = '';
+
+  // 頂部
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">';
+  html += '<div style="font-family:var(--serif);font-size:17px;font-weight:700">📊 '+(reviewEditId?'編輯':'新增')+'完整復盤</div>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="cancelReview()">← 返回清單</button></div>';
+
+  // ─── 第一區塊：戰績總覽 ───
+  html += '<div class="card card-blue" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">🏆 第一區塊：戰績總覽</span></div>';
+  html += '<div class="card-body">';
+  html += '<div class="form-row c2">';
+  html += '<div class="form-group"><label class="label">股票名稱/代號</label><input type="text" class="input" id="rv_stockName" value="'+(rv.stockName||'')+'" placeholder="例：2472 立隆電" oninput="rvCalc()"></div>';
+  html += '<div class="form-group"><label class="label">進場心理</label><input type="text" class="input" id="rv_mood" value="'+(rv.mood||'')+'" placeholder="冷靜分析・FOMO..."></div>';
+  html += '</div>';
+
+  // 進場記錄
+  html += '<div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px">📥 進場記錄（可分批）</div>';
+  html += '<div id="rv_entryRows">';
+  for(var i=0;i<rvEntryCount;i++){
+    var e = rv.entries[i]||{date:'',price:'',qty:'',unit:'share'};
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:flex-end;margin-bottom:10px">';
+    html += '<div><label class="label">進場日'+(rvEntryCount>1?' 第'+(i+1)+'批':'')+'</label><input type="date" class="input" id="rv_ed'+i+'" value="'+(e.date||'')+'"></div>';
+    html += '<div><label class="label">進場價（元）</label><input type="number" class="input" id="rv_ep'+i+'" value="'+(e.price||'')+'" placeholder="0" oninput="rvCalc()"></div>';
+    html += '<div><label class="label">數量</label><div style="display:flex;gap:4px"><input type="number" class="input" id="rv_eq'+i+'" value="'+(e.qty||'')+'" placeholder="0" oninput="rvCalc()" style="flex:1"><select class="select" id="rv_eu'+i+'" style="width:56px;flex-shrink:0" onchange="rvCalc()">';
+    html += '<option value="share"'+(e.unit==='share'?' selected':'')+'>股</option><option value="lot"'+(e.unit==='lot'?' selected':'')+'>張</option></select></div></div>';
+    html += '<div>'+(i>0?'<button class="btn btn-ghost btn-sm" onclick="rvRemoveEntry('+i+')" style="color:var(--red)">移除</button>':'')+'</div>';
+    html += '</div>';
   }
-  window.scrollTo({top:0,behavior:'smooth'});
+  html += '</div>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="rvAddEntry()" style="margin-bottom:16px;border-style:dashed">＋ 新增一批進場</button>';
+
+  // 出場記錄
+  html += '<div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px">📤 出場記錄（可分批）</div>';
+  html += '<div id="rv_exitRows">';
+  for(var j=0;j<rvExitCount;j++){
+    var ex = rv.exits[j]||{date:'',price:'',qty:'',unit:'share'};
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:flex-end;margin-bottom:10px">';
+    html += '<div><label class="label">出場日'+(rvExitCount>1?' 第'+(j+1)+'批':'')+'</label><input type="date" class="input" id="rv_xd'+j+'" value="'+(ex.date||'')+'"></div>';
+    html += '<div><label class="label">出場價（元）</label><input type="number" class="input" id="rv_xp'+j+'" value="'+(ex.price||'')+'" placeholder="0" oninput="rvCalc()"></div>';
+    html += '<div><label class="label">數量</label><div style="display:flex;gap:4px"><input type="number" class="input" id="rv_xq'+j+'" value="'+(ex.qty||'')+'" placeholder="0" oninput="rvCalc()" style="flex:1"><select class="select" id="rv_xu'+j+'" style="width:56px;flex-shrink:0" onchange="rvCalc()">';
+    html += '<option value="share"'+(ex.unit==='share'?' selected':'')+'>股</option><option value="lot"'+(ex.unit==='lot'?' selected':'')+'>張</option></select></div></div>';
+    html += '<div>'+(j>0?'<button class="btn btn-ghost btn-sm" onclick="rvRemoveExit('+j+')" style="color:var(--red)">移除</button>':'')+'</div>';
+    html += '</div>';
+  }
+  html += '</div>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="rvAddExit()" style="margin-bottom:16px;border-style:dashed">＋ 新增一批出場</button>';
+  html += '<div id="rv_stats" style="background:var(--bg);border-radius:10px;padding:16px"><div style="color:var(--text-3);font-size:13px">填入進場和出場數據後自動計算</div></div>';
+  html += '</div></div>'; // card-body, card
+
+  // ─── 第二區塊：為什麼成功 ───
+  html += '<div class="card card-green" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">✅ 第二區塊：為什麼這筆會成功？</span></div>';
+  html += '<div class="card-body">';
+  html += '<div style="font-size:13px;color:var(--text-3);margin-bottom:12px">每個關鍵點填：我做對的事 ＋ 老師教的重點</div>';
+  for(var ws=0;ws<rvWSCount;ws++){
+    var w = (rv.whySuccess||[])[ws]||{myDid:'',teachPoint:''};
+    html += '<div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--bg)">';
+    html += '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:var(--green)">關鍵 '+(ws+1)+'</span>'+(ws>0?'<button class="btn-icon" onclick="rvRemoveWS('+ws+')" style="font-size:13px">✕</button>':'')+'</div>';
+    html += '<div class="form-group" style="margin-bottom:8px"><label class="label">✅ 我做對的事</label><input type="text" class="input" id="rv_ws_my'+ws+'" value="'+(w.myDid||'')+'" placeholder="這次我做了..."></div>';
+    html += '<div class="form-group" style="margin-bottom:0"><label class="label">📚 老師的教學重點</label><input type="text" class="input" id="rv_ws_tp'+ws+'" value="'+(w.teachPoint||'')+'" placeholder="這對應了老師說的..."></div>';
+    html += '</div>';
+  }
+  html += '<button class="btn btn-ghost btn-sm" onclick="rvAddWS()" style="border-style:dashed">＋ 新增關鍵點</button>';
+  html += '</div></div>';
+
+  // ─── 第三區塊：成功公式 ───
+  html += '<div class="card card-orange" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">🔗 第三區塊：這筆交易的「成功公式」</span></div>';
+  html += '<div class="card-body">';
+  html += '<div style="font-size:13px;color:var(--text-3);margin-bottom:12px">填入每個步驟，自動組成 A ➡️ B ➡️ C 的流程圖</div>';
+  for(var fs=0;fs<rvFSCount;fs++){
+    var step = (rv.formulaSteps||[])[fs]||{label:'',desc:''};
+    html += '<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px">';
+    html += (fs>0?'<div style="padding-top:28px;color:var(--text-3);font-size:18px;flex-shrink:0">➡️</div>':'<div style="width:24px;flex-shrink:0"></div>');
+    html += '<div style="flex:1;border:1px solid var(--border);border-radius:8px;padding:11px;background:var(--bg)">';
+    html += '<div style="display:flex;gap:8px;margin-bottom:6px"><input type="text" class="input" id="rv_fl'+fs+'" value="'+(step.label||'')+'" placeholder="步驟名稱" style="font-weight:700;font-size:13px">'+(fs>0?'<button class="btn-icon" onclick="rvRemoveFS('+fs+')" style="font-size:13px;flex-shrink:0">✕</button>':'')+'</div>';
+    html += '<input type="text" class="input" id="rv_fd'+fs+'" value="'+(step.desc||'')+'" placeholder="說明：做了什麼、克服了什麼..." style="font-size:12px">';
+    html += '</div></div>';
+  }
+  html += '<div id="rv_formulaPreview" style="margin-top:10px"></div>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="rvAddFS()" style="border-style:dashed">＋ 新增步驟</button>';
+  html += '</div></div>';
+
+  // ─── 第四區塊：失敗散戶對比 ───
+  html += '<div class="card card-red" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">❌ 第四區塊：失敗散戶會怎麼做？</span></div>';
+  html += '<div class="card-body">';
+  html += '<div id="rv_failList" style="margin-bottom:12px"><div style="font-size:13px;color:var(--text-3)">填好第一區塊數據後，點下方按鈕自動產生對比</div></div>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="rvGenFail()" style="margin-bottom:12px">🔄 產生對比分析</button>';
+  html += '<div class="form-group" style="margin-bottom:0"><label class="label">你自己補充觀察</label>';
+  html += '<textarea class="textarea" id="rv_failExtra" rows="2" placeholder="失敗散戶還會做的事...">'+(rv.failExtra||'')+'</textarea></div>';
+  html += '</div></div>';
+
+  // ─── 第五區塊：改進點 ───
+  html += '<div class="card card-gold" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">📈 第五區塊：我還可以更好的地方</span></div>';
+  html += '<div class="card-body">';
+  for(var im=0;im<rvImpCount;im++){
+    var mp = (rv.improvements||[])[im]||{fact:'',nextTime:'',conclusion:''};
+    html += '<div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--bg)">';
+    html += '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:var(--gold)">改進點 '+(im+1)+'</span>'+(im>0?'<button class="btn-icon" onclick="rvRemoveImp('+im+')" style="font-size:13px">✕</button>':'')+'</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">';
+    html += '<div><label class="label">事實</label><input type="text" class="input" id="rv_if'+im+'" value="'+(mp.fact||'')+'" placeholder="這次..."></div>';
+    html += '<div><label class="label">下次怎麼做</label><input type="text" class="input" id="rv_in'+im+'" value="'+(mp.nextTime||'')+'" placeholder="下次我會..."></div>';
+    html += '<div><label class="label">總結</label><input type="text" class="input" id="rv_ic'+im+'" value="'+(mp.conclusion||'')+'" placeholder="所以..."></div>';
+    html += '</div></div>';
+  }
+  html += '<button class="btn btn-ghost btn-sm" onclick="rvAddImp()" style="border-style:dashed">＋ 新增改進點</button>';
+  html += '</div></div>';
+
+  // ─── 第六區塊：可複製能力 ───
+  html += '<div class="card card-purple" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">💎 第六區塊：我學到的「可複製能力」</span></div>';
+  html += '<div class="card-body">';
+  for(var ab=0;ab<rvAbCount;ab++){
+    var a = (rv.abilities||[])[ab]||{name:'',desc:''};
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:8px">';
+    html += '<span style="width:24px;height:24px;border-radius:50%;background:var(--purple);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(ab+1)+'</span>';
+    html += '<input type="text" class="input" id="rv_an'+ab+'" value="'+(a.name||'')+'" placeholder="能力名稱" style="width:130px;flex-shrink:0">';
+    html += '<input type="text" class="input" id="rv_ad'+ab+'" value="'+(a.desc||'')+'" placeholder="具體說明...">';
+    html += (ab>0?'<button class="btn-icon" onclick="rvRemoveAb('+ab+')" style="font-size:13px;flex-shrink:0">✕</button>':'');
+    html += '</div>';
+  }
+  html += '<button class="btn btn-ghost btn-sm" onclick="rvAddAb()" style="border-style:dashed">＋ 新增能力</button>';
+  html += '</div></div>';
+
+  // ─── 第七區塊：真心話 ───
+  html += '<div class="card card-teal" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">🪞 第七區塊：真心話—我必須面對的事</span></div>';
+  html += '<div class="card-body">';
+  html += '<div class="form-group"><label class="label">客觀的事實</label><textarea class="textarea" id="rv_t1" rows="2" placeholder="這筆交易中，客觀說來...">'+(rv.truth1||'')+'</textarea></div>';
+  html += '<div class="form-group"><label class="label">為什麼要說這個</label><textarea class="textarea" id="rv_t2" rows="2" placeholder="說這個是因為...">'+(rv.truth2||'')+'</textarea></div>';
+  html += '<div class="form-group" style="margin-bottom:0"><label class="label">真實情況</label><textarea class="textarea" id="rv_t3" rows="2" placeholder="真實情況是...">'+(rv.truth3||'')+'</textarea></div>';
+  html += '</div></div>';
+
+  // ─── 第八區塊：接下來該做的事 ───
+  html += '<div class="card card-blue" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">🎯 第八區塊：接下來該做的事</span></div>';
+  html += '<div class="card-body">';
+  for(var na=0;na<rvNACount;na++){
+    var act = (rv.nextActions||[])[na]||'';
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+    html += '<span style="width:22px;height:22px;border-radius:50%;background:var(--blue);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(na+1)+'</span>';
+    html += '<input type="text" class="input" id="rv_na'+na+'" value="'+act+'" placeholder="接下來要做的事...">';
+    html += (na>0?'<button class="btn-icon" onclick="rvRemoveNA('+na+')" style="font-size:13px">✕</button>':'');
+    html += '</div>';
+  }
+  html += '<button class="btn btn-ghost btn-sm" onclick="rvAddNA()" style="border-style:dashed">＋ 新增行動</button>';
+  html += '</div></div>';
+
+  // ─── 第九區塊：3個重要提醒 ───
+  html += '<div class="card card-orange" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">⚡ 第九區塊：給我的 3 個重要提醒</span></div>';
+  html += '<div class="card-body"><div style="display:flex;flex-direction:column;gap:10px">';
+  [1,2,3].forEach(function(n){
+    html += '<div style="display:flex;align-items:center;gap:10px">';
+    html += '<span style="width:26px;height:26px;border-radius:50%;background:var(--orange);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+n+'</span>';
+    html += '<input type="text" class="input" id="rv_rm'+n+'" value="'+((rv.reminders||[])[n-1]||'')+'" placeholder="提醒 '+n+'...">';
+    html += '</div>';
+  });
+  html += '</div></div></div>';
+
+  // ─── 第十區塊：我自己的總結 ───
+  html += '<div class="card card-gold" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">✍️ 第十區塊：我自己的總結</span></div>';
+  html += '<div class="card-body"><textarea class="textarea" id="rv_summary" rows="4" placeholder="用自己的話，總結這次交易...">'+(rv.summary||'')+'</textarea></div></div>';
+
+  // ─── 第十一區塊：系統自動分析 ───
+  html += '<div class="card card-purple" style="margin-bottom:16px">';
+  html += '<div class="card-header"><span class="card-title">🤖 第十一區塊：系統幫你分析總結</span>';
+  html += '<button class="btn btn-sm" style="background:var(--purple);color:white" onclick="rvAutoAnalysis()">✨ 自動分析</button></div>';
+  html += '<div class="card-body"><div id="rv_autoResult">';
+  html += (rv.autoAnalysis||'<span style="color:var(--text-3);font-size:13px">填完上面的內容後，點「✨ 自動分析」讓系統幫你整理總結。</span>');
+  html += '</div></div></div>';
+
+  // 儲存按鈕
+  html += '<div style="display:flex;gap:10px;margin-bottom:40px">';
+  html += '<button class="btn btn-primary" onclick="saveReview()" style="flex:1">💾 儲存復盤</button>';
+  html += '<button class="btn btn-ghost" onclick="cancelReview()">取消</button></div>';
+
+  el.innerHTML = html;
   rvCalc();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function buildReviewForm(){
-  const rv = reviewData;
-  const entries = rv.entries||[{date:'',price:'',qty:'',unit:'股'}];
-  const exits   = rv.exits||[{date:'',price:'',qty:'',unit:'股',pnl:''}];
-
-  return `
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-  <div style="font-family:var(--serif);font-size:17px;font-weight:700">📊 ${reviewEditId?'編輯':'新增'}完整復盤</div>
-  <button class="btn btn-ghost btn-sm" onclick="cancelReview()">← 返回清單</button>
-</div>
-
-<!-- ─── 第一區塊：戰績總覽 ─── -->
-<div class="card card-blue" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">🏆 第一區塊：戰績總覽</span></div>
-  <div class="card-body">
-    <div class="form-row c2">
-      <div class="form-group"><label class="label">股票名稱/代號</label>
-        <input type="text" class="input" id="rv_stockName" value="${rv.stockName||''}" placeholder="例：2472 立隆電" oninput="rvCalc()"></div>
-      <div class="form-group"><label class="label">進場心理</label>
-        <input type="text" class="input" id="rv_mood" value="${rv.mood||''}" placeholder="冷靜分析・FOMO..."></div>
-    </div>
-    <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px">📥 進場記錄（可分批）</div>
-    <div id="rv_entryRows">
-      ${entries.map((e,i)=>`<div class="form-row c4" id="rv_entry_${i}" style="align-items:flex-end;margin-bottom:8px">
-        <div><label class="label">進場日${entries.length>1?` 第${i+1}批`:''}</label><input type="date" class="input" id="rv_ed${i}" value="${e.date||''}"></div>
-        <div><label class="label">進場價（元）</label><input type="number" class="input" id="rv_ep${i}" value="${e.price||''}" placeholder="0" oninput="rvCalc()"></div>
-        <div><label class="label">數量</label><div style="display:flex;gap:4px"><input type="number" class="input" id="rv_eq${i}" value="${e.qty||''}" placeholder="0" oninput="rvCalc()" style="flex:1"><select class="select" id="rv_eu${i}" style="width:56px;flex-shrink:0" onchange="rvCalc()"><option value="share" ${(e.unit||'share')==='share'?'selected':''}>股</option><option value="lot" ${e.unit==='lot'?'selected':''}>張</option></select></div></div>
-        ${i>0?`<div style="display:flex;align-items:flex-end"><button class="btn btn-ghost btn-sm" onclick="rvRemoveEntry(${i})" style="color:var(--red)">移除</button></div>`:'<div></div>'}
-      </div>`).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" onclick="rvAddEntry()" style="margin-bottom:14px;border-style:dashed">＋ 新增一批進場</button>
-
-    <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px">📤 出場記錄（可分批）</div>
-    <div id="rv_exitRows">
-      ${exits.map((e,i)=>`<div class="form-row c4" id="rv_exit_${i}" style="align-items:flex-end;margin-bottom:8px">
-        <div><label class="label">出場日${exits.length>1?` 第${i+1}批`:''}</label><input type="date" class="input" id="rv_xd${i}" value="${e.date||''}"></div>
-        <div><label class="label">出場價（元）</label><input type="number" class="input" id="rv_xp${i}" value="${e.price||''}" placeholder="0" oninput="rvCalc()"></div>
-        <div><label class="label">數量</label><div style="display:flex;gap:4px"><input type="number" class="input" id="rv_xq${i}" value="${e.qty||''}" placeholder="0" oninput="rvCalc()" style="flex:1"><select class="select" id="rv_xu${i}" style="width:56px;flex-shrink:0" onchange="rvCalc()"><option value="share" ${(e.unit||'share')==='share'?'selected':''}>股</option><option value="lot" ${e.unit==='lot'?'selected':''}>張</option></select></div></div>
-        ${i>0?`<div style="display:flex;align-items:flex-end"><button class="btn btn-ghost btn-sm" onclick="rvRemoveExit(${i})" style="color:var(--red)">移除</button></div>`:'<div></div>'}
-      </div>`).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" onclick="rvAddExit()" style="margin-bottom:16px;border-style:dashed">＋ 新增一批出場</button>
-
-    <!-- 自動換算結果 -->
-    <div id="rv_stats" style="background:var(--bg);border-radius:10px;padding:16px"></div>
-  </div>
-</div>
-
-<!-- ─── 第二區塊：為什麼成功 ─── -->
-<div class="card card-green" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">✅ 第二區塊：為什麼這筆會成功？</span></div>
-  <div class="card-body">
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">每個關鍵點填兩個欄位：我做對的事 + 老師教的重點</div>
-    <div id="rv_whySuccess">
-      ${(rv.whySuccess||[{myDid:'',teachPoint:''}]).map((w,i)=>rvWhySuccessRow(w,i)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" onclick="rvAddWhySuccess()" style="border-style:dashed">＋ 新增關鍵點</button>
-  </div>
-</div>
-
-<!-- ─── 第三區塊：成功公式 ─── -->
-<div class="card card-orange" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">🔗 第三區塊：這筆交易的「成功公式」</span></div>
-  <div class="card-body">
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">填入每個步驟，系統自動組成 A ➡️ B ➡️ C 的流程圖</div>
-    <div id="rv_formulaSteps">
-      ${(rv.formulaSteps||[{label:'',desc:''}]).map((s,i)=>rvFormulaRow(s,i)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" onclick="rvAddFormula()" style="border-style:dashed">＋ 新增步驟</button>
-    <div id="rv_formulaPreview" style="margin-top:14px"></div>
-  </div>
-</div>
-
-<!-- ─── 第四區塊：失敗散戶對比 ─── -->
-<div class="card card-red" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">❌ 第四區塊：失敗散戶會怎麼做？</span></div>
-  <div class="card-body">
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">系統自動根據你的紀錄分析，你也可以補充</div>
-    <div id="rv_failAutoAnalysis" style="margin-bottom:12px"></div>
-    <label class="label">你自己補充觀察</label>
-    <textarea class="textarea" id="rv_failExtra" rows="3" placeholder="失敗散戶還會做的事...">${rv.failExtra||''}</textarea>
-  </div>
-</div>
-
-<!-- ─── 第五區塊：改進點 ─── -->
-<div class="card card-gold" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">📈 第五區塊：我還可以更好的地方</span></div>
-  <div class="card-body">
-    <div id="rv_improvements">
-      ${(rv.improvements||[{fact:'',nextTime:'',conclusion:''}]).map((m,i)=>rvImprovementRow(m,i)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" onclick="rvAddImprovement()" style="border-style:dashed">＋ 新增改進點</button>
-  </div>
-</div>
-
-<!-- ─── 第六區塊：可複製能力 ─── -->
-<div class="card card-purple" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">💎 第六區塊：我學到的「可複製能力」</span></div>
-  <div class="card-body">
-    <div style="font-size:13px;color:var(--text-3);margin-bottom:12px">這次交易讓我建立、強化了什麼能力？下次可以直接複製使用</div>
-    <div id="rv_abilities">
-      ${(rv.abilities||[{name:'',desc:''}]).map((a,i)=>rvAbilityRow(a,i)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" onclick="rvAddAbility()" style="border-style:dashed">＋ 新增能力</button>
-  </div>
-</div>
-
-<!-- ─── 第七區塊：真心話 ─── -->
-<div class="card card-teal" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">🪞 第七區塊：真心話—我必須面對的事</span></div>
-  <div class="card-body">
-    <div class="form-group"><label class="label">客觀的事實</label>
-      <textarea class="textarea" id="rv_truth1" rows="2" placeholder="這筆交易中，客觀說來...">${rv.truth1||''}</textarea></div>
-    <div class="form-group"><label class="label">為什麼要說這個</label>
-      <textarea class="textarea" id="rv_truth2" rows="2" placeholder="說這個是因為...">${rv.truth2||''}</textarea></div>
-    <div class="form-group" style="margin-bottom:0"><label class="label">真實情況</label>
-      <textarea class="textarea" id="rv_truth3" rows="2" placeholder="真實情況是...">${rv.truth3||''}</textarea></div>
-  </div>
-</div>
-
-<!-- ─── 第八區塊：接下來該做的事 ─── -->
-<div class="card card-blue" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">🎯 第八區塊：接下來該做的事</span></div>
-  <div class="card-body">
-    <div id="rv_nextActions">
-      ${(rv.nextActions||['']).map((a,i)=>rvNextActionRow(a,i)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" onclick="rvAddNextAction()" style="border-style:dashed">＋ 新增行動</button>
-  </div>
-</div>
-
-<!-- ─── 第九區塊：3個重要提醒 ─── -->
-<div class="card card-orange" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">⚡ 第九區塊：給我的 3 個重要提醒</span></div>
-  <div class="card-body">
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${[1,2,3].map(n=>`<div style="display:flex;align-items:center;gap:10px">
-        <span style="width:26px;height:26px;border-radius:50%;background:var(--orange);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${n}</span>
-        <input type="text" class="input" id="rv_reminder${n}" value="${(rv.reminders||[])[n-1]||''}" placeholder="提醒 ${n}...">
-      </div>`).join('')}
-    </div>
-  </div>
-</div>
-
-<!-- ─── 第十區塊：我自己的總結 ─── -->
-<div class="card card-gold" style="margin-bottom:16px">
-  <div class="card-header"><span class="card-title">✍️ 第十區塊：我自己的總結</span></div>
-  <div class="card-body">
-    <textarea class="textarea" id="rv_summary" rows="4" placeholder="用自己的話，總結這次交易...">${rv.summary||''}</textarea>
-  </div>
-</div>
-
-<!-- ─── 第十一區塊：系統自動分析 ─── -->
-<div class="card card-purple" style="margin-bottom:16px">
-  <div class="card-header">
-    <span class="card-title">🤖 第十一區塊：系統幫你分析總結</span>
-    <button class="btn btn-sm" style="background:var(--purple);color:white" onclick="rvAutoAnalysis()">✨ 自動分析</button>
-  </div>
-  <div class="card-body">
-    <div id="rv_autoResult">
-      ${rv.autoAnalysis?rv.autoAnalysis:'<span style="color:var(--text-3);font-size:13px">填完上面的內容後，點「✨ 自動分析」讓系統幫你整理總結。</span>'}
-    </div>
-  </div>
-</div>
-
-<!-- 儲存按鈕 -->
-<div style="display:flex;gap:10px;margin-bottom:40px">
-  <button class="btn btn-primary" onclick="saveReview()" style="flex:1">💾 儲存復盤</button>
-  <button class="btn btn-ghost" onclick="cancelReview()">取消</button>
-</div>
-`;
-}
-
-// ── 子區塊的 row 產生器 ──
-function rvWhySuccessRow(w,i){
-  return `<div id="rv_ws_${i}" style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--bg)">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <span style="font-size:12px;font-weight:700;color:var(--green)">關鍵 ${i+1}</span>
-      ${i>0?`<button class="btn-icon" onclick="rvRemoveWS(${i})" style="font-size:13px">✕</button>`:''}
-    </div>
-    <div class="form-group" style="margin-bottom:8px">
-      <label class="label">✅ 我做對的事</label>
-      <input type="text" class="input" id="rv_ws_my${i}" value="${w.myDid||''}" placeholder="這次我做了...">
-    </div>
-    <div class="form-group" style="margin-bottom:0">
-      <label class="label">📚 老師的教學重點</label>
-      <input type="text" class="input" id="rv_ws_tp${i}" value="${w.teachPoint||''}" placeholder="這對應了老師說的...">
-    </div>
-  </div>`;
-}
-function rvFormulaRow(s,i){
-  return `<div id="rv_fs_${i}" style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px">
-    ${i>0?'<div style="padding-top:28px;color:var(--text-3);font-size:20px;flex-shrink:0">➡️</div>':'<div style="width:24px;flex-shrink:0"></div>'}
-    <div style="flex:1;border:1px solid var(--border);border-radius:8px;padding:11px;background:var(--bg)">
-      <div style="display:flex;gap:8px;margin-bottom:6px">
-        <input type="text" class="input" id="rv_fl${i}" value="${s.label||''}" placeholder="步驟名稱（簡短）" style="font-weight:700;font-size:13px">
-        ${i>0?`<button class="btn-icon" onclick="rvRemoveFormula(${i})" style="font-size:13px;flex-shrink:0">✕</button>`:''}
-      </div>
-      <input type="text" class="input" id="rv_fd${i}" value="${s.desc||''}" placeholder="說明：做了什麼、克服了什麼..." style="font-size:12px">
-    </div>
-  </div>`;
-}
-function rvImprovementRow(m,i){
-  return `<div id="rv_imp_${i}" style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--bg)">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <span style="font-size:12px;font-weight:700;color:var(--gold)">改進點 ${i+1}</span>
-      ${i>0?`<button class="btn-icon" onclick="rvRemoveImp(${i})" style="font-size:13px">✕</button>`:''}
-    </div>
-    <div class="form-row c3" style="margin-bottom:0">
-      <div class="form-group" style="margin-bottom:0"><label class="label">事實</label><input type="text" class="input" id="rv_imp_f${i}" value="${m.fact||''}" placeholder="這次..."></div>
-      <div class="form-group" style="margin-bottom:0"><label class="label">下次怎麼做</label><input type="text" class="input" id="rv_imp_n${i}" value="${m.nextTime||''}" placeholder="下次我會..."></div>
-      <div class="form-group" style="margin-bottom:0"><label class="label">總結</label><input type="text" class="input" id="rv_imp_c${i}" value="${m.conclusion||''}" placeholder="所以..."></div>
-    </div>
-  </div>`;
-}
-function rvAbilityRow(a,i){
-  return `<div id="rv_ab_${i}" style="display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:8px">
-    <span style="width:24px;height:24px;border-radius:50%;background:var(--purple);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">${i+1}</span>
-    <div style="flex:1;display:flex;gap:8px">
-      <input type="text" class="input" id="rv_ab_n${i}" value="${a.name||''}" placeholder="能力名稱" style="width:120px;flex-shrink:0">
-      <input type="text" class="input" id="rv_ab_d${i}" value="${a.desc||''}" placeholder="具體說明...">
-    </div>
-    ${i>0?`<button class="btn-icon" onclick="rvRemoveAbility(${i})" style="font-size:13px;margin-top:2px">✕</button>`:''}
-  </div>`;
-}
-function rvNextActionRow(a,i){
-  return `<div id="rv_na_${i}" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-    <span style="width:22px;height:22px;border-radius:50%;background:var(--blue);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
-    <input type="text" class="input" id="rv_na_${i}_txt" value="${a||''}" placeholder="接下來要做的事...">
-    ${i>0?`<button class="btn-icon" onclick="rvRemoveNextAction(${i})" style="font-size:13px">✕</button>`:''}
-  </div>`;
-}
-
-// ── 新增/移除 row ──
-function rvAddEntry(){reviewData.entries.push({date:'',price:'',qty:'',unit:'share'});renderReviewForm();}
-function rvRemoveEntry(i){reviewData.entries.splice(i,1);collectReviewForm();renderReviewForm();}
-function rvAddExit(){reviewData.exits.push({date:'',price:'',qty:'',unit:'share',pnl:''});renderReviewForm();}
-function rvRemoveExit(i){reviewData.exits.splice(i,1);collectReviewForm();renderReviewForm();}
-function rvAddWhySuccess(){reviewData.whySuccess.push({myDid:'',teachPoint:''});collectReviewForm();renderReviewForm();}
-function rvRemoveWS(i){reviewData.whySuccess.splice(i,1);collectReviewForm();renderReviewForm();}
-function rvAddFormula(){if(!reviewData.formulaSteps)reviewData.formulaSteps=[];reviewData.formulaSteps.push({label:'',desc:''});collectReviewForm();renderReviewForm();}
-function rvRemoveFormula(i){reviewData.formulaSteps.splice(i,1);collectReviewForm();renderReviewForm();}
-function rvAddImprovement(){reviewData.improvements.push({fact:'',nextTime:'',conclusion:''});collectReviewForm();renderReviewForm();}
-function rvRemoveImp(i){reviewData.improvements.splice(i,1);collectReviewForm();renderReviewForm();}
-function rvAddAbility(){reviewData.abilities.push({name:'',desc:''});collectReviewForm();renderReviewForm();}
-function rvRemoveAbility(i){reviewData.abilities.splice(i,1);collectReviewForm();renderReviewForm();}
-function rvAddNextAction(){if(!reviewData.nextActions)reviewData.nextActions=[];reviewData.nextActions.push('');collectReviewForm();renderReviewForm();}
-function rvRemoveNextAction(i){reviewData.nextActions.splice(i,1);collectReviewForm();renderReviewForm();}
+// ── 新增/移除 ──
+function rvAddEntry(){collectRV();rvEntryCount++;renderReviewForm();}
+function rvRemoveEntry(i){collectRV();reviewData.entries.splice(i,1);rvEntryCount--;renderReviewForm();}
+function rvAddExit(){collectRV();rvExitCount++;renderReviewForm();}
+function rvRemoveExit(i){collectRV();reviewData.exits.splice(i,1);rvExitCount--;renderReviewForm();}
+function rvAddWS(){collectRV();rvWSCount++;renderReviewForm();}
+function rvRemoveWS(i){collectRV();reviewData.whySuccess.splice(i,1);rvWSCount--;renderReviewForm();}
+function rvAddFS(){collectRV();rvFSCount++;renderReviewForm();}
+function rvRemoveFS(i){collectRV();reviewData.formulaSteps.splice(i,1);rvFSCount--;renderReviewForm();}
+function rvAddImp(){collectRV();rvImpCount++;renderReviewForm();}
+function rvRemoveImp(i){collectRV();reviewData.improvements.splice(i,1);rvImpCount--;renderReviewForm();}
+function rvAddAb(){collectRV();rvAbCount++;renderReviewForm();}
+function rvRemoveAb(i){collectRV();reviewData.abilities.splice(i,1);rvAbCount--;renderReviewForm();}
+function rvAddNA(){collectRV();rvNACount++;renderReviewForm();}
+function rvRemoveNA(i){collectRV();reviewData.nextActions.splice(i,1);rvNACount--;renderReviewForm();}
 
 // ── 即時計算 ──
 function rvCalc(){
-  const el = document.getElementById('rv_stats');
-  if(!el) return;
-  // 收集進場
-  let totalIn=0, totalShares=0, entryDates=[];
-  const nEntry = reviewData.entries?reviewData.entries.length:1;
-  for(let i=0;i<nEntry;i++){
-    const p=parseFloat(document.getElementById('rv_ep'+i)?.value)||0;
-    const q=parseFloat(document.getElementById('rv_eq'+i)?.value)||0;
-    const u=document.getElementById('rv_eu'+i)?.value||'share';
-    const d=document.getElementById('rv_ed'+i)?.value||'';
-    const shares=u==='lot'?q*1000:q;
-    totalIn+=p*shares; totalShares+=shares;
-    if(d)entryDates.push(d);
+  var el=document.getElementById('rv_stats'); if(!el)return;
+  var totalIn=0,totalShares=0,entryDates=[];
+  for(var i=0;i<rvEntryCount;i++){
+    var p=parseFloat(document.getElementById('rv_ep'+i)?.value)||0;
+    var q=parseFloat(document.getElementById('rv_eq'+i)?.value)||0;
+    var u=document.getElementById('rv_eu'+i)?.value||'share';
+    var d=document.getElementById('rv_ed'+i)?.value||'';
+    var sh=u==='lot'?q*1000:q;
+    totalIn+=p*sh; totalShares+=sh; if(d)entryDates.push(d);
   }
-  const avgEntry=totalShares>0?totalIn/totalShares:0;
-  // 收集出場
-  let totalOut=0, exitDates=[];
-  const nExit = reviewData.exits?reviewData.exits.length:1;
-  for(let i=0;i<nExit;i++){
-    const p=parseFloat(document.getElementById('rv_xp'+i)?.value)||0;
-    const q=parseFloat(document.getElementById('rv_xq'+i)?.value)||0;
-    const u=document.getElementById('rv_xu'+i)?.value||'share';
-    const d=document.getElementById('rv_xd'+i)?.value||'';
-    const shares=u==='lot'?q*1000:q;
-    totalOut+=p*shares;
-    if(d)exitDates.push(d);
+  var totalOut=0,exitDates=[];
+  for(var j=0;j<rvExitCount;j++){
+    var xp=parseFloat(document.getElementById('rv_xp'+j)?.value)||0;
+    var xq=parseFloat(document.getElementById('rv_xq'+j)?.value)||0;
+    var xu=document.getElementById('rv_xu'+j)?.value||'share';
+    var xd=document.getElementById('rv_xd'+j)?.value||'';
+    var xsh=xu==='lot'?xq*1000:xq;
+    totalOut+=xp*xsh; if(xd)exitDates.push(xd);
   }
-  const pnl=totalOut-totalIn;
-  const returnRate=totalIn>0?((pnl/totalIn)*100).toFixed(2):0;
-  // 持有天數
-  const firstEntry=entryDates.sort()[0]||'';
-  const lastExit=exitDates.sort().reverse()[0]||'';
-  let holdDays='?';
-  if(firstEntry&&lastExit){
-    holdDays=Math.round((new Date(lastExit)-new Date(firstEntry))/(1000*60*60*24));
-  }
-  // 年化報酬率
-  let annualized='?';
-  if(holdDays!=='?'&&holdDays>0&&totalIn>0){
-    annualized=((Math.pow(1+pnl/totalIn,365/holdDays)-1)*100).toFixed(1);
-  }
-  // 存入 reviewData
-  reviewData.totalIn=Math.round(totalIn);
-  reviewData.totalOut=Math.round(totalOut);
-  reviewData.totalPnl=Math.round(pnl);
-  reviewData.returnRate=parseFloat(returnRate);
-  reviewData.holdDays=holdDays;
-  reviewData.entryDate=firstEntry;
-  reviewData.exitDate=lastExit;
-  reviewData.annualized=annualized;
-
+  var pnl=totalOut-totalIn;
+  var retRate=totalIn>0?((pnl/totalIn)*100).toFixed(2):0;
+  var firstEntry=(entryDates.sort()[0])||'';
+  var lastExit=(exitDates.sort().reverse()[0])||'';
+  var holdDays='?';
+  if(firstEntry&&lastExit) holdDays=Math.round((new Date(lastExit)-new Date(firstEntry))/(86400000));
+  var ann='?';
+  if(holdDays!=='?'&&holdDays>0&&totalIn>0) ann=((Math.pow(1+pnl/totalIn,365/holdDays)-1)*100).toFixed(1);
+  reviewData.totalIn=Math.round(totalIn); reviewData.totalOut=Math.round(totalOut);
+  reviewData.totalPnl=Math.round(pnl); reviewData.returnRate=parseFloat(retRate);
+  reviewData.holdDays=holdDays; reviewData.entryDate=firstEntry; reviewData.exitDate=lastExit;
+  reviewData.annualized=ann;
   if(!totalIn&&!totalOut){el.innerHTML='<div style="color:var(--text-3);font-size:13px">填入進場和出場數據後自動計算</div>';return;}
-  const pnlC=pnl>0?'var(--green)':pnl<0?'var(--red)':'var(--text-3)';
-  el.innerHTML=`<div class="grid-4" style="gap:10px">
-    ${[
-      ['總投入',totalIn>0?totalIn.toLocaleString()+'元':'—','var(--text)'],
-      ['總回收',totalOut>0?totalOut.toLocaleString()+'元':'—','var(--text)'],
-      ['總獲利',pnl!==0?(pnl>0?'+':'')+Math.round(pnl).toLocaleString()+'元':'—',pnlC],
-      ['報酬率',returnRate!==0?returnRate+'%':'—',pnlC],
-      ['年化報酬',annualized!=='?'?annualized+'%':'—',parseFloat(annualized)>0?'var(--green)':parseFloat(annualized)<0?'var(--red)':'var(--text)'],
-      ['持有天數',holdDays!=='?'?holdDays+'天':'—','var(--text)'],
-      ['平均進場',avgEntry>0?avgEntry.toFixed(1)+'元':'—','var(--text)'],
-      ['進場日',firstEntry||'—','var(--text-3)'],
-    ].map(([label,val,c])=>`<div style="padding:10px;background:var(--white);border-radius:8px;border:1px solid var(--border);text-align:center">
-      <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">${label}</div>
-      <div style="font-size:15px;font-weight:700;color:${c}">${val}</div>
-    </div>`).join('')}
-  </div>`;
-
-  // 即時更新失敗散戶分析
-  rvFailAnalysis();
+  var pnlC=pnl>0?'var(--green)':pnl<0?'var(--red)':'var(--text-3)';
+  var stats=[
+    ['總投入',totalIn>0?totalIn.toLocaleString()+'元':'—','var(--text)'],
+    ['總回收',totalOut>0?totalOut.toLocaleString()+'元':'—','var(--text)'],
+    ['總獲利',pnl!==0?(pnl>0?'+':'')+Math.round(pnl).toLocaleString()+'元':'—',pnlC],
+    ['報酬率',retRate!==0?retRate+'%':'—',pnlC],
+    ['年化報酬',ann!=='?'?ann+'%':'—',parseFloat(ann)>0?'var(--green)':parseFloat(ann)<0?'var(--red)':'var(--text)'],
+    ['持有天數',holdDays!=='?'?holdDays+'天':'—','var(--text)'],
+    ['平均進場',totalShares>0?(totalIn/totalShares).toFixed(1)+'元':'—','var(--text)'],
+    ['出場日',lastExit||'—','var(--text-3)'],
+  ];
+  var sh='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
+  stats.forEach(function(s){
+    sh+='<div style="padding:10px;background:var(--white);border-radius:8px;border:1px solid var(--border);text-align:center">';
+    sh+='<div style="font-size:11px;color:var(--text-3);margin-bottom:4px">'+s[0]+'</div>';
+    sh+='<div style="font-size:15px;font-weight:700;color:'+s[2]+'">'+s[1]+'</div></div>';
+  });
+  sh+='</div>'; el.innerHTML=sh;
 }
 
-function rvFailAnalysis(){
-  const el = document.getElementById('rv_failAutoAnalysis');
-  if(!el) return;
-  const pnl=reviewData.totalPnl||0;
-  const ret=reviewData.returnRate||0;
-  const hold=reviewData.holdDays;
-  const items=[];
-  if(ret>10)items.push({fail:'在還沒到停利點就提前賣掉',result:`少賺了大部分的 ${ret.toFixed(1)}% 報酬`});
-  if(ret<0)items.push({fail:'不設停損、死撐不賣',result:`虧損繼續擴大，甚至越跌越買（攤平）`});
-  if(hold!=='?'&&hold>30)items.push({fail:'每天頻繁看盤、在震盪中衝動操作',result:'可能會在主升段前就被洗出場'});
-  items.push({fail:'看到別人說「這支要漲」才買，沒有自己的計畫',result:'買在高點、賣在低點，情緒主導一切'});
-  items.push({fail:'沒有設好停損就進場',result:'遇到下跌不知道什麼時候該出場，越虧越大'});
-  items.push({fail:'賺到小錢就跑、虧錢死撐不賣',result:'獲利被壓縮，虧損被放大'});
-  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:8px">
-    ${items.map((it,i)=>`<div style="display:flex;gap:10px;padding:10px 12px;background:var(--red-bg);border-radius:8px;border-left:3px solid var(--red)">
-      <span style="width:20px;height:20px;border-radius:50%;background:var(--red);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</span>
-      <div><div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:2px">❌ ${it.fail}</div>
-      <div style="font-size:12px;color:var(--text-2)">→ 結果：${it.result}</div></div>
-    </div>`).join('')}
-  </div>`;
+function rvGenFail(){
+  var el=document.getElementById('rv_failList'); if(!el)return;
+  var pnl=reviewData.totalPnl||0,ret=reviewData.returnRate||0,hold=reviewData.holdDays;
+  var items=[
+    {fail:'不設停損直接買進，跌了死撐',result:'跌了30%還在等它回來'},
+    {fail:'看到漲了才追高，沒有計畫',result:'買在高點，後面一直套牢'},
+  ];
+  if(ret>10) items.push({fail:'賺了一點點就急著賣，怕回吐',result:'少賺了大部分的'+ret.toFixed(0)+'%報酬'});
+  if(hold!=='?'&&hold>14) items.push({fail:'每天頻繁看盤，在震盪中衝動操作',result:'可能在主升段前就被洗出場'});
+  items.push({fail:'沒有寫交易計畫，純靠感覺',result:'心情好多買、心情差亂賣，毫無紀律'});
+  items.push({fail:'賺錢時驕傲加碼，虧錢時攤平',result:'小錢賺、大錢虧，長期下來必虧'});
+  var sh='<div style="display:flex;flex-direction:column;gap:8px">';
+  items.forEach(function(it,idx){
+    sh+='<div style="display:flex;gap:10px;padding:10px 12px;background:var(--red-bg);border-radius:8px;border-left:3px solid var(--red)">';
+    sh+='<span style="width:20px;height:20px;border-radius:50%;background:var(--red);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">'+(idx+1)+'</span>';
+    sh+='<div><div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:2px">❌ '+it.fail+'</div>';
+    sh+='<div style="font-size:12px;color:var(--text-2)">→ 結果：'+it.result+'</div></div></div>';
+  });
+  sh+='</div>'; el.innerHTML=sh;
 }
 
-// ── 收集表單資料 ──
-function collectReviewForm(){
-  const rv=reviewData;
-  rv.stockName=document.getElementById('rv_stockName')?.value.trim()||'';
-  rv.mood=document.getElementById('rv_mood')?.value.trim()||'';
-  // 進場
-  rv.entries=(rv.entries||[]).map((_,i)=>({
-    date:document.getElementById('rv_ed'+i)?.value||'',
-    price:parseFloat(document.getElementById('rv_ep'+i)?.value)||0,
-    qty:parseFloat(document.getElementById('rv_eq'+i)?.value)||0,
-    unit:document.getElementById('rv_eu'+i)?.value||'share',
-  }));
-  // 出場
-  rv.exits=(rv.exits||[]).map((_,i)=>({
-    date:document.getElementById('rv_xd'+i)?.value||'',
-    price:parseFloat(document.getElementById('rv_xp'+i)?.value)||0,
-    qty:parseFloat(document.getElementById('rv_xq'+i)?.value)||0,
-    unit:document.getElementById('rv_xu'+i)?.value||'share',
-  }));
-  // 為什麼成功
-  rv.whySuccess=(rv.whySuccess||[]).map((_,i)=>({
-    myDid:document.getElementById('rv_ws_my'+i)?.value.trim()||'',
-    teachPoint:document.getElementById('rv_ws_tp'+i)?.value.trim()||'',
-  }));
-  // 成功公式步驟
-  rv.formulaSteps=(rv.formulaSteps||[]).map((_,i)=>({
-    label:document.getElementById('rv_fl'+i)?.value.trim()||'',
-    desc:document.getElementById('rv_fd'+i)?.value.trim()||'',
-  }));
-  rv.failExtra=document.getElementById('rv_failExtra')?.value.trim()||'';
-  // 改進點
-  rv.improvements=(rv.improvements||[]).map((_,i)=>({
-    fact:document.getElementById('rv_imp_f'+i)?.value.trim()||'',
-    nextTime:document.getElementById('rv_imp_n'+i)?.value.trim()||'',
-    conclusion:document.getElementById('rv_imp_c'+i)?.value.trim()||'',
-  }));
-  // 可複製能力
-  rv.abilities=(rv.abilities||[]).map((_,i)=>({
-    name:document.getElementById('rv_ab_n'+i)?.value.trim()||'',
-    desc:document.getElementById('rv_ab_d'+i)?.value.trim()||'',
-  }));
-  // 真心話
-  rv.truth1=document.getElementById('rv_truth1')?.value.trim()||'';
-  rv.truth2=document.getElementById('rv_truth2')?.value.trim()||'';
-  rv.truth3=document.getElementById('rv_truth3')?.value.trim()||'';
-  // 接下來的行動
-  rv.nextActions=(rv.nextActions||[]).map((_,i)=>document.getElementById('rv_na_'+i+'_txt')?.value.trim()||'');
-  // 提醒
-  rv.reminders=[1,2,3].map(n=>document.getElementById('rv_reminder'+n)?.value.trim()||'');
-  rv.summary=document.getElementById('rv_summary')?.value.trim()||'';
-  // 成功公式 preview
-  const steps=(rv.formulaSteps||[]).filter(s=>s.label);
-  rv.successFormula=steps.map(s=>s.label).join(' ➡️ ');
-  return rv;
+// ── 收集表單 ──
+function collectRV(){
+  var rv=reviewData;
+  rv.stockName=document.getElementById('rv_stockName')?.value.trim()||rv.stockName||'';
+  rv.mood=document.getElementById('rv_mood')?.value.trim()||rv.mood||'';
+  for(var i=0;i<rvEntryCount;i++){
+    if(!rv.entries[i])rv.entries[i]={};
+    rv.entries[i].date=document.getElementById('rv_ed'+i)?.value||'';
+    rv.entries[i].price=parseFloat(document.getElementById('rv_ep'+i)?.value)||0;
+    rv.entries[i].qty=parseFloat(document.getElementById('rv_eq'+i)?.value)||0;
+    rv.entries[i].unit=document.getElementById('rv_eu'+i)?.value||'share';
+  }
+  for(var j=0;j<rvExitCount;j++){
+    if(!rv.exits[j])rv.exits[j]={};
+    rv.exits[j].date=document.getElementById('rv_xd'+j)?.value||'';
+    rv.exits[j].price=parseFloat(document.getElementById('rv_xp'+j)?.value)||0;
+    rv.exits[j].qty=parseFloat(document.getElementById('rv_xq'+j)?.value)||0;
+    rv.exits[j].unit=document.getElementById('rv_xu'+j)?.value||'share';
+  }
+  for(var w=0;w<rvWSCount;w++){
+    if(!rv.whySuccess[w])rv.whySuccess[w]={};
+    rv.whySuccess[w].myDid=document.getElementById('rv_ws_my'+w)?.value.trim()||'';
+    rv.whySuccess[w].teachPoint=document.getElementById('rv_ws_tp'+w)?.value.trim()||'';
+  }
+  for(var fs=0;fs<rvFSCount;fs++){
+    if(!rv.formulaSteps[fs])rv.formulaSteps[fs]={};
+    rv.formulaSteps[fs].label=document.getElementById('rv_fl'+fs)?.value.trim()||'';
+    rv.formulaSteps[fs].desc=document.getElementById('rv_fd'+fs)?.value.trim()||'';
+  }
+  rv.failExtra=document.getElementById('rv_failExtra')?.value.trim()||rv.failExtra||'';
+  for(var im=0;im<rvImpCount;im++){
+    if(!rv.improvements[im])rv.improvements[im]={};
+    rv.improvements[im].fact=document.getElementById('rv_if'+im)?.value.trim()||'';
+    rv.improvements[im].nextTime=document.getElementById('rv_in'+im)?.value.trim()||'';
+    rv.improvements[im].conclusion=document.getElementById('rv_ic'+im)?.value.trim()||'';
+  }
+  for(var ab=0;ab<rvAbCount;ab++){
+    if(!rv.abilities[ab])rv.abilities[ab]={};
+    rv.abilities[ab].name=document.getElementById('rv_an'+ab)?.value.trim()||'';
+    rv.abilities[ab].desc=document.getElementById('rv_ad'+ab)?.value.trim()||'';
+  }
+  rv.truth1=document.getElementById('rv_t1')?.value.trim()||rv.truth1||'';
+  rv.truth2=document.getElementById('rv_t2')?.value.trim()||rv.truth2||'';
+  rv.truth3=document.getElementById('rv_t3')?.value.trim()||rv.truth3||'';
+  for(var na=0;na<rvNACount;na++){
+    rv.nextActions[na]=document.getElementById('rv_na'+na)?.value.trim()||'';
+  }
+  rv.reminders=[1,2,3].map(function(n){return document.getElementById('rv_rm'+n)?.value.trim()||'';});
+  rv.summary=document.getElementById('rv_summary')?.value.trim()||rv.summary||'';
+  rv.formulaSteps=(rv.formulaSteps||[]);
+  rv.successFormula=rv.formulaSteps.filter(function(s){return s.label;}).map(function(s){return s.label;}).join(' ➡️ ');
 }
 
 // ── 自動分析 ──
 function rvAutoAnalysis(){
-  collectReviewForm();
-  const rv=reviewData;
-  const el=document.getElementById('rv_autoResult');
-  if(!el)return;
-  const pnl=rv.totalPnl||0, ret=rv.returnRate||0, hold=rv.holdDays, ann=rv.annualized;
-  const pnlC=pnl>0?'var(--green)':pnl<0?'var(--red)':'var(--text-3)';
-  let html='';
-
-  // 績效評語
-  const perfMsg=pnl>0?`這筆交易獲利 ${Math.round(pnl).toLocaleString()}元，報酬率 ${ret}%${hold!=='?'?'，持有'+hold+'天':''}${ann!=='?'?'，年化 '+ann+'%':''}。`
-    :pnl<0?`這筆交易虧損 ${Math.abs(Math.round(pnl)).toLocaleString()}元，報酬率 ${ret}%。`:'尚未填入完整數據。';
-  html+=`<div style="padding:12px 14px;background:${pnl>=0?'var(--green-bg)':'var(--red-bg)'};border-radius:8px;border-left:3px solid ${pnlC};margin-bottom:10px">
-    <div style="font-size:12px;font-weight:700;color:${pnlC};margin-bottom:4px">📊 績效總結</div>
-    <div style="font-size:13px;color:var(--text-2);line-height:1.7">${perfMsg}</div>
-  </div>`;
-
+  collectRV();
+  var rv=reviewData;
+  var el=document.getElementById('rv_autoResult'); if(!el)return;
+  var pnl=rv.totalPnl||0,ret=rv.returnRate||0,hold=rv.holdDays,ann=rv.annualized;
+  var pnlC=pnl>0?'var(--green)':pnl<0?'var(--red)':'var(--text-3)';
+  var html='';
+  // 績效
+  var perfMsg=pnl>0?'這筆交易獲利 '+Math.round(pnl).toLocaleString()+'元，報酬率 '+ret+'%'+(hold!=='?'?'，持有'+hold+'天':'')+(ann!=='?'?'，年化 '+ann+'%':'')+'。':pnl<0?'這筆交易虧損 '+Math.abs(Math.round(pnl)).toLocaleString()+'元，報酬率 '+ret+'%。':'尚未填入完整數據。';
+  html+='<div style="padding:12px 14px;background:'+(pnl>=0?'var(--green-bg)':'var(--red-bg)')+';border-radius:8px;border-left:3px solid '+pnlC+';margin-bottom:10px">';
+  html+='<div style="font-size:12px;font-weight:700;color:'+pnlC+';margin-bottom:4px">📊 績效總結</div>';
+  html+='<div style="font-size:13px;color:var(--text-2);line-height:1.7">'+perfMsg+'</div></div>';
   // 成功公式
-  const steps=(rv.formulaSteps||[]).filter(s=>s.label);
+  var steps=(rv.formulaSteps||[]).filter(function(s){return s.label;});
   if(steps.length>0){
-    html+=`<div style="padding:12px 14px;background:var(--orange-bg);border-radius:8px;border-left:3px solid var(--orange);margin-bottom:10px">
-      <div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:8px">🔗 你的成功公式</div>
-      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
-        ${steps.map((s,i)=>`${i>0?'<span style="color:var(--orange);font-size:18px">➡️</span>':''}
-        <div style="padding:7px 12px;background:var(--white);border-radius:8px;border:1.5px solid var(--orange-light)">
-          <div style="font-size:12px;font-weight:700;color:var(--accent-dark)">${s.label}</div>
-          ${s.desc?`<div style="font-size:11px;color:var(--text-3);margin-top:2px">${s.desc}</div>`:''}
-        </div>`).join('')}
-      </div>
-    </div>`;
+    html+='<div style="padding:12px 14px;background:var(--orange-bg);border-radius:8px;border-left:3px solid var(--orange);margin-bottom:10px">';
+    html+='<div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:8px">🔗 你的成功公式</div>';
+    html+='<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">';
+    steps.forEach(function(s,idx){
+      if(idx>0)html+='<span style="color:var(--orange);font-size:18px">➡️</span>';
+      html+='<div style="padding:7px 12px;background:var(--white);border-radius:8px;border:1.5px solid var(--orange-light)">';
+      html+='<div style="font-size:12px;font-weight:700;color:var(--accent-dark)">'+s.label+'</div>';
+      if(s.desc)html+='<div style="font-size:11px;color:var(--text-3);margin-top:2px">'+s.desc+'</div>';
+      html+='</div>';
+    });
+    html+='</div></div>';
   }
-
-  // 能力總結
-  const abilities=(rv.abilities||[]).filter(a=>a.name);
-  if(abilities.length>0){
-    html+=`<div style="padding:12px 14px;background:var(--purple-bg);border-radius:8px;border-left:3px solid var(--purple);margin-bottom:10px">
-      <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:8px">💎 這次交易建立的可複製能力</div>
-      ${abilities.map((a,i)=>`<div style="font-size:13px;color:var(--text-2);padding:4px 0;border-bottom:1px solid var(--border)">${i+1}. <b>${a.name}</b>${a.desc?'：'+a.desc:''}</div>`).join('')}
-    </div>`;
+  // 可複製能力
+  var abs=(rv.abilities||[]).filter(function(a){return a.name;});
+  if(abs.length>0){
+    html+='<div style="padding:12px 14px;background:var(--purple-bg);border-radius:8px;border-left:3px solid var(--purple);margin-bottom:10px">';
+    html+='<div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:8px">💎 建立的可複製能力</div>';
+    abs.forEach(function(a,idx){
+      html+='<div style="font-size:13px;color:var(--text-2);padding:4px 0;border-bottom:1px solid var(--border)">'+(idx+1)+'. <b>'+a.name+'</b>'+(a.desc?'：'+a.desc:'')+'</div>';
+    });
+    html+='</div>';
   }
-
-  // 改進點提醒
-  const imps=(rv.improvements||[]).filter(m=>m.fact);
+  // 改進點
+  var imps=(rv.improvements||[]).filter(function(m){return m.fact;});
   if(imps.length>0){
-    html+=`<div style="padding:12px 14px;background:var(--gold-bg);border-radius:8px;border-left:3px solid var(--gold);margin-bottom:10px">
-      <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px">📈 改進清單</div>
-      ${imps.map((m,i)=>`<div style="margin-bottom:8px;padding:8px 10px;background:var(--white);border-radius:7px"><span style="font-size:11px;color:var(--gold);font-weight:700">改進${i+1}</span><div style="font-size:12px;color:var(--text-2);margin-top:3px">${m.fact}${m.nextTime?` → <b>下次：${m.nextTime}</b>`:''}</div></div>`).join('')}
-    </div>`;
+    html+='<div style="padding:12px 14px;background:var(--gold-bg);border-radius:8px;border-left:3px solid var(--gold);margin-bottom:10px">';
+    html+='<div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px">📈 改進清單</div>';
+    imps.forEach(function(m,idx){
+      html+='<div style="margin-bottom:8px;padding:8px 10px;background:var(--white);border-radius:7px">';
+      html+='<span style="font-size:11px;color:var(--gold);font-weight:700">改進'+(idx+1)+'</span>';
+      html+='<div style="font-size:12px;color:var(--text-2);margin-top:3px">'+m.fact+(m.nextTime?' → <b>下次：'+m.nextTime+'</b>':'')+'</div></div>';
+    });
+    html+='</div>';
   }
-
-  // 3個提醒
-  const reminders=(rv.reminders||[]).filter(r=>r);
-  if(reminders.length>0){
-    html+=`<div style="padding:12px 14px;background:#FFF0E6;border-radius:8px;border-left:3px solid var(--accent-dark);margin-bottom:10px">
-      <div style="font-size:12px;font-weight:700;color:var(--accent-dark);margin-bottom:8px">⚡ 3個重要提醒</div>
-      ${reminders.map((r,i)=>`<div style="font-size:13px;color:var(--text-2);padding:5px 0;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--accent-dark);font-weight:700;flex-shrink:0">${i+1}.</span>${r}</div>`).join('')}
-    </div>`;
+  // 提醒
+  var rems=(rv.reminders||[]).filter(function(r){return r;});
+  if(rems.length>0){
+    html+='<div style="padding:12px 14px;background:#FFF0E6;border-radius:8px;border-left:3px solid var(--accent-dark);margin-bottom:10px">';
+    html+='<div style="font-size:12px;font-weight:700;color:var(--accent-dark);margin-bottom:8px">⚡ 重要提醒</div>';
+    rems.forEach(function(r,idx){
+      html+='<div style="font-size:13px;color:var(--text-2);padding:5px 0;display:flex;gap:8px"><span style="color:var(--accent-dark);font-weight:700;flex-shrink:0">'+(idx+1)+'.</span>'+r+'</div>';
+    });
+    html+='</div>';
   }
-
-  // 個人總結
+  // 總結
   if(rv.summary){
-    html+=`<div style="padding:14px 16px;background:linear-gradient(135deg,var(--orange-bg),#FFF8F0);border-radius:8px;border:2px solid var(--orange-light)">
-      <div style="font-size:12px;font-weight:700;color:var(--accent-dark);margin-bottom:6px">✍️ 我的總結</div>
-      <div style="font-family:var(--serif);font-size:14px;color:var(--accent-dark);line-height:1.9">${rv.summary}</div>
-    </div>`;
+    html+='<div style="padding:14px 16px;background:linear-gradient(135deg,var(--orange-bg),#FFF8F0);border-radius:8px;border:2px solid var(--orange-light)">';
+    html+='<div style="font-size:12px;font-weight:700;color:var(--accent-dark);margin-bottom:6px">✍️ 我的總結</div>';
+    html+='<div style="font-family:var(--serif);font-size:14px;color:var(--accent-dark);line-height:1.9">'+rv.summary+'</div></div>';
   }
-
   rv.autoAnalysis=html;
   el.innerHTML=html;
 }
 
 // ── 儲存 ──
 function saveReview(){
-  collectReviewForm();
+  collectRV();
   if(!reviewData.stockName){toast('請填寫股票名稱');return;}
   if(!D.reviews)D.reviews=[];
   if(reviewEditId){
-    const idx=D.reviews.findIndex(r=>r.id===reviewEditId);
+    var idx=(D.reviews||[]).findIndex(function(r){return r.id===reviewEditId;});
     if(idx>=0)D.reviews[idx]=reviewData; else D.reviews.unshift(reviewData);
   }else{
     D.reviews.unshift(reviewData);
   }
   sv(); cancelReview(); toast('📊 復盤已儲存！');
-}
-function cancelReview(){
-  reviewEditId=null; reviewData={};
-  renderReviewPage();
-  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function switchStTab(tab){
@@ -3764,6 +3691,7 @@ window.addEventListener('load',()=>{
 });
 // 頁面關閉前強制存本地
 window.addEventListener('beforeunload',()=>saveLocal());
+
 
 
 
