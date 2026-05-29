@@ -768,73 +768,139 @@ body{
 
 <!-- ════ PAGE: 股票交易 ════ -->
 <div class="page" id="pg-stock">
-  <div class="section-title">股票交易日記</div>
+  <div class="section-title">📈 股票交易學習日記</div>
   <div class="section-sub" style="font-family:var(--serif)">「不是每筆交易都要賺錢，但每筆交易都要學到東西。」</div>
+
   <div class="grid-2">
+  <!-- 左欄：表單 -->
   <div>
     <div class="card">
-      <div class="card-header"><span class="card-title" id="stFormTitle">📈 新增交易</span></div>
-      <div class="card-body">
-        <div class="form-row col-2">
-          <div class="form-group"><label class="label">買進日期</label><input type="date" class="input" id="stDate"></div>
-          <div class="form-group"><label class="label">操作</label><select class="select" id="stType"><option>買進</option><option>賣出</option><option>觀察</option></select></div>
+      <div class="card-header">
+        <span class="card-title" id="stFormTitle">📝 新增交易記錄</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="clearStForm()">清除</button>
         </div>
-        <div class="form-row col-2">
+      </div>
+      <div class="card-body" style="padding:16px">
+
+        <!-- 基本資訊 -->
+        <div style="font-size:11px;font-weight:700;color:var(--text-3);letter-spacing:.1em;margin-bottom:10px">基本資訊</div>
+        <div class="form-row c2">
+          <div class="form-group"><label class="label">日期</label><input type="date" class="input" id="stDate"></div>
+          <div class="form-group"><label class="label">操作</label>
+            <select class="select" id="stType"><option>買進</option><option>賣出</option><option>觀察</option></select>
+          </div>
+        </div>
+        <div class="form-row c2">
           <div class="form-group"><label class="label">股票代號/名稱</label><input type="text" class="input" id="stCode" placeholder="例：2330 台積電"></div>
           <div class="form-group"><label class="label">部位佔總資產 %</label><input type="number" class="input" id="stPos" placeholder="例：10" step="0.1"></div>
         </div>
-        <div class="form-row col-3">
-          <div class="form-group"><label class="label">買進價格（元）</label><input type="number" class="input" id="stPrice" placeholder="0" oninput="calcRisk()"></div>
+        <div class="form-row c3">
+          <div class="form-group"><label class="label">價格（元）</label><input type="number" class="input" id="stPrice" placeholder="0" oninput="calcRisk()"></div>
           <div class="form-group"><label class="label">股數（張）</label><input type="number" class="input" id="stQty" placeholder="0" oninput="calcRisk()"></div>
-          <div class="form-group"><label class="label">最大可承受虧損（元）</label><input type="number" class="input" id="stMaxLoss" placeholder="0"></div>
+          <div class="form-group"><label class="label">最大可承受虧損</label><input type="number" class="input" id="stMaxLoss" placeholder="0"></div>
         </div>
-        <div class="form-group"><label class="label">進場理由</label><textarea class="textarea" id="stReason" rows="2" placeholder="為什麼買？技術面・基本面・消息面..."></textarea></div>
-        <div class="form-row col-2">
-          <div class="form-group"><label class="label">K線位置</label><select class="select" id="stKline"><option value="">請選擇</option><option>5日線之上</option><option>5日線之下</option><option>月線之上</option><option>月線之下</option><option>季線之上</option><option>季線之下</option><option>突破壓力區</option><option>跌破支撐區</option></select></div>
-          <div class="form-group"><label class="label">當天大盤</label><select class="select" id="stMarket"><option value="">請選擇</option><option>大漲(+1%以上)</option><option>小漲</option><option>平盤</option><option>小跌</option><option>大跌(-1%以下)</option></select></div>
-        </div>
-        <div class="form-group"><label class="label">法人籌碼（外資/投信近5日）</label><input type="text" class="input" id="stChip" placeholder="例：外資連買3日+5000張"></div>
 
         <!-- 風險控管 -->
         <div class="risk-box">
           <div class="risk-title">🛡️ 風險控管</div>
-          <div class="form-row col-3">
-            <div><label class="label" style="color:var(--red)">停損 %（預設-10）</label><input type="number" class="input" id="stSL" value="-10" step="0.1" oninput="calcRisk()"><div class="risk-val red" id="slPrice"></div></div>
-            <div><label class="label" style="color:var(--green)">第一停利 %（預設+20）</label><input type="number" class="input" id="stTP1" value="20" step="0.1" oninput="calcRisk()"><div class="risk-val green" id="tp1Price"></div></div>
-            <div><label class="label" style="color:var(--gold)">第二停利 %（預設+40）</label><input type="number" class="input" id="stTP2" value="40" step="0.1" oninput="calcRisk()"><div class="risk-val gold" id="tp2Price"></div></div>
+          <div class="form-row c3" style="margin-bottom:0">
+            <div><label class="label" style="color:var(--red)">停損 %（預設-10）</label>
+              <input type="number" class="input" id="stSL" value="-10" step="0.1" oninput="calcRisk()">
+              <div class="risk-val red" id="slPrice"></div></div>
+            <div><label class="label" style="color:var(--green)">停利1 %（預設+20）</label>
+              <input type="number" class="input" id="stTP1" value="20" step="0.1" oninput="calcRisk()">
+              <div class="risk-val green" id="tp1Price"></div></div>
+            <div><label class="label" style="color:var(--gold)">停利2 %（預設+40）</label>
+              <input type="number" class="input" id="stTP2" value="40" step="0.1" oninput="calcRisk()">
+              <div class="risk-val gold" id="tp2Price"></div></div>
           </div>
         </div>
 
-        <div class="form-group"><label class="label">進場心理</label><select class="select" id="stMood"><option>冷靜分析後決定</option><option>有點怕錯過(FOMO)</option><option>看到別人在賺想跟</option><option>純粹想試試看</option><option>有信心會漲</option><option>其實有點賭</option></select></div>
+        <!-- 技術面 -->
+        <div style="font-size:11px;font-weight:700;color:var(--text-3);letter-spacing:.1em;margin:14px 0 10px">技術面 / 籌碼</div>
+        <div class="form-row c2">
+          <div class="form-group"><label class="label">K線位置</label>
+            <select class="select" id="stKline"><option value="">請選擇</option><option>5日線之上</option><option>5日線之下</option><option>月線之上</option><option>月線之下</option><option>季線之上</option><option>季線之下</option><option>突破壓力區</option><option>跌破支撐區</option></select></div>
+          <div class="form-group"><label class="label">當天大盤</label>
+            <select class="select" id="stMarket"><option value="">請選擇</option><option>大漲(+1%以上)</option><option>小漲</option><option>平盤</option><option>小跌</option><option>大跌(-1%以下)</option></select></div>
+        </div>
+        <div class="form-group"><label class="label">法人籌碼（外資/投信近5日）</label>
+          <input type="text" class="input" id="stChip" placeholder="例：外資連買3日+5000張"></div>
+
+        <!-- 買賣決策（核心學習區）-->
+        <div style="font-size:11px;font-weight:700;color:var(--text-3);letter-spacing:.1em;margin:14px 0 10px">📚 決策思考（學習核心）</div>
+
+        <div style="background:var(--green-bg);border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px">✅ 為什麼要買 / 要賣</div>
+          <div class="form-group" style="margin-bottom:8px"><label class="label">買進理由</label>
+            <textarea class="textarea" id="stWhyBuy" rows="2" placeholder="什麼讓我決定買？題材、技術、籌碼..."></textarea></div>
+          <div class="form-group" style="margin-bottom:0"><label class="label">預期狀態（我預期它會怎麼走）</label>
+            <textarea class="textarea" id="stExpect" rows="2" placeholder="預期上漲到哪裡？需要多久？什麼情況下我的判斷是對的？"></textarea></div>
+        </div>
+
+        <div style="background:var(--red-bg);border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:10px">❌ 為什麼不買 / 不該買的理由</div>
+          <div class="form-group" style="margin-bottom:0"><label class="label">反面理由（我看到哪些風險或疑慮？）</label>
+            <textarea class="textarea" id="stWhyNot" rows="2" placeholder="哪些訊號讓我猶豫？有什麼風險我在忽視？"></textarea></div>
+        </div>
+
+        <div class="form-group"><label class="label">💭 心法（這次用了什麼判斷邏輯？）</label>
+          <textarea class="textarea" id="stMethod" rows="2" placeholder="例：突破後買進法、均線多頭排列策略..."></textarea></div>
+
+        <div class="form-group"><label class="label">⚠️ 提醒自己（這筆要注意什麼？）</label>
+          <textarea class="textarea" id="stRemind" rows="2" placeholder="例：不要因為漲了就忘記設停損、量縮要小心..."></textarea></div>
+
+        <!-- 心理狀態 -->
+        <div class="form-group"><label class="label">進場心理狀態</label>
+          <select class="select" id="stMood">
+            <option>冷靜分析後決定</option><option>有點怕錯過(FOMO)</option>
+            <option>看到別人在賺想跟</option><option>純粹想試試看</option>
+            <option>有信心會漲</option><option>其實有點賭</option>
+          </select></div>
 
         <!-- 出場記錄 -->
-        <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:14px">
-          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">📤 出場記錄（可分批）</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-3);letter-spacing:.1em;margin:14px 0 10px">📤 出場記錄</div>
+        <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px">
           <div id="exitRows"></div>
-          <button class="btn btn-ghost btn-sm" onclick="addExit()" style="margin-top:8px">＋ 新增一批賣出</button>
+          <button class="btn btn-ghost btn-sm" onclick="addExit()" style="margin-top:6px">＋ 新增一批賣出</button>
+        </div>
+
+        <!-- 賣出決策 -->
+        <div style="background:var(--gold-bg);border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid var(--gold-light)">
+          <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:10px">💰 賣出決策</div>
+          <div class="form-group" style="margin-bottom:8px"><label class="label">為什麼賣（是什麼讓我決定賣？）</label>
+            <textarea class="textarea" id="stWhySell" rows="2" placeholder="達到停利？跌破停損？題材消退？還是情緒..."></textarea></div>
+          <div class="form-group" style="margin-bottom:0"><label class="label">為什麼不賣（當時有猶豫嗎？理由是什麼？）</label>
+            <textarea class="textarea" id="stWhyNotSell" rows="2" placeholder="當時是否考慮繼續持有？理由是什麼？"></textarea></div>
         </div>
 
         <!-- 復盤 -->
-        <div class="alert alert-blue">
-          <div class="alert-title" style="font-weight:700;margin-bottom:10px">📝 我學到什麼？</div>
-          <div class="form-group"><label class="label">1. 我的判斷對了嗎？哪裡對、哪裡錯？</label><textarea class="textarea" id="stR1" rows="3"></textarea></div>
-          <div class="form-group"><label class="label">2. 我有遵守紀律嗎？（停損/停利）</label><textarea class="textarea" id="stR2" rows="3"></textarea></div>
-          <div class="form-group"><label class="label">3. 我的情緒有影響決策嗎？</label><textarea class="textarea" id="stR3" rows="3"></textarea></div>
-          <div class="form-group" style="margin-bottom:0"><label class="label">4. 下次遇到類似情況我會怎麼做？</label><textarea class="textarea" id="stR4" rows="3"></textarea></div>
+        <div style="background:var(--orange-bg);border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid var(--orange-light)">
+          <div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:10px">📝 事後復盤</div>
+          <div class="form-group" style="margin-bottom:8px"><label class="label">判斷的驗證（預期對了嗎？哪裡對哪裡錯？）</label>
+            <textarea class="textarea" id="stVerify" rows="3" placeholder="當初預期它會...，實際上它...，我的判斷哪裡對、哪裡錯？"></textarea></div>
+          <div class="form-group" style="margin-bottom:8px"><label class="label">反省（我有沒有違反自己的規則？）</label>
+            <textarea class="textarea" id="stReflect" rows="2" placeholder="停損有沒有守住？有沒有追高殺低？情緒有沒有影響決定？"></textarea></div>
+          <div class="form-group" style="margin-bottom:0"><label class="label">我學到什麼（下次遇到類似情況怎麼做？）</label>
+            <textarea class="textarea" id="stLearn" rows="3" placeholder="這筆交易讓我學到了...，下次遇到類似情況我會..."></textarea></div>
         </div>
 
         <input type="hidden" id="stEditId">
         <div style="display:flex;gap:8px">
           <button class="btn btn-primary" onclick="saveStock()" style="flex:1" id="stSaveBtn">💾 儲存交易</button>
-          <button class="btn btn-ghost" onclick="clearStForm()">清除</button>
         </div>
+
       </div>
     </div>
     <div class="card"><div class="card-header"><span class="card-title">📊 損益統計</span></div><div class="card-body" id="stStat"></div></div>
   </div>
+
+  <!-- 右欄：記錄清單 -->
   <div>
     <div class="card">
-      <div class="card-header"><span class="card-title">📝 交易記錄</span>
+      <div class="card-header">
+        <span class="card-title">📋 交易記錄</span>
         <div class="tabs" style="margin-bottom:0">
           <div class="tab active" onclick="filterStock('all',this)">全部</div>
           <div class="tab" onclick="filterStock('買進',this)">買進</div>
@@ -845,8 +911,107 @@ body{
       <div class="card-body" id="stList"></div>
     </div>
   </div>
+  </div><!-- /stAreaTrade -->
+  </div><!-- /grid-2 -->
+
+  <!-- 題材筆記區 -->
+  <div id="stAreaTheme" style="display:none">
+  <div class="grid-2">
+  <!-- 左：新增/編輯題材 -->
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title" id="themeFormTitle">🎯 新增題材筆記</span>
+        <button class="btn btn-ghost btn-sm" onclick="clearThemeForm()">清除</button>
+      </div>
+      <div class="card-body" style="padding:16px">
+
+        <div class="form-row c2">
+          <div class="form-group"><label class="label">題材名稱</label>
+            <input type="text" class="input" id="thName" placeholder="例：AI 伺服器、電動車、半導體..."></div>
+          <div class="form-group"><label class="label">相關族群/類股</label>
+            <input type="text" class="input" id="thSector" placeholder="例：散熱、CoWoS、ABF載板..."></div>
+        </div>
+
+        <div class="form-group"><label class="label">🔍 題材是什麼？（用自己的話說明白）</label>
+          <textarea class="textarea" id="thWhat" rows="3"
+            placeholder="這個題材在說什麼故事？為什麼市場會關注它？用自己的話解釋，越白話越好..."></textarea></div>
+
+        <div class="form-group"><label class="label">📈 為什麼股票會因為這個題材上漲？</label>
+          <textarea class="textarea" id="thWhy" rows="3"
+            placeholder="資金為什麼要追這個？有什麼實際業績支撐？還是純粹炒概念？
+例：AI 需要大量散熱，散熱廠訂單爆炸，EPS 真的會成長..."></textarea></div>
+
+        <div class="form-group"><label class="label">🏢 代表性的股票（台股或美股）</label>
+          <textarea class="textarea" id="thStocks" rows="2"
+            placeholder="例：2330台積電、6669緯穎、3443創意...（可以慢慢補充）"></textarea></div>
+
+        <div class="form-group"><label class="label">📅 題材的生命週期</label>
+          <select class="select" id="thCycle">
+            <option value="">請評估</option>
+            <option>剛啟動（早期佈局）</option>
+            <option>主升段（趨勢明確）</option>
+            <option>高點震盪（要小心）</option>
+            <option>退燒中（別追）</option>
+            <option>長期趨勢（多年持續）</option>
+            <option>觀察中（還不確定）</option>
+          </select></div>
+
+        <div class="form-group"><label class="label">⚠️ 風險和注意事項</label>
+          <textarea class="textarea" id="thRisk" rows="2"
+            placeholder="什麼情況下這個題材會失效？
+例：美國對中半導體禁令升溫、AI 訂單不如預期、比特幣崩跌..."></textarea></div>
+
+        <div class="form-group"><label class="label">📝 我的觀察和學習心得</label>
+          <textarea class="textarea" id="thNote" rows="3"
+            placeholder="我學到什麼？這個題材和哪些指標有關？我以前不知道的事..."></textarea></div>
+
+        <div class="form-group"><label class="label">🔗 相關新聞/資料來源</label>
+          <input type="text" class="input" id="thSource" placeholder="例：MoneyDJ、鉅亨網某篇文章標題..."></div>
+
+        <div class="form-group" style="margin-bottom:16px"><label class="label">狀態標記</label>
+          <select class="select" id="thStatus">
+            <option>🔥 熱門關注中</option>
+            <option>👀 持續觀察</option>
+            <option>📚 學習筆記</option>
+            <option>❄️ 已退燒</option>
+          </select></div>
+
+        <input type="hidden" id="thEditId">
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" onclick="saveTheme()" style="flex:1" id="themeSaveBtn">💾 儲存題材筆記</button>
+          <button class="btn btn-ghost btn-sm" onclick="runThemeAI()" id="themeAiBtn">🤖 AI 解說</button>
+        </div>
+
+        <!-- AI 解說區 -->
+        <div id="themeAiResult" style="display:none;margin-top:12px;padding:13px 15px;background:var(--purple-bg);border-radius:8px;border:1px solid var(--purple-light)">
+          <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:6px">🤖 AI 幫你解說這個題材</div>
+          <div id="themeAiText" style="font-size:13px;color:var(--text-2);line-height:1.85"></div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- 右：題材清單 -->
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📚 題材知識庫</span>
+        <div class="tabs" style="margin-bottom:0">
+          <div class="tab active" onclick="filterTheme('all',this)">全部</div>
+          <div class="tab" onclick="filterTheme('🔥 熱門關注中',this)">🔥 熱門</div>
+          <div class="tab" onclick="filterTheme('👀 持續觀察',this)">👀 觀察</div>
+          <div class="tab" onclick="filterTheme('📚 學習筆記',this)">📚 學習</div>
+        </div>
+      </div>
+      <div class="card-body" id="themeList"></div>
+    </div>
+  </div>
+  </div>
+  </div><!-- /stAreaTheme -->
+
 </div>
+
 
 <!-- ════ PAGE: 服務觀察 ════ -->
 <div class="page" id="pg-service">
@@ -972,7 +1137,7 @@ function merge(base, incoming){
   if(!incoming) return base;
   const out = Object.assign({}, base);
   // 陣列型：取聯集（以 id 去重）
-  ['stocks','journals','books','services','ideas','wg','mg','yg'].forEach(k=>{
+  ['stocks','journals','books','services','ideas','themes','wg','mg','yg'].forEach(k=>{
     const a = base[k]||[], b = incoming[k]||[];
     const all = [...b, ...a];
     const seen = new Set();
@@ -1597,26 +1762,33 @@ function collectExits(){
   return rows;
 }
 function clearStForm(){
-  ['stDate','stCode','stPrice','stQty','stPos','stMaxLoss','stReason','stKline','stMarket','stChip','stSL','stTP1','stTP2','stR1','stR2','stR3','stR4','stEditId'].forEach(k=>{ const el=document.getElementById(k); if(!el)return; if(el.tagName==='SELECT')el.selectedIndex=0; else el.value=''; });
-  ['slPrice','tp1Price','tp2Price'].forEach(k=>{ const el=document.getElementById(k); if(el)el.textContent=''; });
+  ['stDate','stCode','stPrice','stQty','stPos','stMaxLoss','stKline','stMarket','stChip',
+   'stSL','stTP1','stTP2','stWhyBuy','stExpect','stWhyNot','stMethod','stRemind',
+   'stWhySell','stWhyNotSell','stVerify','stReflect','stLearn','stEditId'].forEach(k=>{
+    const el=document.getElementById(k); if(!el)return;
+    if(el.tagName==='SELECT')el.selectedIndex=0; else el.value='';
+  });
+  ['slPrice','tp1Price','tp2Price'].forEach(k=>{const el=document.getElementById(k);if(el)el.textContent='';});
   document.getElementById('exitRows').innerHTML=''; exitRowCount=0;
-  document.getElementById('stFormTitle').textContent='📈 新增交易';
+  document.getElementById('stFormTitle').textContent='📝 新增交易記錄';
   document.getElementById('stSaveBtn').textContent='💾 儲存交易';
   initStForm();
 }
+
 function saveStock(){
-  const code=document.getElementById('stCode')?.value.trim(); if(!code){toast('請填寫股票代號');return;}
+  const code=document.getElementById('stCode')?.value.trim();
+  if(!code){toast('請填寫股票代號');return;}
   const exits=collectExits();
-  const totalPnl=exits.reduce((a,e)=>a+e.pnl,0);
+  const totalPnl=exits.reduce((a,e)=>a+(e.pnl||0),0);
   const editId=parseInt(document.getElementById('stEditId')?.value)||0;
   const entry={
-    id:editId||id(), date:document.getElementById('stDate')?.value||TODAY,
+    id:editId||uid(),
+    date:document.getElementById('stDate')?.value||TODAY,
     code, type:document.getElementById('stType')?.value||'買進',
     price:parseFloat(document.getElementById('stPrice')?.value)||0,
     qty:parseFloat(document.getElementById('stQty')?.value)||0,
     pos:parseFloat(document.getElementById('stPos')?.value)||0,
     maxLoss:parseFloat(document.getElementById('stMaxLoss')?.value)||0,
-    reason:document.getElementById('stReason')?.value.trim()||'',
     kline:document.getElementById('stKline')?.value||'',
     market:document.getElementById('stMarket')?.value||'',
     chip:document.getElementById('stChip')?.value.trim()||'',
@@ -1624,32 +1796,250 @@ function saveStock(){
     tp1:parseFloat(document.getElementById('stTP1')?.value)||20,
     tp2:parseFloat(document.getElementById('stTP2')?.value)||40,
     mood:document.getElementById('stMood')?.value||'',
+    // 新欄位
+    whyBuy:document.getElementById('stWhyBuy')?.value.trim()||'',
+    expect:document.getElementById('stExpect')?.value.trim()||'',
+    whyNot:document.getElementById('stWhyNot')?.value.trim()||'',
+    method:document.getElementById('stMethod')?.value.trim()||'',
+    remind:document.getElementById('stRemind')?.value.trim()||'',
+    whySell:document.getElementById('stWhySell')?.value.trim()||'',
+    whyNotSell:document.getElementById('stWhyNotSell')?.value.trim()||'',
+    verify:document.getElementById('stVerify')?.value.trim()||'',
+    reflect:document.getElementById('stReflect')?.value.trim()||'',
+    learn:document.getElementById('stLearn')?.value.trim()||'',
+    // 舊欄位相容
+    reason:document.getElementById('stWhyBuy')?.value.trim()||'',
+    r1:document.getElementById('stVerify')?.value.trim()||'',
+    r2:document.getElementById('stReflect')?.value.trim()||'',
+    r3:'',r4:document.getElementById('stLearn')?.value.trim()||'',
     exits, pnl:totalPnl,
-    r1:document.getElementById('stR1')?.value.trim()||'',
-    r2:document.getElementById('stR2')?.value.trim()||'',
-    r3:document.getElementById('stR3')?.value.trim()||'',
-    r4:document.getElementById('stR4')?.value.trim()||''
+    aiAnalysis:''
   };
   if(!D.stocks)D.stocks=[];
-  if(editId){ const idx=D.stocks.findIndex(s=>s.id===editId); if(idx>=0)D.stocks[idx]=entry; else D.stocks.unshift(entry); }
+  if(editId){const idx2=D.stocks.findIndex(s=>s.id===editId);if(idx2>=0)D.stocks[idx2]=entry;else D.stocks.unshift(entry);}
   else D.stocks.unshift(entry);
   clearStForm(); sv(); renderStocks(); renderStockStat(); toast('📈 交易記錄已儲存！');
 }
+
 function editStock(sid){
   const s=(D.stocks||[]).find(s=>s.id===sid); if(!s)return;
-  const map={stDate:'date',stCode:'code',stPrice:'price',stQty:'qty',stPos:'pos',stMaxLoss:'maxLoss',stReason:'reason',stKline:'kline',stMarket:'market',stChip:'chip',stSL:'sl',stTP1:'tp1',stTP2:'tp2',stR1:'r1',stR2:'r2',stR3:'r3',stR4:'r4'};
-  Object.entries(map).forEach(([elId,key])=>{ const el=document.getElementById(elId); if(el&&s[key]!==undefined)el.value=s[key]; });
-  const typeEl=document.getElementById('stType'); if(typeEl)typeEl.value=s.type||'買進';
-  const moodEl=document.getElementById('stMood'); if(moodEl)moodEl.value=s.mood||'冷靜分析後決定';
-  document.getElementById('exitRows').innerHTML=''; exitRowCount=0;
-  (s.exits||[]).forEach(e=>{ addExit(); const i=exitRowCount-1; document.getElementById('ex_d'+i).value=e.date||''; document.getElementById('ex_p'+i).value=e.price||''; document.getElementById('ex_q'+i).value=e.qty||''; document.getElementById('ex_pnl'+i).value=e.pnl||''; document.getElementById('ex_days'+i).value=e.days||''; });
+  // 基本
+  const basicMap={stDate:'date',stCode:'code',stPrice:'price',stQty:'qty',stPos:'pos',
+    stMaxLoss:'maxLoss',stKline:'kline',stMarket:'market',stChip:'chip',stSL:'sl',stTP1:'tp1',stTP2:'tp2'};
+  Object.entries(basicMap).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el&&s[key]!==undefined)el.value=s[key];});
+  // 新欄位（向下相容舊資料）
+  const newMap={stWhyBuy:'whyBuy',stExpect:'expect',stWhyNot:'whyNot',stMethod:'method',
+    stRemind:'remind',stWhySell:'whySell',stWhyNotSell:'whyNotSell',
+    stVerify:'verify',stReflect:'reflect',stLearn:'learn'};
+  Object.entries(newMap).forEach(([elId,key])=>{
+    const el=document.getElementById(elId); if(!el)return;
+    // 新欄位有值用新的，否則從舊欄位讀
+    if(s[key])el.value=s[key];
+    else if(key==='whyBuy'&&s.reason)el.value=s.reason;
+    else if(key==='verify'&&s.r1)el.value=s.r1;
+    else if(key==='reflect'&&s.r2)el.value=s.r2;
+    else if(key==='learn'&&s.r4)el.value=s.r4;
+  });
+  const typeEl=document.getElementById('stType');if(typeEl)typeEl.value=s.type||'買進';
+  const moodEl=document.getElementById('stMood');if(moodEl)moodEl.value=s.mood||'冷靜分析後決定';
+  // 出場記錄
+  document.getElementById('exitRows').innerHTML='';exitRowCount=0;
+  (s.exits||[]).forEach(e=>{addExit();const i=exitRowCount-1;
+    document.getElementById('ex_d'+i).value=e.date||'';document.getElementById('ex_p'+i).value=e.price||'';
+    document.getElementById('ex_q'+i).value=e.qty||'';document.getElementById('ex_pnl'+i).value=e.pnl||'';
+    document.getElementById('ex_days'+i).value=e.days||'';});
   document.getElementById('stEditId').value=sid;
   document.getElementById('stFormTitle').textContent='✏️ 編輯交易';
   document.getElementById('stSaveBtn').textContent='💾 更新交易';
   calcRisk(); window.scrollTo({top:0,behavior:'smooth'}); toast('已載入，修改後按更新');
 }
+
 function delStock(sid){ D.stocks=(D.stocks||[]).filter(s=>s.id!==sid); sv(); renderStocks(); renderStockStat(); }
 function filterStock(f,el){ stockFilter=f; document.querySelectorAll('#pg-stock .tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); renderStocks(); }
+// ══════════════════════════════════════════════
+// 題材筆記
+// ══════════════════════════════════════════════
+let themeFilter='all';
+
+function switchStTab(tab){
+  const trade=document.getElementById('stAreaTrade');
+  const theme=document.getElementById('stAreaTheme');
+  const btnT=document.getElementById('stTabTrade');
+  const btnTh=document.getElementById('stTabTheme');
+  if(tab==='trade'){
+    trade.style.display=''; theme.style.display='none';
+    btnT.className='btn btn-primary'; btnTh.className='btn btn-ghost';
+  }else{
+    trade.style.display='none'; theme.style.display='';
+    btnT.className='btn btn-ghost'; btnTh.className='btn btn-primary';
+    renderThemes();
+  }
+}
+
+function saveTheme(){
+  const name=document.getElementById('thName')?.value.trim();
+  if(!name){toast('請填寫題材名稱');return;}
+  const editId=parseInt(document.getElementById('thEditId')?.value)||0;
+  const entry={
+    id:editId||uid(),
+    date:TODAY,
+    name,
+    sector:document.getElementById('thSector')?.value.trim()||'',
+    what:document.getElementById('thWhat')?.value.trim()||'',
+    why:document.getElementById('thWhy')?.value.trim()||'',
+    stocks:document.getElementById('thStocks')?.value.trim()||'',
+    cycle:document.getElementById('thCycle')?.value||'',
+    risk:document.getElementById('thRisk')?.value.trim()||'',
+    note:document.getElementById('thNote')?.value.trim()||'',
+    source:document.getElementById('thSource')?.value.trim()||'',
+    status:document.getElementById('thStatus')?.value||'📚 學習筆記',
+    aiNote:''
+  };
+  if(!D.themes)D.themes=[];
+  if(editId){const idx=D.themes.findIndex(t=>t.id===editId);if(idx>=0)D.themes[idx]=entry;else D.themes.unshift(entry);}
+  else D.themes.unshift(entry);
+  clearThemeForm(); sv(); renderThemes(); toast('🎯 題材筆記已儲存！');
+}
+
+function clearThemeForm(){
+  ['thName','thSector','thWhat','thWhy','thStocks','thRisk','thNote','thSource','thEditId'].forEach(k=>{
+    const el=document.getElementById(k);if(el)el.value='';
+  });
+  const cy=document.getElementById('thCycle');if(cy)cy.selectedIndex=0;
+  const st=document.getElementById('thStatus');if(st)st.selectedIndex=0;
+  document.getElementById('themeFormTitle').textContent='🎯 新增題材筆記';
+  document.getElementById('themeSaveBtn').textContent='💾 儲存題材筆記';
+  document.getElementById('thEditId').value='';
+  document.getElementById('themeAiResult').style.display='none';
+}
+
+function editTheme(tid){
+  const t=(D.themes||[]).find(t=>t.id===tid); if(!t)return;
+  const map={thName:'name',thSector:'sector',thWhat:'what',thWhy:'why',
+    thStocks:'stocks',thRisk:'risk',thNote:'note',thSource:'source'};
+  Object.entries(map).forEach(([elId,key])=>{const el=document.getElementById(elId);if(el)el.value=t[key]||'';});
+  const cy=document.getElementById('thCycle');if(cy)cy.value=t.cycle||'';
+  const st=document.getElementById('thStatus');if(st)st.value=t.status||'📚 學習筆記';
+  document.getElementById('thEditId').value=tid;
+  document.getElementById('themeFormTitle').textContent='✏️ 編輯題材筆記';
+  document.getElementById('themeSaveBtn').textContent='💾 更新筆記';
+  if(t.aiNote){
+    document.getElementById('themeAiResult').style.display='block';
+    document.getElementById('themeAiText').innerHTML=t.aiNote;
+  }
+  window.scrollTo({top:0,behavior:'smooth'}); toast('已載入，修改後按更新');
+}
+
+function delTheme(tid){D.themes=(D.themes||[]).filter(t=>t.id!==tid);sv();renderThemes();}
+
+function filterTheme(f,el){
+  themeFilter=f;
+  document.querySelectorAll('#pg-stock .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active'); renderThemes();
+}
+
+function renderThemes(){
+  const el=document.getElementById('themeList'); if(!el)return;
+  let list=[...(D.themes||[])];
+  if(themeFilter!=='all')list=list.filter(t=>t.status===themeFilter);
+  if(!list.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">🎯</div><div class="empty-text">還沒有題材筆記<br>先從你感興趣的題材開始記錄</div></div>';
+    return;
+  }
+  const statusColor={'🔥 熱門關注中':'var(--red)','👀 持續觀察':'var(--blue)','📚 學習筆記':'var(--text-3)','❄️ 已退燒':'var(--text-3)'};
+  const cycleColor={'剛啟動（早期佈局）':'var(--green)','主升段（趨勢明確）':'var(--green)','高點震盪（要小心）':'var(--orange)','退燒中（別追）':'var(--red)','長期趨勢（多年持續）':'var(--blue)','觀察中（還不確定）':'var(--text-3)'};
+  el.innerHTML=list.map(t=>{
+    const cardId='thcard_'+t.id;
+    const sc=statusColor[t.status]||'var(--text-3)';
+    const cc=cycleColor[t.cycle]||'var(--text-3)';
+    return `<div class="record" style="padding:0;overflow:hidden;margin-bottom:10px">
+      <!-- 頂部 -->
+      <div style="padding:13px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;flex-wrap:wrap" onclick="toggleThCard('${cardId}')">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+            <span style="font-family:var(--serif);font-size:16px;font-weight:700;color:var(--text)">${t.name}</span>
+            ${t.sector?`<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:var(--bg);color:var(--text-3);border:1px solid var(--border)">${t.sector}</span>`:''}
+            <span style="font-size:11px;font-weight:700;color:${sc}">${t.status}</span>
+          </div>
+          ${t.cycle?`<span style="font-size:11px;font-weight:700;color:${cc}">週期：${t.cycle}</span>`:''}
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button class="btn-icon" onclick="event.stopPropagation();editTheme(${t.id})">✏️</button>
+          <button class="btn-icon" onclick="event.stopPropagation();delTheme(${t.id})">✕</button>
+        </div>
+      </div>
+      <!-- 展開 -->
+      <div id="${cardId}" style="display:none;border-top:1px solid var(--border)">
+        <div style="padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          ${t.what?`<div style="padding:9px 12px;background:var(--blue-bg);border-radius:8px;border-left:3px solid var(--blue);grid-column:1/-1"><div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px">🔍 這個題材是什麼</div><div style="font-size:13px;color:var(--text-2);line-height:1.7">${t.what}</div></div>`:''}
+          ${t.why?`<div style="padding:9px 12px;background:var(--green-bg);border-radius:8px;border-left:3px solid var(--green)"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px">📈 為什麼股票會漲</div><div style="font-size:13px;color:var(--text-2);line-height:1.7">${t.why}</div></div>`:''}
+          ${t.risk?`<div style="padding:9px 12px;background:var(--red-bg);border-radius:8px;border-left:3px solid var(--red)"><div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px">⚠️ 風險與失效條件</div><div style="font-size:13px;color:var(--text-2);line-height:1.7">${t.risk}</div></div>`:''}
+          ${t.stocks?`<div style="padding:9px 12px;background:var(--orange-bg);border-radius:8px;border-left:3px solid var(--orange);grid-column:1/-1"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px">🏢 代表性股票</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${t.stocks}</div></div>`:''}
+          ${t.note?`<div style="padding:9px 12px;background:var(--gold-bg);border-radius:8px;border-left:3px solid var(--gold);grid-column:1/-1"><div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:4px">📝 我的學習心得</div><div style="font-size:13px;color:var(--text-2);line-height:1.7">${t.note}</div></div>`:''}
+          ${t.source?`<div style="font-size:12px;color:var(--text-3);grid-column:1/-1">📎 來源：${t.source}</div>`:''}
+        </div>
+        ${t.aiNote?`<div style="padding:12px 16px;border-top:1px solid var(--border);background:var(--purple-bg)"><div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:6px">🤖 AI 解說</div><div style="font-size:13px;color:var(--text-2);line-height:1.85">${t.aiNote}</div></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleThCard(id){
+  const el=document.getElementById(id);if(!el)return;
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+
+// 題材 AI 解說
+async function runThemeAI(){
+  const name=document.getElementById('thName')?.value.trim();
+  if(!name){toast('請先填寫題材名稱');return;}
+  const what=document.getElementById('thWhat')?.value.trim()||'';
+  const why=document.getElementById('thWhy')?.value.trim()||'';
+  const stocks=document.getElementById('thStocks')?.value.trim()||'';
+  const risk=document.getElementById('thRisk')?.value.trim()||'';
+  const resultEl=document.getElementById('themeAiResult');
+  const textEl=document.getElementById('themeAiText');
+  resultEl.style.display='block';
+  textEl.innerHTML='<span style="color:var(--purple)">🤖 解說中，請稍候…</span>';
+
+  const prompt=`你是一位有經驗的台灣股市投資教練，專門幫助初學者理解股票題材。
+請用簡單白話的繁體中文，幫我解說以下這個股票題材。
+
+題材名稱：${name}
+相關族群：${stocks||'（未填）'}
+我的理解：${what||'（未填）'}
+我認為漲的原因：${why||'（未填）'}
+我認為的風險：${risk||'（未填）'}
+
+請從以下角度解說（每點3-5句話，用我能懂的語言，不要太專業術語）：
+
+1. 📖 這個題材的本質是什麼？（用最簡單的話解釋「為什麼市場在炒這個」）
+2. 🔗 錢的流向邏輯（為什麼資金會追這個題材？是真的有業績？還是炒概念？）
+3. 📈 怎麼看題材強不強？（有哪些指標或訊號可以判斷這個題材還在不在？）
+4. ⚠️ 最常見的陷阱（初學者在這類題材最容易犯什麼錯？）
+5. 💡 給初學者的一個建議（如果要參與這個題材，最重要的一件事是什麼？）`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'解說失敗，請稍後再試';
+    const formatted=text.replace(/\n/g,'<br>');
+    textEl.innerHTML=formatted;
+    // 存入當前編輯的題材
+    const editId=parseInt(document.getElementById('thEditId')?.value)||0;
+    if(editId){
+      const idx=(D.themes||[]).findIndex(t=>t.id===editId);
+      if(idx>=0){D.themes[idx].aiNote=formatted;sv();}
+    }
+  }catch(e){
+    textEl.innerHTML='<span style="color:var(--red)">⚠ 解說失敗：'+e.message+'</span>';
+  }
+}
+
 function renderStocks(){
   const el=document.getElementById('stList'); if(!el)return;
   let list=[...(D.stocks||[])].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
@@ -1662,36 +2052,170 @@ function renderStocks(){
     const slP=price>0?(price*(1+sl/100)).toFixed(1):'';
     const t1P=price>0?(price*(1+tp1/100)).toFixed(1):'';
     const t2P=price>0?(price*(1+tp2/100)).toFixed(1):'';
-    return`<div class="record">
-      <div class="record-hd">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <span class="record-title">${s.code||'—'}</span>
-            <span class="tag ${s.type==='買進'?'tag-green':s.type==='賣出'?'tag-red':'tag-gray'}">${s.type||'買進'}</span>
-            ${totalPnl!==0?`<span style="font-size:15px;font-weight:700;color:${totalPnl>0?'var(--green)':'var(--red)'}">${totalPnl>0?'+':''}${Math.round(totalPnl).toLocaleString()}元</span>`:''}
-          </div>
-          <div class="record-date" style="margin-top:3px">${s.date||''}${price?` · ${price}元`:''}${s.qty?` × ${s.qty}張`:''}${s.pos?` · 部位${s.pos}%`:''}</div>
-        </div>
-        <div class="record-actions">
-          <button class="btn btn-ghost btn-sm" onclick="editStock(${s.id})">✏️</button>
-          <button class="btn-icon" onclick="delStock(${s.id})">✕</button>
+    const typeC=s.type==='買進'?'var(--green)':s.type==='賣出'?'var(--red)':'var(--text-3)';
+    const typeBg=s.type==='買進'?'var(--green-bg)':s.type==='賣出'?'var(--red-bg)':'var(--bg)';
+    const pnlC=totalPnl>0?'var(--green)':totalPnl<0?'var(--red)':'var(--text-3)';
+    const cardId='stcard_'+s.id;
+    // 買進理由預覽（向下相容）
+    const buyReason=s.whyBuy||s.reason||'';
+    const reasonPreview=buyReason.length>50?buyReason.slice(0,50)+'…':buyReason;
+
+    return `<div class="record" style="padding:0;overflow:hidden;margin-bottom:12px">
+      <!-- 頂部：一眼看重點 -->
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;cursor:pointer;background:var(--white)" onclick="toggleStCard('${cardId}')">
+        <span style="font-family:var(--serif);font-size:17px;font-weight:700;color:var(--text)">${s.code||'—'}</span>
+        <span style="padding:2px 9px;border-radius:12px;font-size:12px;font-weight:700;background:${typeBg};color:${typeC}">${s.type||'買進'}</span>
+        <span style="font-size:12px;color:var(--text-3)">${s.date||''}</span>
+        ${price?`<span style="font-size:13px;color:var(--text-2)"><b>${price}</b>元${s.qty?` × ${s.qty}張`:''}</span>`:''}
+        ${totalPnl!==0?`<span style="font-size:16px;font-weight:700;color:${pnlC};margin-left:auto">${totalPnl>0?'+':''}${Math.round(totalPnl).toLocaleString()}元</span>`:'<span style="margin-left:auto"></span>'}
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button class="btn-icon" onclick="event.stopPropagation();editStock(${s.id})" title="編輯">✏️</button>
+          <button class="btn-icon" onclick="event.stopPropagation();delStock(${s.id})" title="刪除">✕</button>
         </div>
       </div>
-      <div class="record-body">
-        ${slP||t1P||t2P?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
-          ${slP?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--red-light);border:1px solid var(--red);color:var(--red)">停損 ${slP}</span>`:''}
-          ${t1P?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--green-light);border:1px solid var(--green);color:var(--green)">停利1 ${t1P}</span>`:''}
-          ${t2P?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--gold-light);border:1px solid var(--gold);color:var(--gold)">停利2 ${t2P}</span>`:''}
-          ${s.mood?`<span class="badge badge-gray">${s.mood}</span>`:''}
+
+      <!-- 風控標籤 -->
+      ${slP||t1P||t2P||s.mood?`<div style="padding:0 16px 10px;display:flex;gap:6px;flex-wrap:wrap">
+        ${slP?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--red-bg);border:1px solid var(--red-light);color:var(--red)">停損 ${slP}</span>`:''}
+        ${t1P?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--green-bg);border:1px solid var(--green-light);color:var(--green)">停利1 ${t1P}</span>`:''}
+        ${t2P?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;background:var(--gold-bg);border:1px solid var(--gold-light);color:var(--gold)">停利2 ${t2P}</span>`:''}
+        ${s.mood?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;background:var(--bg);border:1px solid var(--border);color:var(--text-3)">${s.mood}</span>`:''}
+        ${s.pos?`<span style="padding:3px 10px;border-radius:10px;font-size:11px;background:var(--blue-bg);border:1px solid var(--blue-light);color:var(--blue)">部位${s.pos}%</span>`:''}
+      </div>`:''}
+
+      <!-- 買進理由預覽 -->
+      ${reasonPreview?`<div style="padding:0 16px 12px;font-size:13px;color:var(--text-2);line-height:1.5"><span style="font-size:11px;font-weight:700;color:var(--text-3)">進場：</span>${reasonPreview}</div>`:''}
+
+      <!-- 展開內容 -->
+      <div id="${cardId}" style="display:none;border-top:1px solid var(--border)">
+
+        <!-- 決策思考區 -->
+        <div style="padding:14px 16px;background:var(--bg)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            ${s.whyBuy||s.reason?`<div style="padding:10px 12px;background:var(--green-bg);border-radius:8px;border-left:3px solid var(--green)"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px">✅ 為什麼買</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.whyBuy||s.reason}</div></div>`:''}
+            ${s.whyNot?`<div style="padding:10px 12px;background:var(--red-bg);border-radius:8px;border-left:3px solid var(--red)"><div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px">❌ 為什麼不買（的顧慮）</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.whyNot}</div></div>`:''}
+            ${s.expect?`<div style="padding:10px 12px;background:var(--blue-bg);border-radius:8px;border-left:3px solid var(--blue)"><div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px">🎯 預期狀態</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.expect}</div></div>`:''}
+            ${s.method?`<div style="padding:10px 12px;background:var(--purple-bg);border-radius:8px;border-left:3px solid var(--purple)"><div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:4px">💭 心法</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.method}</div></div>`:''}
+          </div>
+          ${s.remind?`<div style="margin-top:10px;padding:9px 12px;background:var(--gold-bg);border-radius:8px;border-left:3px solid var(--gold)"><div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:3px">⚠️ 提醒自己</div><div style="font-size:13px;color:var(--text-2)">${s.remind}</div></div>`:''}
+          ${s.kline||s.market||s.chip?`<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--text-2)">${s.kline?`<span><b style="color:var(--text-3)">K線</b> ${s.kline}</span>`:''}${s.market?`<span><b style="color:var(--text-3)">大盤</b> ${s.market}</span>`:''}${s.chip?`<span><b style="color:var(--text-3)">法人</b> ${s.chip}</span>`:''}</div>`:''}
+        </div>
+
+        <!-- 出場 + 賣出決策 -->
+        ${exits.length||s.whySell||s.whyNotSell?`<div style="padding:14px 16px;border-top:1px solid var(--border)">
+          ${exits.length?`<div style="font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:8px">📤 出場記錄</div>
+            <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+              ${exits.map((e,i)=>{const ep=e.pnl||0;return`<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:var(--bg);border-radius:7px;font-size:12px;flex-wrap:wrap"><span style="color:var(--text-3)">第${i+1}批</span><b>${e.date||''}</b><span>${e.price||''}元 × ${e.qty||''}張</span>${e.days?`<span style="color:var(--text-3)">持有${e.days}天</span>`:''}<span style="font-weight:700;color:${ep>0?'var(--green)':'var(--red)'};margin-left:auto">${ep>0?'+':''}${Math.round(ep).toLocaleString()}元</span></div>`;}).join('')}
+          </div>`:''}
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            ${s.whySell?`<div style="padding:9px 12px;background:var(--green-bg);border-radius:8px;border-left:3px solid var(--green)"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:3px">💰 為什麼賣</div><div style="font-size:13px;color:var(--text-2);line-height:1.5">${s.whySell}</div></div>`:''}
+            ${s.whyNotSell?`<div style="padding:9px 12px;background:var(--orange-bg);border-radius:8px;border-left:3px solid var(--orange)"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:3px">🤔 為什麼不賣</div><div style="font-size:13px;color:var(--text-2);line-height:1.5">${s.whyNotSell}</div></div>`:''}
+          </div>
         </div>`:''}
-        ${s.kline||s.market?`<div style="font-size:12px;color:#666;margin-bottom:6px">${[s.kline,s.market].filter(x=>x).join(' · ')}</div>`:''}
-        ${s.reason?`<div style="padding:9px 12px;background:var(--bg);border-radius:6px;font-size:13px;margin-bottom:8px">進場：${s.reason}</div>`:''}
-        ${exits.length?`<div style="padding:10px 12px;background:var(--bg);border-radius:6px;margin-bottom:8px"><div style="font-size:11px;font-weight:700;color:#999;margin-bottom:6px">📤 出場記錄</div>${exits.map((e,i)=>`<div style="font-size:12px;margin-bottom:3px">第${i+1}批：${e.date||''}・${e.price}元・${e.qty}張・持有${e.days}天・<span style="font-weight:700;color:${e.pnl>0?'var(--green)':'var(--red)'}">${e.pnl>0?'+':''}${Math.round(e.pnl).toLocaleString()}元</span></div>`).join('')}</div>`:''}
-        ${s.r1||s.r2||s.r3||s.r4?`<div style="padding:10px 12px;background:var(--accent-light);border-radius:6px"><div style="font-size:11px;font-weight:700;color:var(--accent-dark);margin-bottom:6px">📝 復盤</div>${[['判斷',s.r1],['紀律',s.r2],['情緒',s.r3],['下次',s.r4]].filter(([,v])=>v).map(([k,v])=>`<div style="font-size:12px;margin-bottom:4px"><strong>${k}：</strong>${v}</div>`).join('')}</div>`:''}
+
+        <!-- 復盤 -->
+        ${s.verify||s.reflect||s.learn||s.r1||s.r2||s.r4?`<div style="padding:14px 16px;border-top:1px solid var(--border);background:var(--orange-bg)">
+          <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:10px">📝 復盤</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            ${(s.verify||s.r1)?`<div style="padding:9px 12px;background:var(--white);border-radius:8px"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:3px">判斷的驗證</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.verify||s.r1}</div></div>`:''}
+            ${(s.reflect||s.r2)?`<div style="padding:9px 12px;background:var(--white);border-radius:8px"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:3px">反省</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.reflect||s.r2}</div></div>`:''}
+            ${(s.learn||s.r4)?`<div style="padding:9px 12px;background:var(--white);border-radius:8px"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:3px">我學到什麼</div><div style="font-size:13px;color:var(--text-2);line-height:1.6">${s.learn||s.r4}</div></div>`:''}
+          </div>
+        </div>`:''}
+
+        <!-- AI 分析區 -->
+        <div style="padding:14px 16px;border-top:1px solid var(--border);background:var(--purple-bg)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div style="font-size:12px;font-weight:700;color:var(--purple)">🤖 AI 分析與建議</div>
+            <button class="btn btn-sm" style="background:var(--purple);color:white;font-size:11px" onclick="runStockAI(${s.id})">✨ 請 AI 分析</button>
+          </div>
+          <div id="stAI_${s.id}" style="font-size:13px;color:var(--text-2);line-height:1.85;min-height:40px">
+            ${s.aiAnalysis?s.aiAnalysis:'<span style="color:var(--text-3);font-style:italic">點「請 AI 分析」，讓 Claude 幫你分析這筆交易的邏輯、風險和學習點。</span>'}
+          </div>
+        </div>
+
       </div>
     </div>`;
   }).join('');
 }
+
+// ══ 股票 AI 分析 ══
+async function runStockAI(sid){
+  const s=(D.stocks||[]).find(s=>s.id===sid);
+  if(!s)return;
+  const el=document.getElementById('stAI_'+sid);
+  if(!el)return;
+  el.innerHTML='<span style="color:var(--purple)">🤖 分析中，請稍候…</span>';
+
+  const prompt=`你是一位有經驗的股票投資教練，請針對以下這筆交易記錄，給出具體的分析和建議。用繁體中文回答，語氣親切但直接，重點是幫助投資人成長。
+
+【交易基本資訊】
+股票：${s.code} | 操作：${s.type} | 日期：${s.date}
+買進價：${s.price||'—'}元 | 股數：${s.qty||'—'}張 | 部位：${s.pos||'—'}%
+停損設定：${s.sl||'—'}% | 第一停利：${s.tp1||'—'}% | 第二停利：${s.tp2||'—'}%
+K線位置：${s.kline||'未填'} | 大盤狀況：${s.market||'未填'} | 法人籌碼：${s.chip||'未填'}
+進場心理：${s.mood||'未填'}
+
+【決策思考】
+為什麼買：${s.whyBuy||s.reason||'未填'}
+預期狀態：${s.expect||'未填'}
+風險顧慮（為什麼不買）：${s.whyNot||'未填'}
+心法：${s.method||'未填'}
+提醒自己：${s.remind||'未填'}
+
+【出場 & 賣出決策】
+為什麼賣：${s.whySell||'未填'}
+為什麼不賣：${s.whyNotSell||'未填'}
+${(s.exits||[]).length?'出場記錄：'+s.exits.map((e,i)=>`第${i+1}批 ${e.date} ${e.price}元 損益${e.pnl}元 持有${e.days}天`).join('、'):''}
+
+【復盤】
+判斷驗證：${s.verify||s.r1||'未填'}
+反省：${s.reflect||s.r2||'未填'}
+學到什麼：${s.learn||s.r4||'未填'}
+
+請從以下幾個角度分析（每點2-4句話就好，不要太長）：
+1. 🎯 進場邏輯分析：這個進場理由的強度如何？有哪些優點和盲點？
+2. ⚖️ 風險控管評估：停損停利設定是否合理？部位大小適當嗎？
+3. 💭 心理面觀察：進場心理狀態有沒有影響判斷？
+4. ✅ 做得好的地方：這筆交易有什麼值得肯定的決策？
+5. 📚 學習點和建議：最重要的一個學習點是什麼？下次可以怎麼改善？
+6. ⚡ 一句話總結：用一句話給這筆交易打個結論。`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'分析失敗，請稍後再試';
+    // 儲存 AI 分析結果
+    const stIdx=(D.stocks||[]).findIndex(st=>st.id===sid);
+    if(stIdx>=0)D.stocks[stIdx].aiAnalysis=text.replace(/\n/g,'<br>');
+    sv();
+    el.innerHTML=text.replace(/\n/g,'<br>');
+  }catch(e){
+    el.innerHTML='<span style="color:var(--red)">⚠ 分析失敗：'+e.message+'</span>';
+  }
+}
+
+function toggleStCard(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const isOpen=el.style.display!=='none';
+  el.style.display=isOpen?'none':'block';
+}
+
+function toggleStCard(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+
 function renderStockStat(){
   const el=document.getElementById('stStat'); if(!el)return;
   const stocks=D.stocks||[];
