@@ -929,7 +929,7 @@ body{
 
 <div class="toast" id="toast"></div>
 <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
 <script>
 
 // ══════════════════════════════════════════════
@@ -938,12 +938,13 @@ body{
 firebase.initializeApp({
   apiKey:"AIzaSyCHwiIOKswq613NuRclWaLFbWO8lgpN0IY",
   authDomain:"roxi-planner.firebaseapp.com",
+  databaseURL:"https://roxi-planner-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId:"roxi-planner",
   storageBucket:"roxi-planner.firebasestorage.app",
   messagingSenderId:"988384927354",
   appId:"1:988384927354:web:40b403d40060d7195725c3"
 });
-const db = firebase.firestore();
+const db = firebase.database();
 const KEYS = ['roxi_v14','roxi_v13','roxi_v12']; // 從新到舊
 const KEY  = 'roxi_v14';
 
@@ -1007,7 +1008,7 @@ async function saveCloud(){
   if(syncing) return;
   syncing = true;
   try{
-    await db.collection('p').doc(KEY).set(D);
+    await db.ref('p/'+KEY).set(D);
     setBadge('ok');
   }catch(e){
     setBadge('offline');
@@ -1020,7 +1021,7 @@ async function forceSave(){
   saveLocal();
   setBadge('syncing');
   try{
-    await db.collection('p').doc(KEY).set(D);
+    await db.ref('p/'+KEY).set(D);
     setBadge('ok');
     toast('✅ 已強制儲存！');
   }catch(e){
@@ -1041,7 +1042,7 @@ async function loadCloud(){
         saveLocal();
         found = true;
         if(k !== KEY){ // 遷移到新版
-          await db.collection('p').doc(KEY).set(D);
+          await db.ref('p/'+KEY).set(D);
         }
         break;
       }
