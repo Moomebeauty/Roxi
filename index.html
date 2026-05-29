@@ -1758,16 +1758,14 @@ function delBook(bid){ D.books=(D.books||[]).filter(b=>b.id!==bid); sv(); render
 function calcRisk(){
   const price=parseFloat(document.getElementById('stPrice')?.value)||0;
   const qty=parseFloat(document.getElementById('stQty')?.value)||0;
-  const unit=document.getElementById('stUnit')?.value||'lot';
   const sl=parseFloat(document.getElementById('stSL')?.value)||-10;
   const tp1=parseFloat(document.getElementById('stTP1')?.value)||20;
   const tp2=parseFloat(document.getElementById('stTP2')?.value)||40;
-  const shares=unit==='share'?qty:qty*1000;
   if(price>0){
     const slP=(price*(1+sl/100)).toFixed(1);
     const t1P=(price*(1+tp1/100)).toFixed(1);
     const t2P=(price*(1+tp2/100)).toFixed(1);
-    const slLoss=shares>0?`（損失約 ${Math.abs(Math.round(sl/100*price*shares)).toLocaleString()}元）`:'';
+    const slLoss=qty>0?`（損失 ${Math.abs(Math.round(sl/100*price*qty*1000)).toLocaleString()}元）`:'';
     const slEl=document.getElementById('slPrice');if(slEl)slEl.textContent=`停損價：${slP}元 ${slLoss}`;
     const t1El=document.getElementById('tp1Price');if(t1El)t1El.textContent=`停利價：${t1P}元`;
     const t2El=document.getElementById('tp2Price');if(t2El)t2El.textContent=`停利價：${t2P}元`;
@@ -1803,7 +1801,6 @@ function clearStForm(){
     if(el.tagName==='SELECT')el.selectedIndex=0; else el.value='';
   });
   ['slPrice','tp1Price','tp2Price'].forEach(k=>{const el=document.getElementById(k);if(el)el.textContent='';});
-  const unitElC=document.getElementById('stUnit');if(unitElC)unitElC.value='lot';
   document.getElementById('exitRows').innerHTML=''; exitRowCount=0;
   document.getElementById('stFormTitle').textContent='📝 新增交易記錄';
   document.getElementById('stSaveBtn').textContent='💾 儲存交易';
@@ -1822,7 +1819,6 @@ function saveStock(){
     code, type:document.getElementById('stType')?.value||'買進',
     price:parseFloat(document.getElementById('stPrice')?.value)||0,
     qty:parseFloat(document.getElementById('stQty')?.value)||0,
-    unit:document.getElementById('stUnit')?.value||'lot',
     pos:parseFloat(document.getElementById('stPos')?.value)||0,
     maxLoss:parseFloat(document.getElementById('stMaxLoss')?.value)||0,
     kline:document.getElementById('stKline')?.value||'',
@@ -1876,7 +1872,6 @@ function editStock(sid){
     else if(key==='reflect'&&s.r2)el.value=s.r2;
     else if(key==='learn'&&s.r4)el.value=s.r4;
   });
-  const unitEl=document.getElementById('stUnit');if(unitEl)unitEl.value=s.unit||'lot';
   const typeEl=document.getElementById('stType');if(typeEl)typeEl.value=s.type||'買進';
   const moodEl=document.getElementById('stMood');if(moodEl)moodEl.value=s.mood||'冷靜分析後決定';
   // 出場記錄
@@ -2056,20 +2051,10 @@ async function runThemeAI(){
 4. ⚠️ 最常見的陷阱（初學者在這類題材最容易犯什麼錯？）
 5. 💡 給初學者的一個建議（如果要參與這個題材，最重要的一件事是什麼？）`;
 
-  const apiKey2=getApiKey();
-  if(!apiKey2){
-    textEl.innerHTML='<span style="color:var(--orange)">⚠ 請先設定 API Key（點右上角「🤖 AI設定」）</span>';
-    return;
-  }
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':apiKey2,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})
     });
     const data=await res.json();
@@ -2113,7 +2098,7 @@ function renderStocks(){
         <span style="font-family:var(--serif);font-size:17px;font-weight:700;color:var(--text)">${s.code||'—'}</span>
         <span style="padding:2px 9px;border-radius:12px;font-size:12px;font-weight:700;background:${typeBg};color:${typeC}">${s.type||'買進'}</span>
         <span style="font-size:12px;color:var(--text-3)">${s.date||''}</span>
-        ${price?`<span style="font-size:13px;color:var(--text-2)"><b>${price}</b>元${s.qty?` × ${s.qty}${s.unit==='share'?'股':'張'}`:''}</span>`:''}
+        ${price?`<span style="font-size:13px;color:var(--text-2)"><b>${price}</b>元${s.qty?` × ${s.qty}張`:''}</span>`:''}
         ${totalPnl!==0?`<span style="font-size:16px;font-weight:700;color:${pnlC};margin-left:auto">${totalPnl>0?'+':''}${Math.round(totalPnl).toLocaleString()}元</span>`:'<span style="margin-left:auto"></span>'}
         <div style="display:flex;gap:5px;flex-shrink:0">
           <button class="btn-icon" onclick="event.stopPropagation();editStock(${s.id})" title="編輯">✏️</button>
@@ -2186,78 +2171,101 @@ function renderStocks(){
   }).join('');
 }
 
-// ══ 股票 AI 分析 ══
-async function runStockAI(sid){
-  const s=(D.stocks||[]).find(s=>s.id===sid);
-  if(!s)return;
-  const el=document.getElementById('stAI_'+sid);
-  if(!el)return;
-  el.innerHTML='<span style="color:var(--purple)">🤖 分析中，請稍候…</span>';
+// ══ 股票交易自動分析（免費）══
+function runStockAI(sid){
+  const s=(D.stocks||[]).find(s=>s.id===sid);if(!s)return;
+  const el=document.getElementById('stAI_'+sid);if(!el)return;
+  const price=parseFloat(s.price)||0,sl=parseFloat(s.sl)||-10,tp1=parseFloat(s.tp1)||20,tp2=parseFloat(s.tp2)||40;
+  const qty=parseFloat(s.qty)||0,unit=s.unit||'lot';
+  const shares=unit==='share'?qty:qty*1000;
+  const exits=s.exits||[];
+  const totalPnl=exits.reduce((a,e)=>a+(parseFloat(e.pnl)||0),0)||s.pnl||0;
+  let lines=[];
 
-  const prompt=`你是一位有經驗的股票投資教練，請針對以下這筆交易記錄，給出具體的分析和建議。用繁體中文回答，語氣親切但直接，重點是幫助投資人成長。
-
-【交易基本資訊】
-股票：${s.code} | 操作：${s.type} | 日期：${s.date}
-買進價：${s.price||'—'}元 | 股數：${s.qty||'—'}張 | 部位：${s.pos||'—'}%
-停損設定：${s.sl||'—'}% | 第一停利：${s.tp1||'—'}% | 第二停利：${s.tp2||'—'}%
-K線位置：${s.kline||'未填'} | 大盤狀況：${s.market||'未填'} | 法人籌碼：${s.chip||'未填'}
-進場心理：${s.mood||'未填'}
-
-【決策思考】
-為什麼買：${s.whyBuy||s.reason||'未填'}
-預期狀態：${s.expect||'未填'}
-風險顧慮（為什麼不買）：${s.whyNot||'未填'}
-心法：${s.method||'未填'}
-提醒自己：${s.remind||'未填'}
-
-【出場 & 賣出決策】
-為什麼賣：${s.whySell||'未填'}
-為什麼不賣：${s.whyNotSell||'未填'}
-${(s.exits||[]).length?'出場記錄：'+s.exits.map((e,i)=>`第${i+1}批 ${e.date} ${e.price}元 損益${e.pnl}元 持有${e.days}天`).join('、'):''}
-
-【復盤】
-判斷驗證：${s.verify||s.r1||'未填'}
-反省：${s.reflect||s.r2||'未填'}
-學到什麼：${s.learn||s.r4||'未填'}
-
-請從以下幾個角度分析（每點2-4句話就好，不要太長）：
-1. 🎯 進場邏輯分析：這個進場理由的強度如何？有哪些優點和盲點？
-2. ⚖️ 風險控管評估：停損停利設定是否合理？部位大小適當嗎？
-3. 💭 心理面觀察：進場心理狀態有沒有影響判斷？
-4. ✅ 做得好的地方：這筆交易有什麼值得肯定的決策？
-5. 📚 學習點和建議：最重要的一個學習點是什麼？下次可以怎麼改善？
-6. ⚡ 一句話總結：用一句話給這筆交易打個結論。`;
-
-  const apiKey=getApiKey();
-  if(!apiKey){
-    el.innerHTML='<span style="color:var(--orange)">⚠ 請先設定 API Key（點右上角「🤖 AI設定」）</span>';
-    return;
+  if(price>0){
+    const ratio=+(Math.abs(tp1)/Math.abs(sl)).toFixed(1);
+    const slP=(price*(1+sl/100)).toFixed(1),t1P=(price*(1+tp1/100)).toFixed(1),t2P=(price*(1+tp2/100)).toFixed(1);
+    const maxLoss=shares>0?Math.round(Math.abs(sl/100*price*shares)):0;
+    const ratioC=ratio>=2?'var(--green)':ratio>=1.5?'var(--orange)':'var(--red)';
+    const ratioMsg=ratio>=2?'\u2713 \u6bcf\u864f1\u5143\u6709\u6a5f\u6703\u8cfa'+ratio+'\u5143\uff0c\u98a8\u63a7\u826f\u597d':ratio>=1.5?'\u5c1a\u53ef\uff0c\u5efa\u8b70\u63d0\u9ad8\u52302:1\u4ee5\u4e0a':'\u26a0 \u504f\u4f4e\uff0c\u5efa\u8b70\u7e2e\u5c0f\u505c\u640d\u6216\u63d0\u9ad8\u505c\u5229';
+    lines.push('<div style="padding:10px 13px;background:var(--blue-bg);border-radius:8px;border-left:3px solid var(--blue);margin-bottom:8px">'
+      +'<div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:5px">\u2696\ufe0f \u98a8\u96aa\u5831\u916c\u6bd4\u5206\u6790</div>'
+      +'<div style="font-size:13px;color:var(--text-2);line-height:1.8">'
+      +'\u505c\u640d <b>'+slP+'\u5143</b> \u2192 \u505c\u52251 <b>'+t1P+'\u5143</b> \u2192 \u505c\u52252 <b>'+t2P+'\u5143</b><br>'
+      +'\u98a8\u96aa\u5831\u916c\u6bd4\uff1a<b style="color:'+ratioC+'">'+ratio+':1</b>\u3000'+ratioMsg
+      +(maxLoss>0?'<br>\u82e5\u89f8\u53ca\u505c\u640d\uff1a\u6700\u5927\u865f\u640d\u7d04 <b style="color:var(--red)">'+maxLoss.toLocaleString()+'\u5143</b>':'')
+      +(s.pos>0?'<br>\u90e8\u4f4d '+s.pos+'%'+(s.pos>20?' \u26a0 \u8d85\u904620%\u8acb\u6ce8\u610f\u96c6\u4e2d\u98a8\u96aa':s.pos>=10?' \u5c6c\u4e2d\u7b49\u90e8\u4f4d':' \u5c6c\u5c0f\u90e8\u4f4d\uff0c\u63a7\u5236\u5f97\u5b9c'):'')
+      +'</div></div>');
   }
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':apiKey,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    const data=await res.json();
-    const text=data.content?.[0]?.text||'分析失敗，請稍後再試';
-    // 儲存 AI 分析結果
-    const stIdx=(D.stocks||[]).findIndex(st=>st.id===sid);
-    if(stIdx>=0)D.stocks[stIdx].aiAnalysis=text.replace(/\n/g,'<br>');
-    sv();
-    el.innerHTML=text.replace(/\n/g,'<br>');
-  }catch(e){
-    el.innerHTML='<span style="color:var(--red)">⚠ 分析失敗：'+e.message+'</span>';
+
+  const moodScore={'\u51b7\u975c\u5206\u6790\u5f8c\u6c7a\u5b9a':['var(--green)','\u2713 \u6700\u7406\u60f3\u7684\u9032\u5834\u5fc3\u614b\uff0c\u7406\u6027\u6c7a\u7b56\u901a\u5e38\u7d50\u679c\u8f03\u597d\u3002'],
+    '\u6709\u9ede\u6015\u932f\u904e(FOMO)':['var(--orange)','\u26a0 FOMO \u662f\u6295\u8cc7\u5927\u5fcc\uff0c\u8ffd\u9ad8\u5bb9\u6613\u8cb7\u5728\u9ad8\u9ede\u3002\u4e0b\u6b21\u6709\u9019\u7a2e\u611f\u89ba\uff0c\u5148\u7b49\u4e00\u6839K\u68d2\u518d\u6c7a\u5b9a\u3002'],
+    '\u770b\u5230\u5225\u4eba\u5728\u8cfa\u60f3\u8ddf':['var(--red)','\u26a0 \u8ddf\u98a8\u8ffd\u71b1\u662f\u6700\u5e38\u898b\u7684\u8c46\u640d\u4f86\u6e90\uff0c\u6ce8\u610f\u8cb7\u9ede\u662f\u5426\u5df2\u904e\u3002'],
+    '\u7d14\u7cb9\u60f3\u8a66\u8a66\u770b':['var(--orange)','\u26a0 \u8a66\u8a66\u770b\u5fc3\u614b\u5bb9\u6613\u5ffd\u8996\u98a8\u96aa\uff0c\u5efa\u8b70\u7e2e\u5c0f\u90e8\u4f4d\u3002'],
+    '\u6709\u4fe1\u5fc3\u6703\u6f32':['var(--blue)','\u63d0\u9192\uff1a\u4fe1\u5fc3\u8981\u5efa\u7acb\u5728\u5ba2\u89c0\u5206\u6790\u4e0a\uff0c\u78ba\u8a8d\u6709\u5177\u9ad4\u4f9d\u64da\u3002'],
+    '\u5176\u5be6\u6709\u9ede\u8ced':['var(--red)','\u26a0 \u8ced\u535a\u5fc3\u614b\u662f\u8c46\u640d\u4e3b\u56e0\uff0c\u6703\u8b93\u4f60\u5ffd\u8996\u505c\u640d\u3001\u52a0\u5927\u90e8\u4f4d\u3002'],
+  };
+  const me=moodScore[s.mood];
+  if(me)lines.push('<div style="padding:10px 13px;background:var(--bg);border-radius:8px;border-left:3px solid '+me[0]+';margin-bottom:8px">'
+    +'<div style="font-size:12px;font-weight:700;color:'+me[0]+';margin-bottom:4px">\ud83d\udcad \u9032\u5834\u5fc3\u7406\uff1a'+(s.mood||'')+'</div>'
+    +'<div style="font-size:13px;color:var(--text-2);line-height:1.7">'+me[1]+'</div></div>');
+
+  const filled=[s.whyBuy||s.reason,s.whyNot,s.expect,s.method,s.remind].filter(x=>x&&x.trim()).length;
+  const score=Math.round(filled/5*100);
+  const sc=score>=80?'var(--green)':score>=60?'var(--orange)':'var(--red)';
+  const noWhyNot=!(s.whyNot&&s.whyNot.trim());
+  const noExpect=!(s.expect&&s.expect.trim());
+  const noMethod=!(s.method&&s.method.trim());
+  lines.push('<div style="padding:10px 13px;background:var(--bg);border-radius:8px;border-left:3px solid '+sc+';margin-bottom:8px">'
+    +'<div style="font-size:12px;font-weight:700;color:'+sc+';margin-bottom:5px">\ud83d\udccb \u51b3\u7b56\u5b8c\u6574\u5ea6\uff1a'+score+'\u5206\uff08'+filled+'/5\uff09</div>'
+    +'<div style="font-size:13px;color:var(--text-2);line-height:1.8">'
+    +(noWhyNot?'\u26a0 \u672a\u586b\u300c\u70ba\u4ec0\u9ebc\u4e0d\u8cb7\u300d\u2014\u2014\u5f37\u8feb\u81ea\u5df1\u60f3\u53cd\u9762\u7406\u7531\uff0c\u662f\u907f\u514d\u885d\u52d5\u9032\u5834\u6700\u6709\u6548\u7684\u65b9\u6cd5\u3002<br>':'')
+    +(noExpect?'\u26a0 \u672a\u586b\u300c\u9810\u671f\u72c0\u614b\u300d\u2014\u2014\u6c92\u6709\u9810\u671f\u5c31\u7121\u6cd5\u4e8b\u5f8c\u9a57\u8b49\u5224\u65b7\u5c0d\u4e0d\u5c0d\u3002<br>':'')
+    +(noMethod?'\ud83d\udca1 \u5efa\u8b70\u586b\u300c\u5fc3\u6cd5\u300d\uff0c\u8a18\u9304\u7b56\u7565\u908f\u8f2f\uff0c\u7d2f\u7a4d\u5f8c\u624d\u77e5\u9053\u54ea\u7a2e\u65b9\u6cd5\u6700\u9069\u5408\u4f60\u3002':'\u2713 \u51b3\u7b56\u8a18\u9304\u5b8c\u6574\uff0c\u7e7c\u7e8c\u4fdd\u6301\uff01')
+    +'</div></div>');
+
+  if(s.kline||s.market){
+    const notes=[];
+    if(s.kline){
+      if(s.kline.includes('\u4e4b\u4e0a'))notes.push('K\u7dda\u4f4d\u65bc\u5747\u7dda\u4e4b\u4e0a\uff0c\u8da8\u52e2\u504f\u591a\uff0c\u9032\u5834\u65b9\u5411\u6b63\u78ba\u3002');
+      else if(s.kline.includes('\u4e4b\u4e0b'))notes.push('\u26a0 K\u7dda\u4f4d\u65bc\u5747\u7dda\u4e4b\u4e0b\uff0c\u9006\u52e2\u8cb7\u9032\u98a8\u96aa\u8f03\u9ad8\u3002');
+      else if(s.kline.includes('\u7a81\u7834'))notes.push('\u7a81\u7834\u58d3\u529b\u5340\u9032\u5834\uff0c\u6ce8\u610f\u662f\u5426\u6709\u91cf\u914d\u5408\u3002');
+    }
+    if(s.market){
+      if(s.market.includes('\u5927\u8dcc'))notes.push('\u26a0 \u5927\u76e4\u5927\u8dcc\u6642\u8cb7\u9032\uff0c\u78ba\u8a8d\u662f\u5426\u70ba\u5f37\u52e2\u80a1\u3002');
+      else if(s.market.includes('\u5927\u6f32'))notes.push('\u5927\u76e4\u5927\u6f32\u6642\u8cb7\u9032\uff0c\u7559\u610f\u500b\u80a1\u5f37\u5ea6\uff0c\u907f\u514d\u8ffd\u9ad8\u3002');
+    }
+    if(notes.length)lines.push('<div style="padding:10px 13px;background:var(--teal-bg);border-radius:8px;border-left:3px solid var(--teal);margin-bottom:8px">'
+      +'<div style="font-size:12px;font-weight:700;color:var(--teal);margin-bottom:5px">\ud83d\udcca \u6280\u8853\u9762\u89c0\u5bdf</div>'
+      +'<div style="font-size:13px;color:var(--text-2);line-height:1.8">'+notes.join('<br>')+'</div></div>');
   }
+
+  if(exits.length>0){
+    const hasRev=[s.verify||s.r1,s.reflect||s.r2,s.learn||s.r4].filter(x=>x).length;
+    const pnlTxt=totalPnl>0
+      ?'\u7372\u5229 <b style="color:var(--green)">+'+Math.round(totalPnl).toLocaleString()+'\u5143</b>\u3002\u601d\u8003\u662f\u300c\u904b\u6c23\u597d\u300d\u9084\u662f\u300c\u5224\u65b7\u5c0d\u300d\uff0c\u5169\u8005\u5c0d\u6210\u9577\u610f\u7fa9\u5b8c\u5168\u4e0d\u540c\u3002'
+      :totalPnl<0
+      ?'\u8c46\u640d <b style="color:var(--red)">'+Math.round(totalPnl).toLocaleString()+'\u5143</b>\u3002\u8c46\u640d\u662f\u5b78\u8cbb\u2014\u2014\u53ea\u6709\u8a8d\u771f\u5fa9\u76e4\u624d\u80fd\u771f\u7684\u5b78\u5230\u6771\u897f\u3002'
+      :'\u5df2\u6709\u51fa\u5834\u8a18\u9304\uff0c\u5efa\u8b70\u586b\u5beb\u5fa9\u76e4\u6b04\u4f4d\u3002';
+    lines.push('<div style="padding:10px 13px;background:var(--orange-bg);border-radius:8px;border-left:3px solid var(--orange);margin-bottom:8px">'
+      +'<div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:5px">\ud83d\udcdd \u5fa9\u76e4\u63d0\u9192</div>'
+      +'<div style="font-size:13px;color:var(--text-2);line-height:1.8">'+pnlTxt+'<br>\u5fa9\u76e4\u5b8c\u6574\u5ea6\uff1a'+hasRev+'/3'
+      +(hasRev<3?'<br>\ud83d\udca1 \u5efa\u8b70\u88dc\u9f4a\u300c\u5224\u65b7\u9a57\u8b49\u300d\u300c\u53cd\u7701\u300d\u300c\u5b78\u5230\u4ec0\u9ebc\u300d\u4e09\u500b\u6b04\u4f4d\u3002':'<br>\u2713 \u5fa9\u76e4\u5b8c\u6574\uff0c\u7e7c\u7e8c\u4fdd\u6301\uff01')
+      +'</div></div>');
+  }
+
+  const pts=[];
+  if(price>0){const r=+(Math.abs(tp1)/Math.abs(sl)).toFixed(1);pts.push(r>=2?'\u98a8\u63a7\u826f\u597d':'\u98a8\u63a7\u5f85\u512a\u5316');}
+  if(s.mood==='\u51b7\u975c\u5206\u6790\u5f8c\u6c7a\u5b9a')pts.push('\u5fc3\u614b\u7a69\u5065');
+  else if(['\u6709\u9ede\u6015\u932f\u904e(FOMO)','\u770b\u5230\u5225\u4eba\u5728\u8cfa\u60f3\u8ddf','\u5176\u5be6\u6709\u9ede\u8ced'].includes(s.mood))pts.push('\u5fc3\u614b\u9700\u6ce8\u610f');
+  if(filled>=4)pts.push('\u8a18\u9304\u5b8c\u6574');
+  const summary=pts.length?pts.join('\u30fb'):'\u7e7c\u7e8c\u8a18\u9304\uff0c\u7d2f\u7a4d\u8d8a\u591a\u5206\u6790\u8d8a\u6e96\u78ba';
+  lines.push('<div style="padding:10px 13px;background:#FFF0E6;border-radius:8px;text-align:center;font-family:var(--serif);font-size:14px;color:var(--accent-dark)">\u2b50 \u7e3d\u7d50\uff1a'+summary+'</div>');
+
+  const result=lines.join('');
+  const stIdx=(D.stocks||[]).findIndex(st=>st.id===sid);
+  if(stIdx>=0)D.stocks[stIdx].aiAnalysis=result;
+  sv();el.innerHTML=result;
 }
 
 function toggleStCard(id){
@@ -2562,6 +2570,55 @@ function renderInvest(){
   document.getElementById('investContent').innerHTML=`
 <div class="section-title">💰 投資指引</div>
 <div class="section-sub">當你想要做投資的時候，先來這裡看看。把這頁讀完，再決定要不要行動。</div>
+
+<!-- ── 大字重點提醒 ── -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+
+  <!-- 堅持提醒 -->
+  <div style="background:linear-gradient(135deg,#4A2C2A,#7A5A46);border-radius:14px;padding:22px 20px;color:white;grid-column:1/-1">
+    <div style="font-size:13px;opacity:.65;margin-bottom:10px;letter-spacing:.1em">📌 紀律咒語・每天念一次</div>
+    <div style="font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.9;text-align:center">
+      每堅持 <span style="font-size:28px;color:#F6AD55">7 天</span>「不亂砍亂買」<br>
+      每堅持 <span style="font-size:28px;color:#F6AD55">30 天</span>「只在觸發點操作」
+    </div>
+  </div>
+
+  <!-- 研究好股票後該做的事 -->
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow)">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">研究好股票後最該做的</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${[
+        ['🛑','把手機關掉'],
+        ['📔','寫今天的心情'],
+        ['🚶','出去散步'],
+        ['☕','喝杯咖啡'],
+      ].map(([e,t])=>`<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text-2)"><span style="font-size:20px">${e}</span>${t}</div>`).join('')}
+    </div>
+    <div style="margin-top:14px;padding:10px 14px;background:var(--gold-bg);border-radius:8px;font-size:13px;color:var(--gold);font-weight:700;text-align:center;border:1px solid var(--gold-light)">
+      ⏰ 4 小時後再看一次盤就好<br>
+      <span style="font-size:15px">「無聊」就是賺錢的味道 💪</span>
+    </div>
+  </div>
+
+  <!-- 真正會賺錢的散戶 -->
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow);grid-column:2/-1">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">真正會賺錢的散戶才會做的事</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${[
+        ['1','寫交易日記','計畫'],
+        ['2','設停損停利','紀律'],
+        ['3','設價格提醒','自動化'],
+        ['4','忍住情緒','EQ'],
+        ['5','結果：獲利 ✅',''],
+      ].map(([n,t,tag])=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:${n==='5'?'var(--green-bg)':'var(--bg)'};border-radius:7px">
+        <span style="width:22px;height:22px;border-radius:50%;background:${n==='5'?'var(--green)':'var(--accent-dark)'};color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${n==='5'?'✓':n}</span>
+        <span style="font-size:13px;font-weight:${n==='5'?'700':'500'};color:${n==='5'?'var(--green)':'var(--text-2)'}">✅ ${t}</span>
+        ${tag?`<span style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:10px;background:var(--blue-bg);color:var(--blue);font-weight:700">${tag}</span>`:''}
+      </div>`).join('')}
+    </div>
+  </div>
+
+</div>
 
 <!-- 核心結論 -->
 <div style="background:linear-gradient(135deg,var(--orange-bg),#FFF8F0);border:2px solid var(--orange-light);border-radius:12px;padding:20px 24px;margin-bottom:20px">
@@ -3089,42 +3146,6 @@ function renderAll(){
   else if(pid==='ideas')renderIdeas();
 }
 
-
-// ══ API Key 管理 ══
-function openApiKeyModal(){
-  const saved=localStorage.getItem('roxi_api_key')||'';
-  const inp=document.getElementById('apiKeyInput');
-  if(inp)inp.value=saved?'••••••••••••（已設定）':'';
-  const statusEl=document.getElementById('apiKeyStatus');
-  if(statusEl)statusEl.innerHTML=saved
-    ?'<span style="color:var(--green)">✓ API Key 已設定，AI 功能可使用</span>'
-    :'<span style="color:var(--text-3)">尚未設定，AI 分析功能無法使用</span>';
-  openModal('apiKeyModal');
-}
-function saveApiKey(){
-  const val=document.getElementById('apiKeyInput')?.value.trim();
-  if(!val||val.startsWith('•')){closeModal('apiKeyModal');return;}
-  if(!val.startsWith('sk-ant-')){
-    document.getElementById('apiKeyStatus').innerHTML='<span style="color:var(--red)">⚠ 格式不對，應以 sk-ant- 開頭</span>';
-    return;
-  }
-  localStorage.setItem('roxi_api_key',val);
-  closeModal('apiKeyModal');
-  toast('✅ API Key 已儲存！AI 功能可以使用了');
-}
-function clearApiKey(){
-  localStorage.removeItem('roxi_api_key');
-  const inp=document.getElementById('apiKeyInput');if(inp)inp.value='';
-  document.getElementById('apiKeyStatus').innerHTML='<span style="color:var(--text-3)">已清除</span>';
-}
-function getApiKey(){return localStorage.getItem('roxi_api_key')||'';}
-function updateApiKeyBtn(){
-  const btn=document.getElementById('apiKeyBtn');
-  if(!btn)return;
-  const hasKey=!!getApiKey();
-  btn.textContent=hasKey?'🤖 AI ✓':'🤖 AI設定';
-  btn.style.color=hasKey?'var(--green)':'';
-}
 window.addEventListener('load',()=>{
   const ttl0=document.getElementById('topTitle'); if(ttl0) ttl0.innerHTML='🏠 日計劃';
   renderToday();
